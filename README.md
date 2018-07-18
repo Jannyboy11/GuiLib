@@ -89,7 +89,7 @@ public class ExamplePlugin extends JavaPlugin {
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>-SNAPSHOT</version>
+	    <version>v1.1</version>
 	</dependency>	
 
 ##### Gradle
@@ -102,10 +102,10 @@ public class ExamplePlugin extends JavaPlugin {
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:-SNAPSHOT'
+    	implementation 'com.github.Jannyboy11:GuiLib:v1.1'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "-SNAPSHOT"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.1"	
