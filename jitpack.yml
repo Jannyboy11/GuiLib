@@ -1,0 +1,6 @@
+jdk:
+  - openjdk10
+before_install:
+   - ./prepareEnvironment.sh
+install:
+   - mvn

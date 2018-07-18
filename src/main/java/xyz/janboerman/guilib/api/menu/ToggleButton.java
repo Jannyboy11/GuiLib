@@ -10,8 +10,10 @@ import org.bukkit.plugin.Plugin;
 /**
  * A button that can be toggled.
  * The button can be in the enabled or disabled state.
- * @see #beforeToggle(MH, InventoryClickEvent)
- * @see #afterToggle(MH, InventoryClickEvent)
+ *
+ * @param <MH> the menu holder type
+ * @see #beforeToggle(MenuHolder, InventoryClickEvent)
+ * @see #afterToggle(MenuHolder, InventoryClickEvent)
  */
 public class ToggleButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
@@ -40,7 +42,7 @@ public class ToggleButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
     /**
      * Toggles this button. Subclasses can add extra side-effects before and after toggling by overriding
-     * {@link #beforeToggle(MH, InventoryClickEvent)} and {@link #afterToggle(MH, InventoryClickEvent)}.
+     * {@link #beforeToggle(MenuHolder, InventoryClickEvent)} and {@link #afterToggle(MenuHolder, InventoryClickEvent)}.
      * @param holder the MenuHolder
      * @param event the InventoryClickEvent
      */
@@ -63,6 +65,8 @@ public class ToggleButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     /**
      * Check whether the button can be toggled.
      * The default implementation always return true.
+     * @param menuHolder the inventory holder for the menu
+     * @param event the InventoryClickEvent that caused the button to toggle
      * @return true
      */
     public boolean beforeToggle(MH menuHolder, InventoryClickEvent event) {
@@ -72,6 +76,8 @@ public class ToggleButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     /**
      * Run a side-effect after the button is toggled.
      * The default implementation does nothing.
+     * @param menuHolder the inventory holder for the menu
+     * @param event the InventoryClickEvent that caused the button to toggle
      */
     public void afterToggle(MH menuHolder, InventoryClickEvent event) {
     }
@@ -87,6 +93,8 @@ public class ToggleButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     /**
      * Determines what the icon should look like.
      * Implementations can override this method.
+     * @param menuHolder the inventory holder for the menu
+     * @param event the InventoryClickEvent that caused the button to toggle
      * @return the updated icon.
      */
     protected ItemStack updateIcon(MH menuHolder, InventoryClickEvent event) {

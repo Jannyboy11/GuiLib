@@ -13,7 +13,7 @@
     </properties>
 
     <build>
-        <defaultGoal>clean package javadoc:jar</defaultGoal>
+        <defaultGoal>clean javadoc:jar install</defaultGoal>
 
         <resources>
             <resource>

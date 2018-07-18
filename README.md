@@ -2,10 +2,60 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs
+Easily create inventory GUIs!
+
+### Compiling
+
+Prerequisites: Apache Maven 3.5+, JDK10+.
+Then run `mvn`.
+
+### Dependency
+
+##### Maven
+
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	
+	<dependency>
+	    <groupId>com.github.Jannyboy11</groupId>
+	    <artifactId>GuiLib</artifactId>
+	    <version>-SNAPSHOT</version>
+	</dependency>	
+
+##### Gradle
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+	
+	dependencies {
+    	implementation 'com.github.Jannyboy11:GuiLib:-SNAPSHOT'
+    }
+
+##### Sbt
+
+    resolvers += "jitpack" at "https://jitpack.io"
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "-SNAPSHOT"	
 
 ### Example Usage
 ```
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import xyz.janboerman.guilib.api.menu.*;
+
 public class ExamplePlugin extends JavaPlugin {
 
     private MenuHolder<ExamplePlugin> menu1, menu2;
@@ -31,7 +81,7 @@ public class ExamplePlugin extends JavaPlugin {
         menu2.setButton(0, new ToggleButton(new ItemStack(Material.BARRIER)) {
             @Override
             public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
-                event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no");
+                event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));
             }
 
             @Override
