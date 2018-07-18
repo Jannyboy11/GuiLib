@@ -9,5 +9,6 @@ deploy:
   file:
     - target/GuiLib.jar
     - target/GuiLib-javadoc.jar
+  skip_cleanup: true
   on:
     repo: Jannyboy11/GuiLib
