@@ -8,7 +8,7 @@ public interface MenuButton<MH extends MenuHolder<?>> {
     /**
      * Callback that is called when this button is clicked.
      * <p>
-     * The default implemenation does nothing.
+     * The default implementation does nothing.
      *
      * @param holder the MenuHolder
      * @param event the InventoryClickEvent

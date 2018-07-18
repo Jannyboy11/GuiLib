@@ -7,9 +7,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A GuiInventoryHolder that only responds to clicks in the top inventory of the {@link InventoryView}.
@@ -96,18 +94,37 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     }
 
     /**
+     * Gets the button at the given slot.
+     * @param slot the slot index
+     * @return a button if one is present at the given slot - otherwise null
+     */
+    public MenuButton getButton(int slot) {
+        return this.buttons.get(slot);
+    }
+
+    /**
+     * Get a snapshot of all registered buttons. If no buttons are registered an empty Map is returned.
+     * @return a new Map containing the buttons
+     */
+    public Map<Integer, MenuButton> getButtons() {
+        var map = new TreeMap<Integer, MenuButton>();
+        map.putAll(this.buttons);
+        return map;
+    }
+
+    /**
      * Remove a button from a slot.
      * @param slot the slot number
      * @return whether a button was removed successfully from the slot
      */
     public boolean unsetButton(int slot) {
-        MenuButton button = this.buttons.remove(slot);
-        if (button != null) {
+        boolean isButtonRemoved = this.buttons.remove(slot) != null;
+
+        if (isButtonRemoved) {
             getInventory().setItem(slot, null);
-            return true;
         }
-        
-        return false;
+
+        return isButtonRemoved;
     }
 
     /**

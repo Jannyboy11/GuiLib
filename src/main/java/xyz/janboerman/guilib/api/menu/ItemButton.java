@@ -8,7 +8,10 @@ import org.bukkit.inventory.ItemStack;
  * @param <MH> the type of the menu
  */
 public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
-    
+
+    /**
+     * The representation of this button.
+     */
     protected ItemStack stack;
 
     /**

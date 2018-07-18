@@ -11,14 +11,18 @@ import org.bukkit.plugin.Plugin;
  * A button that can be toggled.
  * The button can be in the enabled or disabled state.
  * When the button is enabled, the icon is enchanted.
+ * @see #beforeToggle()
+ * @see #afterToggle()
  */
 public class ToggleButton extends ItemButton {
 
-    private boolean canToggle = true; 
+    /** boolean that is set to false when the button is clicked. Becomes true again one tick after the button is clicked.*/
+    private boolean canToggle = true;
+    /** The toggle state. True = On, False = Off*/
     private boolean enabled;
 
     /**
-     * Creates the toggle button with the given icon.
+     * Creates the toggle button with the given icon. The button is toggled off by default.
      * @param item the icon
      */
     public ToggleButton(ItemStack item) {
@@ -26,7 +30,7 @@ public class ToggleButton extends ItemButton {
     }
 
     /**
-     * Creates the toggle button with the given icon and enabled-state.
+     * Creates the toggle button with the given icon and toggle-state.
      * @param item the icon
      * @param enabled whether the icon is enabled from the start
      */
@@ -61,7 +65,7 @@ public class ToggleButton extends ItemButton {
 
     /**
      * Check whether the button can be toggled.
-     * The default implementation always return true
+     * The default implementation always return true.
      * @return true
      */
     public boolean beforeToggle() {
@@ -74,7 +78,11 @@ public class ToggleButton extends ItemButton {
      */
     public void afterToggle() {
     }
-    
+
+    /**
+     * Tests whether this button is toggled on or off.
+     * @return true if the button is toggled on, otherwise false
+     */
     public final boolean isEnabled() {
         return enabled;
     }
@@ -82,7 +90,6 @@ public class ToggleButton extends ItemButton {
     private void updateIcon() {
         this.stack = isEnabled() ? enable(getIcon()) : disable(getIcon());
     }
-
 
     private static ItemStack enable(ItemStack stack) {
         if (stack == null) return null;

@@ -28,7 +28,7 @@ public class ItemBuilder {
      * @param material the Material
      */
     public ItemBuilder(Material material) {
-        this(new ItemStack(material));
+        this.itemStack = new ItemStack(Objects.requireNonNull(material, "Material cannot be null"));
     }
 
     /**

@@ -14,8 +14,8 @@ import xyz.janboerman.guilib.GuiListener;
  * <p>
  * This class is meant to be extended by your own plugin.
  * Just override the {@link #onClick(InventoryClickEvent)}, {@link #onOpen(InventoryOpenEvent)} or
- * {@link #onClose(InventoryCloseEvent)} methods. The events are cancelled by default,
- * however you can un-cancel them in your subclass just fine.
+ * {@link #onClose(InventoryCloseEvent)} methods. The InventoryClickEvent is set to be cancelled by default,
+ * however you can un-cancel them in your subclass just fine using {@code event.setCancelled(false)}.
  * <p>
  * If you just need a menu with buttons, then {@link xyz.janboerman.guilib.api.menu.MenuHolder} is
  * a suitable candidate for your needs.
@@ -23,6 +23,7 @@ import xyz.janboerman.guilib.GuiListener;
  * @param <P> your Plugin type
  * @see xyz.janboerman.guilib.api.menu.MenuHolder
  */
+//TODO make another implementation (next to MenuHolder) that implements pages?
 public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryHolder {
     
     private final Inventory inventory;
@@ -89,6 +90,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      * Contructs a GuiInventoryHolder for your plugin using the given inventory.
      * This is especially usefull when you are using OBC or NMS classes in your plugin and your inventory cannot be created
      * by {@link org.bukkit.Server#createInventory(InventoryHolder, InventoryType, String)} or any of its overloads.
+     * One reason you might want to do this is to implement custom shift-click behaviour in your own Container implementation.
      * <p>
      * The InventoryHolder of the inventory given as the argument should be this new GuiInventoryHolder.
      * A code example:

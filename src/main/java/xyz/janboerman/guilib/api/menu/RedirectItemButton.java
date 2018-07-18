@@ -22,7 +22,7 @@ public class RedirectItemButton<MH extends MenuHolder<?>> extends ItemButton<MH>
      * @param redirect the redirect
      */
     public RedirectItemButton(ItemStack icon, Supplier<? extends Inventory> redirect) {
-        this(icon, (mh, event) -> redirect.get());
+        this(icon, (menuHolder, event) -> redirect.get());
         Objects.requireNonNull(redirect, "redirect cannot be null");
     }
 
@@ -38,23 +38,23 @@ public class RedirectItemButton<MH extends MenuHolder<?>> extends ItemButton<MH>
 
     /**
      * Evaluates the redirect.
-     * @param holder the MenuHolder
+     * @param menuHolder the MenuHolder
      * @param event the InventoryClickEvent
      * @return the Inventory the player is redirected towards.
      */
     @Override
-    public final Inventory to(MH holder, InventoryClickEvent event) {
-        return redirect.apply(holder, event);
+    public final Inventory to(MH menuHolder, InventoryClickEvent event) {
+        return redirect.apply(menuHolder, event);
     }
 
     /**
      * Redirects the player to the inventory supplied by {@link #to(MenuHolder, InventoryClickEvent)}.
-     * @param holder the MenuHolder
+     * @param menuHolder the MenuHolder
      * @param event the InventoryClickEvent
      */
     @Override
-    public final void onClick(MH holder, InventoryClickEvent event) {
-        RedirectButton.super.onClick(holder, event);
+    public final void onClick(MH menuHolder, InventoryClickEvent event) {
+        RedirectButton.super.onClick(menuHolder, event);
     }
     
 }

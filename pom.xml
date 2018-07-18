@@ -8,8 +8,12 @@
     <artifactId>GuiLib</artifactId>
     <version>1.0</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <build>
-        <defaultGoal>clean package javadoc:javadoc</defaultGoal>
+        <defaultGoal>clean package javadoc:jar</defaultGoal>
 
         <resources>
             <resource>
@@ -25,8 +29,8 @@
                 <version>3.7.0</version>
                 <configuration>
                     <release>10</release>
-                    <source>10</source> <!-- workaround for an IntelliJ bug -->
-                    <target>10</target> <!-- workaround for an IntelliJ bug -->
+                    <source>10</source> <!-- not strictly needed, but this works around an IntelliJ bug -->
+                    <target>10</target> <!-- not strictly needed, but this works around an IntelliJ bug -->
                 </configuration>
             </plugin>
 
@@ -44,7 +48,6 @@
                 </configuration>
             </plugin>
         </plugins>
-
     </build>
 
     <repositories>
