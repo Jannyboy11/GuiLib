@@ -9,43 +9,6 @@ Easily create inventory GUIs!
 Prerequisites: Apache Maven 3.5+, JDK10+.
 Then run `mvn`.
 
-### Dependency
-
-[![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
-
-##### Maven
-
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-	
-	<dependency>
-	    <groupId>com.github.Jannyboy11</groupId>
-	    <artifactId>GuiLib</artifactId>
-	    <version>-SNAPSHOT</version>
-	</dependency>	
-
-##### Gradle
-
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
-	
-	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:-SNAPSHOT'
-    }
-
-##### Sbt
-
-    resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "-SNAPSHOT"	
-
 ### Example Usage
 ```
 import org.bukkit.Material;
@@ -109,3 +72,40 @@ public class ExamplePlugin extends JavaPlugin {
 
 }
 ```
+
+### Dependency
+
+[![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
+
+##### Maven
+
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	
+	<dependency>
+	    <groupId>com.github.Jannyboy11</groupId>
+	    <artifactId>GuiLib</artifactId>
+	    <version>-SNAPSHOT</version>
+	</dependency>	
+
+##### Gradle
+
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+	
+	dependencies {
+    	implementation 'com.github.Jannyboy11:GuiLib:-SNAPSHOT'
+    }
+
+##### Sbt
+
+    resolvers += "jitpack" at "https://jitpack.io"
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "-SNAPSHOT"	
