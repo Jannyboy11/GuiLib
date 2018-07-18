@@ -1,4 +1,7 @@
 jdk:
   - openjdk10
+before_install:
+  - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
+  - JAVA_HOME=~/jdk && ./install-jdk.sh --feature 10 --license GPL --target $JAVA_HOME && PATH=$JAVA_HOME/bin:$PATH
 install:
    - mvn javadoc:jar install
