@@ -11,6 +11,8 @@ Then run `mvn`.
 
 ### Dependency
 
+[![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
+
 ##### Maven
 
 	<repositories>
