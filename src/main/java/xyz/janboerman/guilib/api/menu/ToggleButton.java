@@ -10,11 +10,10 @@ import org.bukkit.plugin.Plugin;
 /**
  * A button that can be toggled.
  * The button can be in the enabled or disabled state.
- * When the button is enabled, the icon is enchanted.
- * @see #beforeToggle()
- * @see #afterToggle()
+ * @see #beforeToggle(MH, InventoryClickEvent)
+ * @see #afterToggle(MH, InventoryClickEvent)
  */
-public class ToggleButton extends ItemButton {
+public class ToggleButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
     /** boolean that is set to false when the button is clicked. Becomes true again one tick after the button is clicked.*/
     private boolean canToggle = true;
@@ -37,29 +36,27 @@ public class ToggleButton extends ItemButton {
     public ToggleButton(ItemStack item, boolean enabled) {
         super(item);
         this.enabled = enabled;
-        
-        updateIcon();
     }
 
     /**
      * Toggles this button. Subclasses can add extra side-effects before and after toggling by overriding
-     * {@link #beforeToggle()} and {@link #afterToggle()}.
+     * {@link #beforeToggle(MH, InventoryClickEvent)} and {@link #afterToggle(MH, InventoryClickEvent)}.
      * @param holder the MenuHolder
      * @param event the InventoryClickEvent
      */
     @Override
-    public final void onClick(MenuHolder holder, InventoryClickEvent event) {
-        toggle(holder.getPlugin());
-        holder.getInventory().setItem(event.getSlot(), this.stack);
+    public final void onClick(MH holder, InventoryClickEvent event) {
+        toggle(holder, event);
+        event.setCurrentItem(this.stack = updateIcon(holder, event));
     }
     
-    private void toggle(Plugin plugin) {
+    private void toggle(MH holder, InventoryClickEvent event) {
         if (!canToggle) return;
-        if (!beforeToggle()) return;
+        if (!beforeToggle(holder, event)) return;
         this.enabled = !isEnabled();
-        updateIcon();
-        afterToggle();
+        afterToggle(holder, event);
         canToggle = false;
+        Plugin plugin = holder.getPlugin();
         plugin.getServer().getScheduler().runTask(plugin, () -> canToggle = true);
     }
 
@@ -68,7 +65,7 @@ public class ToggleButton extends ItemButton {
      * The default implementation always return true.
      * @return true
      */
-    public boolean beforeToggle() {
+    public boolean beforeToggle(MH menuHolder, InventoryClickEvent event) {
         return true;
     }
 
@@ -76,7 +73,7 @@ public class ToggleButton extends ItemButton {
      * Run a side-effect after the button is toggled.
      * The default implementation does nothing.
      */
-    public void afterToggle() {
+    public void afterToggle(MH menuHolder, InventoryClickEvent event) {
     }
 
     /**
@@ -87,8 +84,13 @@ public class ToggleButton extends ItemButton {
         return enabled;
     }
 
-    private void updateIcon() {
-        this.stack = isEnabled() ? enable(getIcon()) : disable(getIcon());
+    /**
+     * Determines what the icon should look like.
+     * Implementations can override this method.
+     * @return the updated icon.
+     */
+    protected ItemStack updateIcon(MH menuHolder, InventoryClickEvent event) {
+        return isEnabled() ? enable(getIcon()) : disable(getIcon());
     }
 
     private static ItemStack enable(ItemStack stack) {
