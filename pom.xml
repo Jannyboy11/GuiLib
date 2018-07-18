@@ -10,10 +10,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <finalName>${project.artifactId}-${project.version}</finalName>
     </properties>
 
     <build>
-        <defaultGoal>clean javadoc:jar install</defaultGoal>
+        <finalName>${finalName}</finalName>
 
         <resources>
             <resource>
