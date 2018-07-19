@@ -11,43 +11,62 @@ Then run `mvn`.
 
 ### Example Usage
 ```
+package com.example;
+
+import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import xyz.janboerman.guilib.api.ItemBuilder;
+import xyz.janboerman.guilib.api.menu.*;
+
+import java.util.stream.Stream;
+
 public class ExamplePlugin extends JavaPlugin {
 
     private MenuHolder<ExamplePlugin> menu1, menu2;
 
     @Override
     public void onEnable() {
-        //basic usage
-        menu1 = new MenuHolder<>(this, 9, "Example Gui");
-        menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui");
+        //check whether the GuiLib plugin is active
+        if (getServer().getPluginManager().isPluginEnabled("GuiLib")) {
 
-        menu1.setButton(0, new RedirectItemButton(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
-        menu1.setButton(8, new CloseButton());
-        String permission = "foo.bar";
-        menu1.setButton(4, new PermissionButton<>(
-                permission,
-                new ItemButton<>(new ItemStack(Material.GREEN_GLAZED_TERRACOTTA)) {
-                    @Override
-                    public void onClick(MenuHolder holder, InventoryClickEvent event) {
-                        event.getWhoClicked().sendMessage("You have permission " + permission + ".");
-                    }
-                },
-                humanEntity -> humanEntity.sendMessage("You don't have permission " + permission + ".")));
+            //basic usage
+            menu1 = new MenuHolder<>(this, 9, "Example Gui");
+            menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui");
 
-        ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
-        ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
-        menu2.setButton(0, new ToggleButton(new ItemStack(Material.BARRIER)) {
-            @Override
-            public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
-                event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));
-            }
+            menu1.setButton(0, new RedirectItemButton(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
+            menu1.setButton(8, new CloseButton());
+            String permission = "foo.bar";
+            menu1.setButton(4, new PermissionButton<>(
+                    permission,
+                    new ItemButton<>(new ItemStack(Material.GREEN_GLAZED_TERRACOTTA)) {
+                        @Override
+                        public void onClick(MenuHolder holder, InventoryClickEvent event) {
+                            event.getWhoClicked().sendMessage("You have permission " + permission + ".");
+                        }
+                    },
+                    humanEntity -> humanEntity.sendMessage("You don't have permission " + permission + ".")));
 
-            @Override
-            public ItemStack updateIcon(MenuHolder menuHolder, InventoryClickEvent event) {
-                return isEnabled() ? onStack : offStack;
-            }
-        });
-        menu2.setButton(2, new BackButton(menu1::getInventory));
+            ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
+            ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
+            menu2.setButton(0, new ToggleButton(new ItemStack(Material.BARRIER)) {
+                @Override
+                public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
+                    event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));
+                }
+
+                @Override
+                public ItemStack updateIcon(MenuHolder menuHolder, InventoryClickEvent event) {
+                    return isEnabled() ? onStack : offStack;
+                }
+            });
+            menu2.setButton(2, new BackButton(menu1::getInventory));
+        }
     }
 
     @Override
@@ -73,6 +92,7 @@ public class ExamplePlugin extends JavaPlugin {
     }
 
 }
+
 ```
 
 ### Dependency
