@@ -31,9 +31,12 @@ public class GuiListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (event.getInventory().getHolder() instanceof GuiInventoryHolder) {
-            GuiInventoryHolder guiHolder = (GuiInventoryHolder) event.getInventory().getHolder();
-            guiHolder.onOpen(event);
+        if (event.getView().getTopInventory() == null) return;
+        if (event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder) {
+            GuiInventoryHolder guiHolder = (GuiInventoryHolder) event.getView().getTopInventory().getHolder();
+            if (guiHolder.getPlugin().isEnabled()) {
+                guiHolder.onOpen(event);
+            }
         }
     }
 
@@ -46,9 +49,11 @@ public class GuiListener implements Listener {
         if (event.getView().getTopInventory() == null) return;
         if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
 
-        GuiInventoryHolder guiInventoryHolder = (GuiInventoryHolder) event.getView().getTopInventory().getHolder();
+        GuiInventoryHolder guiHolder = (GuiInventoryHolder) event.getView().getTopInventory().getHolder();
         event.setCancelled(true);
-        guiInventoryHolder.onClick(event);
+        if (guiHolder.getPlugin().isEnabled()) {
+            guiHolder.onClick(event);
+        }
     }
 
     /**
@@ -60,9 +65,10 @@ public class GuiListener implements Listener {
         if (event.getView().getTopInventory() == null) return;
         if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
 
-        GuiInventoryHolder guiInventoryHolder = (GuiInventoryHolder) event.getView().getTopInventory().getHolder();
-        guiInventoryHolder.onClose(event);
+        GuiInventoryHolder guiHolder = (GuiInventoryHolder) event.getView().getTopInventory().getHolder();
+        if (guiHolder.getPlugin().isEnabled()) {
+            guiHolder.onClose(event);
+        }
     }
-
 
 }

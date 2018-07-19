@@ -5,84 +5,203 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.util.CachedSupplier;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Supplier;
 
-//TODO add javadocs
+/**
+ * A menu that implements pages. This menu by default only has two buttons - on the bottom row of the top inventory.
+ * The pages themselves can therefore not be larger than 45 slots.
+ * @param <P> your plugin type
+ */
 public class PageMenu<P extends Plugin> extends MenuHolder<P> {
+
+    private static final ItemStack DEFAULT_PREVIOUS_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Previous").build();
+    private static final ItemStack DEFAULT_NEXT_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Next").build();
 
     private final GuiInventoryHolder myPage;
     private final int previousButtonIndex, nextButtonIndex;
+    private final ItemStack nextPageButton, previousPageButton;
 
     private Supplier<PageMenu<P>> previous, next;
 
+    /**
+     * Creates a page.
+     * @param plugin your plugin
+     * @param page the gui in this page - cannot be larger than 45 slots
+     * @param previous the previous page - can be null
+     * @param next the next page - can be null
+     */
     public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) {
+        this(plugin, page, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    }
+
+    /**
+     * Creates a page.
+     * @param plugin your plugin
+     * @param page the gui in this page - cannot be larger than 45 slots
+     * @param title the title of the page
+     * @param previous the previous page - can be null
+     * @param next the next page - can be null
+     */
+    public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) {
+        this(plugin, page, title, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    }
+
+    /**
+     * Creates a page.
+     * @param plugin your plugin
+     * @param page the gui in this page - cannot be larger than 45 slots
+     * @param previous the previous page - can be null
+     * @param next the next page - can be null
+     * @param previousPageButton - the ItemStack used for the previous-page button
+     * @param nextPageButton - the ItemStack used for the next-page button
+     */
+    public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) {
         super(plugin, calculateInnerPageSize(page) + 9);
         this.myPage = page;
         this.previousButtonIndex = myPage.getInventory().getSize() + 2;
         this.nextButtonIndex = myPage.getInventory().getSize() + 6;
         this.previous = previous;
         this.next = next;
+        this.nextPageButton = nextPageButton;
+        this.previousPageButton = previousPageButton;
+
+        initButtons();
     }
 
-    public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) {
+    /**
+     * Creates a page.
+     * @param plugin your plugin
+     * @param page the gui in this page - cannot be larger than 45 slots
+     * @param title the title of the page
+     * @param previous the previous page - can be null
+     * @param next the next page - can be null
+     * @param previousPageButton - the ItemStack used for the previous-page button
+     * @param nextPageButton - the ItemStack used for the next-page button
+     */
+    public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) {
         super(plugin, calculateInnerPageSize(page) + 9, title);
         this.myPage = page;
         this.previousButtonIndex = myPage.getInventory().getSize() + 2;
         this.nextButtonIndex = myPage.getInventory().getSize() + 6;
         this.previous = previous;
         this.next = next;
+        this.nextPageButton = nextPageButton;
+        this.previousPageButton = previousPageButton;
+
+        initButtons();
     }
 
-    public static <P extends Plugin> PageMenu<P> create(P plugin, Iterator<? extends GuiInventoryHolder<?>> nextSupplier) {
-        return create(plugin, nextSupplier, null);
-    }
-
-    private static <P extends Plugin> PageMenu<P> create(P plugin, Iterator<? extends GuiInventoryHolder<?>> nextSupplier, Supplier<PageMenu<P>> previous) {
-        GuiInventoryHolder<?> page = nextSupplier.next();
-        PageMenu<P> pageMenu = new PageMenu<>(plugin, page, previous, null);
-        if (nextSupplier.hasNext()) pageMenu.next = new CachedSupplier<>(() -> create(plugin, nextSupplier, () -> pageMenu));
-        return pageMenu;
-    }
-
-    public static <P extends Plugin> PageMenu<P> create(P plugin, String title, Iterator<? extends GuiInventoryHolder<?>> nextSupplier) {
-        return create(plugin, title, nextSupplier, null);
-    }
-
-    private static <P extends Plugin> PageMenu<P> create(P plugin, String title, Iterator<? extends GuiInventoryHolder<?>> nextSupplier, Supplier<PageMenu<P>> previous) {
-        GuiInventoryHolder<?> page = nextSupplier.next();
-        PageMenu<P> pageMenu = new PageMenu<>(plugin, page, previous, null);
-        if (nextSupplier.hasNext()) pageMenu.next = new CachedSupplier<>(() -> create(plugin, title, nextSupplier, () -> pageMenu));
-        return pageMenu;
-    }
-
-    private boolean hasNextPage() {
+    /**
+     * Tests whether this paging menu has a next page.
+     * @return true if it has a next page, otherwise false
+     */
+    public boolean hasNextPage() {
         return next != null;
     }
 
-    private boolean hasPreviousPage() {
+    /**
+     * Tests whether this paging menu has a previous page.
+     * @return true if it has a previous page, otherwise false
+     */
+    public boolean hasPreviousPage() {
         return previous != null;
     }
 
-    @Override
-    public void onOpen(InventoryOpenEvent openEvent) {
-        // add redirect buttons
+    /**
+     * Sets the next-page and previous-page buttons
+     */
+    private void initButtons() {
         if (hasNextPage()) {
-            this.setButton(nextButtonIndex, new RedirectItemButton(new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA)
-                    .name("Next")
-                    .build(), () -> next.get().getInventory()));
+            this.setButton(nextButtonIndex, new RedirectItemButton(nextPageButton, () -> next.get().getInventory()));
         }
         if (hasPreviousPage()) {
-            this.setButton(previousButtonIndex, new RedirectItemButton(new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA)
-                    .name("Previous")
-                    .build(), () -> previous.get().getInventory()));
+            this.setButton(previousButtonIndex, new RedirectItemButton(previousPageButton, () -> previous.get().getInventory()));
         }
+    }
 
+    /**
+     * Create pages from a series of GUIs.
+     * @param plugin your plugin
+     * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
+     * @return the menu containing the first page
+     */
+    public static <P extends Plugin> PageMenu<P> create(P plugin, Iterator<? extends GuiInventoryHolder<?>> pageSupplier) {
+        return create(plugin, Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"), DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    }
+
+    /**
+     * Create pages from a series of GUIs.
+     * @param plugin your plugin
+     * @param title the title of the pages
+     * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
+     * @return the menu containing the first page
+     */
+    public static <P extends Plugin> PageMenu<P> create(P plugin, String title, Iterator<? extends GuiInventoryHolder<?>> pageSupplier) {
+        return create(plugin, title, Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"), DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    }
+
+    /**
+     * Create pages from a series of GUIs.
+     * @param plugin your plugin
+     * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
+     * @param previousPageButton the ItemStack used for the previous-page button
+     * @param nextPageButton the ItemStack used for the next-page button
+     * @return the menu containing the first page
+     */
+    public static <P extends Plugin> PageMenu<P> create(P plugin, Iterator<? extends GuiInventoryHolder<?>> pageSupplier, ItemStack previousPageButton, ItemStack nextPageButton) {
+        return create(plugin, Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"), null, previousPageButton, nextPageButton);
+    }
+
+    /**
+     * Create pages from a series of GUIs.
+     * @param plugin your plugin
+     * @param title the title of the pages
+     * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
+     * @param previousPageButton the ItemStack used for the previous-page button
+     * @param nextPageButton the ItemStack used for the next-page button
+     * @return the menu containing the first page
+     */
+    public static <P extends Plugin> PageMenu<P> create(P plugin, String title, Iterator<? extends GuiInventoryHolder<?>> pageSupplier, ItemStack previousPageButton, ItemStack nextPageButton) {
+        return create(plugin, title, Objects.requireNonNull(pageSupplier, "PageSupplier cannot be null"), null, previousPageButton, nextPageButton);
+    }
+
+    private static <P extends Plugin> PageMenu<P> create(P plugin, Iterator<? extends GuiInventoryHolder<?>> nextSupplier, Supplier<PageMenu<P>> previous, ItemStack previousPageButton, ItemStack nextPageButton) {
+        GuiInventoryHolder<?> page = nextSupplier.next();
+        PageMenu<P> pageMenu = new PageMenu<>(plugin, page, previous, null, previousPageButton, nextPageButton);
+        if (nextSupplier.hasNext()) pageMenu.next = new CachedSupplier<>(() -> create(plugin,
+                nextSupplier,
+                () -> pageMenu,
+                previousPageButton == null ? null : previousPageButton.clone(),
+                nextPageButton == null ? null : nextPageButton.clone()));
+        return pageMenu;
+    }
+
+    private static <P extends Plugin> PageMenu<P> create(P plugin, String title, Iterator<? extends GuiInventoryHolder<?>> nextSupplier, Supplier<PageMenu<P>> previous, ItemStack previousPageButton, ItemStack nextPageButton) {
+        GuiInventoryHolder<?> page = nextSupplier.next();
+        PageMenu<P> pageMenu = new PageMenu<>(plugin, page, previous, null, previousPageButton, nextPageButton);
+        if (nextSupplier.hasNext()) pageMenu.next = new CachedSupplier<>(() -> create(plugin,
+                title,
+                nextSupplier,
+                () -> pageMenu,
+                previousPageButton == null ? null : previousPageButton.clone(),
+                nextPageButton == null ? null : nextPageButton.clone()));
+        return pageMenu;
+    }
+
+    /**
+     * Opens the page.
+     * @param openEvent the event
+     */
+    @Override
+    public void onOpen(InventoryOpenEvent openEvent) {
         //delegate event to myPage
         InventoryView view = openEvent.getView();
         InventoryView proxyView = new InventoryView() {
@@ -116,6 +235,10 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
         }
     }
 
+    /**
+     * Clicks the page.
+     * @param clickEvent the event
+     */
     @Override
     public void onClick(InventoryClickEvent clickEvent) {
         int rawSlot = clickEvent.getRawSlot();
@@ -176,11 +299,12 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
         }
     }
 
+    /**
+     * Closes the page.
+     * @param closeEvent the event
+     */
     @Override
     public void onClose(InventoryCloseEvent closeEvent) {
-        //buttons are created when the inventory is opened
-        clearButtons();
-
         //delegate event to myPage
         InventoryView view = closeEvent.getView();
         getPlugin().getServer().getPluginManager().callEvent(new InventoryCloseEvent(new InventoryView() {
@@ -205,7 +329,6 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
             }
         }));
     }
-
 
     private static int calculateInnerPageSize(GuiInventoryHolder guiInventoryHolder) {
         int containedSize = guiInventoryHolder.getInventory().getSize();

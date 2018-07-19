@@ -8,7 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * GuiLib can either be used as a runtime dependency or a compile time dependency.
  * When used as a runtime dependency just drop GuiLib's jar in the plugins folder and be sure to depend on GuiLib in your plugin.yml.
  * <pre><code>depend: ["GuiLib"]</code></pre>
- * <p> //TODO fix this documentation
+ * <p>
  * When used as a compile time dependency, be sure to shade the classes into your jar and relocate them.
  * Then you need to register the {@link GuiListener} in your onEnable.
  *
