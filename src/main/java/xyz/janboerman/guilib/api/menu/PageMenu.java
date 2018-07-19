@@ -13,6 +13,7 @@ import xyz.janboerman.guilib.util.CachedSupplier;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -30,6 +31,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     private final ItemStack nextPageButton, previousPageButton;
 
     private Supplier<PageMenu<P>> previous, next;
+    private boolean weHaveBeenOpened; //hack to initialise the buttons lazily
 
     /**
      * Creates a page.
@@ -72,8 +74,6 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
         this.next = next;
         this.nextPageButton = nextPageButton;
         this.previousPageButton = previousPageButton;
-
-        initButtons();
     }
 
     /**
@@ -95,8 +95,14 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
         this.next = next;
         this.nextPageButton = nextPageButton;
         this.previousPageButton = previousPageButton;
+    }
 
-        initButtons();
+    /**
+     * Get the page held by this menu.
+     * @return the page
+     */
+    public GuiInventoryHolder<?> getPage() {
+        return myPage;
     }
 
     /**
@@ -116,8 +122,21 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * Sets the next-page and previous-page buttons
+     * Get the supplier that supplies the menu for the next page.
+     * @return the Optional containing the supplier, or the empty Optional of the supplier is absent.
      */
+    public Optional<Supplier<PageMenu<P>>> getNextPageMenu() {
+        return Optional.ofNullable(next);
+    }
+
+    /**
+     * Get the supplier that supplies the menu for the previous page.
+     * @return the Optional containing the supplier, or the empty Optional of the supplier is absent.
+     */
+    public Optional<Supplier<PageMenu<P>>> getPreviousPageMenu() {
+        return Optional.ofNullable(previous);
+    }
+
     private void initButtons() {
         if (hasNextPage()) {
             this.setButton(nextButtonIndex, new RedirectItemButton(nextPageButton, () -> next.get().getInventory()));
@@ -202,6 +221,11 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      */
     @Override
     public void onOpen(InventoryOpenEvent openEvent) {
+        if (!weHaveBeenOpened) { //is there a nicer way to lazily init the buttons? I can't think of any
+            initButtons();
+            weHaveBeenOpened = true;
+        }
+
         //delegate event to myPage
         InventoryView view = openEvent.getView();
         InventoryView proxyView = new InventoryView() {

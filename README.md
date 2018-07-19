@@ -11,22 +11,13 @@ Then run `mvn`.
 
 ### Example Usage
 ```
-import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import xyz.janboerman.guilib.api.menu.*;
-
 public class ExamplePlugin extends JavaPlugin {
 
     private MenuHolder<ExamplePlugin> menu1, menu2;
 
     @Override
     public void onEnable() {
+        //basic usage
         menu1 = new MenuHolder<>(this, 9, "Example Gui");
         menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui");
 
@@ -43,6 +34,8 @@ public class ExamplePlugin extends JavaPlugin {
                 },
                 humanEntity -> humanEntity.sendMessage("You don't have permission " + permission + ".")));
 
+        ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
+        ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
         menu2.setButton(0, new ToggleButton(new ItemStack(Material.BARRIER)) {
             @Override
             public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
@@ -51,7 +44,7 @@ public class ExamplePlugin extends JavaPlugin {
 
             @Override
             public ItemStack updateIcon(MenuHolder menuHolder, InventoryClickEvent event) {
-                return new ItemStack(isEnabled() ? Material.STRUCTURE_VOID : Material.BARRIER);
+                return isEnabled() ? onStack : offStack;
             }
         });
         menu2.setButton(2, new BackButton(menu1::getInventory));
@@ -65,7 +58,16 @@ public class ExamplePlugin extends JavaPlugin {
         }
 
         Player player = (Player) sender;
-        player.openInventory(menu1.getInventory());
+
+        switch(command.getName().toLowerCase()) {
+            case "gui":
+                player.openInventory(menu1.getInventory());
+                break;
+            case "pages":
+                PageMenu<ExamplePlugin> pageMenu = PageMenu.create(this, Stream.generate(() -> menu1).limit(5).iterator());
+                player.openInventory(pageMenu.getInventory());
+                break;
+        }
 
         return true;
     }
