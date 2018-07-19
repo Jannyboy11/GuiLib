@@ -6,8 +6,8 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.Plugin;
-import xyz.janboerman.guilib.GuiListener;
 
 /**
  * An InventoryHolder for GUIs.
@@ -23,14 +23,10 @@ import xyz.janboerman.guilib.GuiListener;
  * @param <P> your Plugin type
  * @see xyz.janboerman.guilib.api.menu.MenuHolder
  */
-//TODO make another implementation (next to MenuHolder) that implements pages?
 public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryHolder {
     
     private final Inventory inventory;
     private final P plugin;
-    /** @deprecated INTERNAL USE ONLY! */
-    @Deprecated
-    public final GuiListener<P> guiListener;
 
     /**
      * Constructs a new GuiInventoryHolder for your plugin with the given inventory type and title.
@@ -40,10 +36,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      */
     public GuiInventoryHolder(P plugin, InventoryType type, String title) {
         this.plugin = plugin;
-        this.guiListener = new GuiListener<>(this);
         this.inventory = plugin.getServer().createInventory(this, type, title); //implicit null check
-        
-        plugin.getServer().getPluginManager().registerEvents(guiListener, plugin);
     }
 
     /**
@@ -54,10 +47,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      */
     public GuiInventoryHolder(P plugin, int size, String title) {
         this.plugin = plugin;
-        this.guiListener = new GuiListener<>(this);
         this.inventory = plugin.getServer().createInventory(this, size, title); //implicit null check
-        
-        plugin.getServer().getPluginManager().registerEvents(guiListener, plugin);
     }
 
     /**
@@ -67,10 +57,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      */
     public GuiInventoryHolder(P plugin, InventoryType type) {
         this.plugin = plugin;
-        this.guiListener = new GuiListener<>(this);
         this.inventory = plugin.getServer().createInventory(this, type);
-
-        plugin.getServer().getPluginManager().registerEvents(guiListener, plugin);
     }
 
     /**
@@ -80,10 +67,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      */
     public GuiInventoryHolder(P plugin, int size) {
         this.plugin = plugin;
-        this.guiListener = new GuiListener<>(this);
         this.inventory = plugin.getServer().createInventory(this, size); //implicit null check
-
-        plugin.getServer().getPluginManager().registerEvents(guiListener, plugin);
     }
 
     /**
@@ -125,7 +109,6 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     public GuiInventoryHolder(P plugin, Inventory inventory) {
         this.plugin = plugin;
         this.inventory = inventory;
-        this.guiListener = new GuiListener<>(this);
 
         if(getInventory().getHolder() != this) {
             throw new IllegalArgumentException("InventoryHolder returned by inventory.getHolder() should be this new InventoryHolder.");
@@ -179,6 +162,30 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      * @param event the inventory open event.
      */
     public void onOpen(InventoryOpenEvent event) {
+    }
+
+    /**
+     * Get the inventory that was clicked in the event.
+     * @param event the InventoryClickEvent
+     * @return the inventory that was clicked, or null if the player clicked outside the inventory
+     */
+    protected static Inventory getClickedInventory(InventoryClickEvent event) {
+        //Adopted from the spigot-api patches
+        //See https://hub.spigotmc.org/stash/projects/SPIGOT/repos/spigot/browse/Bukkit-Patches/0010-InventoryClickEvent-getClickedInventory.patch
+        int slot = event.getRawSlot();
+        if (slot < 0) {
+            return null;
+        } else {
+            InventoryView view = event.getView();
+            Inventory topInventory = view.getTopInventory();
+            //apparently it is possible that the top inventory is null.
+            //does this happen when a player opens his/her own inventory?
+            if (topInventory != null && slot < topInventory.getSize()) {
+                return topInventory;
+            } else {
+                return view.getBottomInventory();
+            }
+        }
     }
     
 }

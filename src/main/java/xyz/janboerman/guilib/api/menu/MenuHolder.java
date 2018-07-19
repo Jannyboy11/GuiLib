@@ -80,7 +80,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
         if (clickedInventory.getHolder() != this) return;
 
         int slot = event.getSlot();
-        MenuButton button = buttons.get(slot);
+        MenuButton button = getButton(slot);
         if (button != null) button.onClick(this, event);
     }
 
@@ -104,10 +104,10 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     }
 
     /**
-     * Get a snapshot of all registered buttons. If no buttons are registered an empty Map is returned.
-     * @return a new Map containing the buttons
+     * Get a snapshot of all registered buttons. If no buttons are registered an empty map is returned.
+     * @return a new SortedMap containing the buttons
      */
-    public Map<Integer, MenuButton> getButtons() {
+    public SortedMap<Integer, MenuButton> getButtons() {
         var map = new TreeMap<Integer, MenuButton>();
         map.putAll(this.buttons);
         return map;
@@ -137,26 +137,6 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
             int slot = slotIterator.next();
             getInventory().setItem(slot, null);
             slotIterator.remove();            
-        }
-    }
-
-
-    private static Inventory getClickedInventory(InventoryClickEvent event) {
-        //Adopted from the spigot-api patches
-        //See https://hub.spigotmc.org/stash/projects/SPIGOT/repos/spigot/browse/Bukkit-Patches/0010-InventoryClickEvent-getClickedInventory.patch
-        int slot = event.getRawSlot();
-        if (slot < 0) {
-            return null;
-        } else {
-            InventoryView view = event.getView();
-            Inventory topInventory = view.getTopInventory();
-            //apparently it is possible that the top inventory is null.
-            //does this happen when a player opens his/her own inventory?
-            if (topInventory != null && slot < topInventory.getSize()) {
-                return topInventory;
-            } else {
-                return view.getBottomInventory();
-            }
         }
     }
     

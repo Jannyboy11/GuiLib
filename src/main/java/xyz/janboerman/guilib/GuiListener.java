@@ -1,55 +1,68 @@
 package xyz.janboerman.guilib;
 
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 
-import java.util.Objects;
-
 /**
- * Listener dat listens to InventoryClickEvents and InventoryCloseEvents for inventories held by an {@link GuiInventoryHolder}.
- * Library users shouldn't create instances of this class as instances are created in {@link GuiInventoryHolder}'s constructors.
+ * The listener that listens when GUIs are opened, clicked and closed. There should only ever be one instance registered.
+ * <br> That means that, when you shade GuiLib into your plugin, you have to register it yourself in your onEnable.
+ * <pre>
+ *     <code>
+ *     {@literal @}Override
+ *     public void onEnable() {
+ *         getServer().getPluginManager().registerEvents(new GuiListener(), this);
+ *
+ *         // more initialization stuff...
+ *     }
+ *     </code>
+ * </pre>
+ * If instead you decide to use GuiLib as a runtime dependency and put the jar in your plugins folder, GuiLib registers this listener itself.
  */
-public class GuiListener<P extends Plugin> implements Listener {
-    
-    private final GuiInventoryHolder<P> guiInventoryHolder;
+public class GuiListener implements Listener {
 
     /**
-     * Creates the GuiListener.
-     * @param guiInventoryHolder the Gui that is holding the inventory.
+     * Listens to InventoryOpenEvents and delegates the event to the {@link GuiInventoryHolder} holding the inventory opened inventory, if any.
+     * @param event the InventoryOpenEvent
      */
-    public GuiListener(GuiInventoryHolder<P> guiInventoryHolder) {
-        this.guiInventoryHolder = Objects.requireNonNull(guiInventoryHolder);
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        if (event.getInventory().getHolder() instanceof GuiInventoryHolder) {
+            GuiInventoryHolder guiHolder = (GuiInventoryHolder) event.getInventory().getHolder();
+            guiHolder.onOpen(event);
+        }
     }
 
     /**
-     * Delegates the InventoryClickEvent to the Gui if the top inventory is held by the Gui.
+     * Delegates the InventoryClickEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui.
      * @param event the InventoryClickEvent
      */
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (event.getView().getTopInventory() == null) return;
-        if (event.getView().getTopInventory().getHolder() != guiInventoryHolder) return;
-         
+        if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
+
+        GuiInventoryHolder guiInventoryHolder = (GuiInventoryHolder) event.getView().getTopInventory().getHolder();
         event.setCancelled(true);
         guiInventoryHolder.onClick(event);
     }
 
     /**
-     * Delegates the InventoryCloseEvent to the Gui if the top inventory is held by the Gui.
+     * Delegates the InventoryCloseEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui.
      * @param event InventoryCloseEvent
      */
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
         if (event.getView().getTopInventory() == null) return;
-        if (event.getView().getTopInventory().getHolder() != guiInventoryHolder) return;
-        
+        if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
+
+        GuiInventoryHolder guiInventoryHolder = (GuiInventoryHolder) event.getView().getTopInventory().getHolder();
         guiInventoryHolder.onClose(event);
-        HandlerList.unregisterAll(this);
     }
+
 
 }
