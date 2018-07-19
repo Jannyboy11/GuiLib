@@ -14,7 +14,7 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
      * Creates the TwoWayIteratingButton with just the icon.
      * Using this constructor requires the subclass to initialize the fields {@link #backwardsFunction}, {@link #stateUpdater} and {@link #currentState} on construction.
      * Alternatively they must override {@link #updateStateForwards(MenuHolder, InventoryClickEvent)}, {@link #updateStateBackwards(MenuHolder, InventoryClickEvent)} and {@link #getCurrentState()}.
-     * @param icon
+     * @param icon the icon of this button
      */
     protected TwoWayIteratingButton(ItemStack icon) {
         super(icon);
@@ -22,7 +22,7 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
 
     /**
      * Creates the TwoWayIteratingButton.
-     * @param icon the icon
+     * @param icon the icon of this button
      * @param initialState the initial current state
      * @param forwardsFunction the function that provides next states
      * @param backwardsFunction the function that provides previous states.

@@ -19,6 +19,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * Creates the cycle button.
+     * @param icon the icon of this button
      * @param items the items this button cycles through
      * @param startIndex at which index to start cycling
      * @param copyArray whether the button should use a copy of the array
@@ -34,6 +35,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * Creates the cycle button.
+     * @param icon the icon of this button
      * @param items the items this button cycles through
      */
     public CycleButton(ItemStack icon, T... items) {
@@ -42,6 +44,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * Creates the cycle button.
+     * @param icon the icon of this button
      * @param items the items this button cycles through
      * @param startIndex at which index to start cycling
      */
@@ -51,6 +54,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * Creates the cycle button.
+     * @param icon the icon of this button
      * @param items the items this button cycles through
      */
     public CycleButton(ItemStack icon, Collection<? extends T> items) {
@@ -59,6 +63,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * Creates the cycle button.
+     * @param icon the icon of this button
      * @param items the items this button cycles through
      * @param startIndex at which index to start cycling
      */
@@ -68,6 +73,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * Creates a cycle button that cycles through all enumeration values.
+     * @param icon the icon of this button
      * @param enumClass the enumeration
      * @param <T> the type of the state in this button
      * @param <MH> the MenuHolder type
@@ -79,6 +85,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * Creates a cycle button that cycles through all enumeration values.
+     * @param icon the icon of this button
      * @param enumClass the enumeration
      * @param startValue the enum value at which to start cycling
      * @param <T> the type of the state in this button
@@ -91,6 +98,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * reates a cycle button that cycles through the given enumeration values.
+     * @param icon the icon of this button
      * @param items the items this button cycles through
      * @param <T> the type of the state in this button
      * @param <MH> the MenuHolder type
@@ -103,6 +111,7 @@ public class CycleButton<T, MH extends MenuHolder<?>> extends TwoWayIteratingBut
 
     /**
      * reates a cycle button that cycles through the given enumeration values.
+     * @param icon the icon of this button
      * @param items the items this button cycles through
      * @param startValue the enum value at which to start cycling
      * @param <T> the type of the state in this button

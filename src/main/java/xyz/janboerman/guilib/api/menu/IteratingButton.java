@@ -79,8 +79,8 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
     /**
      * Toggles the button if allowed by {@link #beforeToggle(MenuHolder, InventoryClickEvent)}.
      * @see #afterToggle(MenuHolder, InventoryClickEvent)
-     * @param menuHolder
-     * @param event
+     * @param menuHolder the menu holder
+     * @param event the InventoryClickEvent
      * @return whether the button could be toggled
      */
     protected boolean tryToggle(MH menuHolder, InventoryClickEvent event) {
@@ -113,6 +113,8 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
     /**
      * Determines what the icon should look like.
      * Implementations can override this method.
+     * @param menuHolder the inventory holder for the menu
+     * @param event the InventoryClickEvent that caused the button to toggle
      * @return the updated icon
      */
     public ItemStack updateIcon(MH menuHolder, InventoryClickEvent event) {

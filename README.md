@@ -2,12 +2,16 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.1/javadoc)!
 
 ### Compiling
 
 Prerequisites: Apache Maven 3.5+, JDK10+.
 Then run `mvn javadoc:jar install`.
+
+### Pre-built jars
+
+Available on [GitHub Releases](https://github.com/Jannyboy11/GuiLib/releases).
 
 ### Example Usage
 ```
@@ -86,13 +90,19 @@ public class ExamplePlugin extends JavaPlugin {
                 PageMenu<ExamplePlugin> pageMenu = PageMenu.create(this, Stream.generate(() -> menu1).limit(5).iterator());
                 player.openInventory(pageMenu.getInventory());
                 break;
+            case "freediamonds":
+                MenuHolder<ExamplePlugin> menu = new MenuHolder<>(this, 45);
+                for (int slot = 0; slot < menu.getInventory().getSize(); slot++) {
+                    menu.setButton(slot, new ClaimButton(new ItemStack(Material.DIAMOND, 64)));
+                }
+                player.openInventory(menu.getInventory());
+                break;
         }
 
         return true;
     }
 
 }
-
 ```
 
 ### Dependency
@@ -111,7 +121,7 @@ public class ExamplePlugin extends JavaPlugin {
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.3</version>
+	    <version>v1.3.1</version>
 	</dependency>	
 
 ##### Gradle
@@ -124,10 +134,10 @@ public class ExamplePlugin extends JavaPlugin {
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:v1.3'
+    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.1'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.1"	
