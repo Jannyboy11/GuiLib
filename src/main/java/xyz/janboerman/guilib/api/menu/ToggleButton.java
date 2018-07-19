@@ -14,29 +14,31 @@ import org.bukkit.plugin.Plugin;
  * @param <MH> the menu holder type
  * @see #beforeToggle(MenuHolder, InventoryClickEvent)
  * @see #afterToggle(MenuHolder, InventoryClickEvent)
+ * @see CycleButton
  */
+//TODO extend CycleButton<Boolean, MH>
 public class ToggleButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
     /** boolean that is set to false when the button is clicked. Becomes true again one tick after the button is clicked.*/
-    private boolean canToggle = true;
+    @Deprecated private boolean canToggle = true; //TODO is this necessary? if so, move it to superclasses - if not: remove the field
     /** The toggle state. True = On, False = Off*/
     private boolean enabled;
 
     /**
      * Creates the toggle button with the given icon. The button is toggled off by default.
-     * @param item the icon
+     * @param icon the icon
      */
-    public ToggleButton(ItemStack item) {
-        this(item, false);
+    public ToggleButton(ItemStack icon) {
+        this(icon, false);
     }
 
     /**
      * Creates the toggle button with the given icon and toggle-state.
-     * @param item the icon
+     * @param icon the icon
      * @param enabled whether the icon is enabled from the start
      */
-    public ToggleButton(ItemStack item, boolean enabled) {
-        super(item);
+    public ToggleButton(ItemStack icon, boolean enabled) {
+        super(icon);
         this.enabled = enabled;
     }
 

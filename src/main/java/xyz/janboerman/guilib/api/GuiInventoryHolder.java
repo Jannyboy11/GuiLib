@@ -23,6 +23,7 @@ import org.bukkit.plugin.Plugin;
  * @param <P> your Plugin type
  * @see xyz.janboerman.guilib.api.menu.MenuHolder
  */
+//TODO shrinking pages? :)
 public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryHolder {
     
     private final Inventory inventory;
@@ -110,7 +111,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
         this.plugin = plugin;
         this.inventory = inventory;
 
-        if(getInventory().getHolder() != this) {
+        if (getInventory().getHolder() != this) {
             throw new IllegalArgumentException("InventoryHolder returned by inventory.getHolder() should be this new InventoryHolder.");
         }
     }

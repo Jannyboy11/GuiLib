@@ -67,6 +67,18 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     }
 
     /**
+     * Creates the MenuHolder with the given inventory.
+     * The InventoryHolder returned by the inventory must be this MenuHolder.
+     * @param plugin your Plugin
+     * @param inventory the Inventory
+     * @see xyz.janboerman.guilib.api.GuiInventoryHolder#GuiInventoryHolder(Plugin, Inventory)
+     * @throws IllegalArgumentException if the owner of the supplied inventory is not this MenuHolder
+     */
+    public MenuHolder(P plugin, Inventory inventory) {
+        super(plugin, inventory);
+    }
+
+    /**
      * Called by the framework. Delegates the event to a registered button on the slot, if one is present.
      * <p>
      * Subclasses that override this method should always call {@code super.onClick(event);}.

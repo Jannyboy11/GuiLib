@@ -15,6 +15,12 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
     protected ItemStack stack;
 
     /**
+     * Creates an ItemButton without an ItemStack.
+     */
+    protected ItemButton() {
+    }
+
+    /**
      * Creates the ItemButton with the given ItemStack.
      * The button uses a clone of the ItemStack.
      * @param stack the icon

@@ -38,7 +38,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param plugin your plugin
      * @param page the gui in this page - cannot be larger than 45 slots
      * @param previous the previous page - can be null
-     * @param next the next page - can be null
+     * @param next the tryToggle page - can be null
      */
     public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) {
         this(plugin, page, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
@@ -50,7 +50,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param page the gui in this page - cannot be larger than 45 slots
      * @param title the title of the page
      * @param previous the previous page - can be null
-     * @param next the next page - can be null
+     * @param next the tryToggle page - can be null
      */
     public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) {
         this(plugin, page, title, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
@@ -61,9 +61,9 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param plugin your plugin
      * @param page the gui in this page - cannot be larger than 45 slots
      * @param previous the previous page - can be null
-     * @param next the next page - can be null
+     * @param next the tryToggle page - can be null
      * @param previousPageButton - the ItemStack used for the previous-page button
-     * @param nextPageButton - the ItemStack used for the next-page button
+     * @param nextPageButton - the ItemStack used for the tryToggle-page button
      */
     public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) {
         super(plugin, calculateInnerPageSize(page) + 9);
@@ -82,9 +82,9 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param page the gui in this page - cannot be larger than 45 slots
      * @param title the title of the page
      * @param previous the previous page - can be null
-     * @param next the next page - can be null
+     * @param next the tryToggle page - can be null
      * @param previousPageButton - the ItemStack used for the previous-page button
-     * @param nextPageButton - the ItemStack used for the next-page button
+     * @param nextPageButton - the ItemStack used for the tryToggle-page button
      */
     public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) {
         super(plugin, calculateInnerPageSize(page) + 9, title);
@@ -106,8 +106,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * Tests whether this paging menu has a next page.
-     * @return true if it has a next page, otherwise false
+     * Tests whether this paging menu has a tryToggle page.
+     * @return true if it has a tryToggle page, otherwise false
      */
     public boolean hasNextPage() {
         return next != null;
@@ -122,7 +122,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * Get the supplier that supplies the menu for the next page.
+     * Get the supplier that supplies the menu for the tryToggle page.
      * @return the Optional containing the supplier, or the empty Optional of the supplier is absent.
      */
     public Optional<Supplier<PageMenu<P>>> getNextPageMenu() {
@@ -137,7 +137,10 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
         return Optional.ofNullable(previous);
     }
 
-    private void initButtons() {
+    /**
+     * Initialises the previous-page and tryToggle-page buttons.
+     */
+    protected void initButtons() {
         if (hasNextPage()) {
             this.setButton(nextButtonIndex, new RedirectItemButton(nextPageButton, () -> next.get().getInventory()));
         }
@@ -150,6 +153,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * Create pages from a series of GUIs.
      * @param plugin your plugin
      * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
+     * @param <P> your Plugin type
      * @return the menu containing the first page
      */
     public static <P extends Plugin> PageMenu<P> create(P plugin, Iterator<? extends GuiInventoryHolder<?>> pageSupplier) {
@@ -161,6 +165,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param plugin your plugin
      * @param title the title of the pages
      * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
+     * @param <P> your Plugin type
      * @return the menu containing the first page
      */
     public static <P extends Plugin> PageMenu<P> create(P plugin, String title, Iterator<? extends GuiInventoryHolder<?>> pageSupplier) {
@@ -172,7 +177,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param plugin your plugin
      * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
      * @param previousPageButton the ItemStack used for the previous-page button
-     * @param nextPageButton the ItemStack used for the next-page button
+     * @param nextPageButton the ItemStack used for the tryToggle-page button
+     * @param <P> your Plugin type
      * @return the menu containing the first page
      */
     public static <P extends Plugin> PageMenu<P> create(P plugin, Iterator<? extends GuiInventoryHolder<?>> pageSupplier, ItemStack previousPageButton, ItemStack nextPageButton) {
@@ -185,7 +191,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param title the title of the pages
      * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite
      * @param previousPageButton the ItemStack used for the previous-page button
-     * @param nextPageButton the ItemStack used for the next-page button
+     * @param nextPageButton the ItemStack used for the tryToggle-page button
+     * @param <P> your Plugin type
      * @return the menu containing the first page
      */
     public static <P extends Plugin> PageMenu<P> create(P plugin, String title, Iterator<? extends GuiInventoryHolder<?>> pageSupplier, ItemStack previousPageButton, ItemStack nextPageButton) {
@@ -367,7 +374,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
                 return containedSize + (9 - remainder);
             }
         } else {
-            throw new IllegalArgumentException("The page is larger than 45 slots");
+            throw new IllegalArgumentException("The page cannot be larger than 45 slots");
         }
     }
 
