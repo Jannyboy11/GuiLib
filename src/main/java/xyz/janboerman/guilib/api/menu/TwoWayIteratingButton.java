@@ -74,7 +74,7 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
     }
 
     /**
-     * Updates hte current state. If the click is a left-click the it updates to the next state.
+     * Updates the current state. If the click is a left-click the it updates to the next state.
      * If it is a right-click it updates to the previous state.
      * @param menuHolder the MenuHolder
      * @param event the event that caused the state update
