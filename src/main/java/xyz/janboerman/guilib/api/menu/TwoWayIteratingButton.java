@@ -6,6 +6,11 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ListIterator;
 import java.util.function.UnaryOperator;
 
+/**
+ * Button that can update it's internal state to a previous state (on right click), or next state (on left click).
+ * @param <T> the state's type
+ * @param <MH> the menu holder's type
+ */
 public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends IteratingButton<T, MH> {
 
     private UnaryOperator<T> backwardsFunction;
@@ -43,7 +48,7 @@ public class TwoWayIteratingButton<T, MH extends MenuHolder<?>> extends Iteratin
      */
     public static <T, MH extends MenuHolder<?>> TwoWayIteratingButton<T, MH> fromListIterator(ItemStack icon, ListIterator<T> listIterator) {
         if (!listIterator.hasNext()) throw new IllegalArgumentException("ListIterator must have at least one element");
-        //how that the class is an anonymous class it can't be extended. is that a problem? It might be. I don't want to force the adapter pattern on my users.
+        //now that the class is an anonymous class it can't be extended. is that a problem? It might be. I don't want to force the adapter pattern on my users.
         return new TwoWayIteratingButton<>(icon) {
             {
                 setCurrentState(listIterator.next());
