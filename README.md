@@ -128,6 +128,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+//more advanced usage - implements a custom page menu
 public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 
     /** rewards list*/
