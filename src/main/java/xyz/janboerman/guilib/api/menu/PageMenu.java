@@ -138,7 +138,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * Initialises the previous-page and tryToggle-page buttons.
+     * Initialises the previous-page and next-page buttons.
      */
     protected void initButtons() {
         if (hasNextPage()) {

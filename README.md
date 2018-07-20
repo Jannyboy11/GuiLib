@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.1/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.2/javadoc)!
 
 ### Compiling
 
@@ -121,7 +121,7 @@ public class ExamplePlugin extends JavaPlugin {
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.3.1</version>
+	    <version>v1.3.2</version>
 	</dependency>	
 
 ##### Gradle
@@ -134,10 +134,10 @@ public class ExamplePlugin extends JavaPlugin {
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.1'
+    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.2'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.1"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.2"	

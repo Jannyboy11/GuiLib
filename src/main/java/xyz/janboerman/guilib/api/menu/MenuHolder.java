@@ -29,7 +29,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     private final Map<Integer, MenuButton> buttons = new HashMap<>();
 
     /**
-     * Creates a new MenuHolder for your Plugin with the given InventoryType and title.
+     * Creates the MenuHolder with the given InventoryType and title.
      * @param plugin your plugin
      * @param type the inventory type
      * @param title the title
@@ -39,7 +39,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     }
 
     /**
-     * Creates a new MenuHolder for your Plugin with the given size and title.
+     * Creates the MenuHolder with the given size and title.
      * @param plugin your plugin
      * @param size the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
      * @param title the title
@@ -49,7 +49,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     }
 
     /**
-     * Creates a new MenuHolder for your Plugin with the given InventoryType.
+     * Creates the MenuHolder with the given InventoryType.
      * @param plugin your plugin
      * @param type the inventory type
      */
@@ -58,7 +58,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     }
 
     /**
-     * Creates a new MenuHolder for your Plugin with the given size.
+     * Creates the MenuHolder with the given size.
      * @param plugin your plugin
      * @param size the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
      */
