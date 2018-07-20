@@ -4,31 +4,54 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  * Represents a button that - when clicked transfers the item stack to the player's inventory.
  */
 public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
-    protected final PlayerInventoryFullCallback<MH> inventoryFullCallback;
+    private final PlayerInventoryFullCallback<MH> inventoryFullCallback;
+    private final SuccessFulTransferCallback<MH> successFulTransferCallback;
 
     /**
      * Creates the ClaimButton.
      * @param item the item that can be claimed by the player
      */
     public ClaimButton(ItemStack item) {
-        this(item, null);
+        this(item, null, null);
     }
 
     /**
      * Creates the ClaimButton.
      * @param item the item that can be claimed by the player
-     * @param inventoryFullCallback the callback that is invoked when the item couldn't be moved into the player's inventory
+     * @param inventoryFullCallback the callback that is invoked when the item couldn't be moved into the player's inventory - can be null
      */
     public ClaimButton(ItemStack item, PlayerInventoryFullCallback<MH> inventoryFullCallback) {
+        this(item, inventoryFullCallback, null);
+    }
+
+    /**
+     * Creates the ClaimButton.
+     * @param item the item that can be claimed by the player
+     * @param inventoryFullCallback the callback that is invoked when the item couldn't be moved into the player's inventory - can be null
+     */
+    public ClaimButton(ItemStack item, SuccessFulTransferCallback<MH> inventoryFullCallback) {
+        this(item, null, inventoryFullCallback);
+    }
+
+    /**
+     * Creates the ClaimButton.
+     * @param item the item that can be claimed by the player
+     * @param inventoryFullCallback the callback that is invoked when the item couldn't be moved into the player's inventory - can be null
+     * @param successFulTransferCallback the callback that is invoked after the items was transferred successfully - can be null
+     */
+    public ClaimButton(ItemStack item, PlayerInventoryFullCallback<MH> inventoryFullCallback, SuccessFulTransferCallback<MH> successFulTransferCallback) {
         super(item);
         this.inventoryFullCallback = inventoryFullCallback;
+        this.successFulTransferCallback = successFulTransferCallback;
     }
 
     /**
@@ -41,24 +64,30 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
         ItemStack clickedItem = event.getCurrentItem();
         HumanEntity player = event.getWhoClicked();
 
-        boolean success = player.getInventory().addItem(clickedItem).isEmpty();
+        boolean success = clickedItem == null || player.getInventory().addItem(clickedItem).isEmpty();
         if (success) {
             event.setCurrentItem(null);
             menuHolder.unsetButton(event.getSlot());
+            getSuccessFulTransferCallback().ifPresent((Consumer<SuccessFulTransferCallback<MH>>) callback -> callback.afterTransfer(menuHolder, event, clickedItem));
         } else {
-            var inventoryFullCallback = getInventoryFullCallback();
-            if (inventoryFullCallback != null) {
-                inventoryFullCallback.onPlayerInventoryFull(menuHolder, event);
-            }
+            getInventoryFullCallback().ifPresent((Consumer<PlayerInventoryFullCallback<MH>>) callback -> callback.onPlayerInventoryFull(menuHolder, event));
         }
     }
 
     /**
      * Get the callback that is invoked when the item cannot be moved into the player's inventory.
-     * @return the callback
+     * @return the Optional containing callback, or the empty Optional when no callback is present
      */
-    public PlayerInventoryFullCallback<MH> getInventoryFullCallback() {
-        return inventoryFullCallback;
+    public Optional<? extends PlayerInventoryFullCallback<MH>> getInventoryFullCallback() {
+        return Optional.ofNullable(inventoryFullCallback);
+    }
+
+    /**
+     * Get the callback that is invoked after the item is successfully transferred to the player's inventory.
+     * @return the Optional containing callback, or the empty Optional when no callback is present
+     */
+    public Optional<? extends SuccessFulTransferCallback<MH>> getSuccessFulTransferCallback() {
+        return Optional.ofNullable(successFulTransferCallback);
     }
 
     /**
@@ -84,6 +113,23 @@ public class ClaimButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
         public default void accept(MH menuHolder, InventoryClickEvent event) {
             onPlayerInventoryFull(menuHolder, event);
         }
+    }
+
+    /**
+     * A callback that can be used to run an additional action after the ItemStack was transferred successfully.
+     * @param <MH> the menu holder type
+     */
+    @FunctionalInterface
+    public static interface SuccessFulTransferCallback<MH extends MenuHolder<?>> {
+
+        /**
+         * Functional method that is executed after the button is clicked and the ItemStack is transferred to the player's inventory.
+         * @param menuHolder the menu holder
+         * @param event the inventory click event
+         * @param reward the reward that was transferred to the player's inventory
+         */
+        public void afterTransfer(MH menuHolder, InventoryClickEvent event, ItemStack reward);
+
     }
 
 }

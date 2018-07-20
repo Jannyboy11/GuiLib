@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.2/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.3/javadoc)!
 
 ### Compiling
 
@@ -28,6 +28,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.api.menu.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ExamplePlugin extends JavaPlugin {
@@ -97,12 +100,142 @@ public class ExamplePlugin extends JavaPlugin {
                 }
                 player.openInventory(menu.getInventory());
                 break;
+            case "claimallitems":
+                ArrayList<ItemStack> mutableRewardsList = Arrays.stream(Material.values())
+                        .map(ItemStack::new)
+                        .filter(itemStack -> itemStack.getItemMeta() != null)
+                        .collect(Collectors.toCollection(ArrayList::new));
+                ClaimItemsMenu claimItemsMenu = new ClaimItemsMenu(this, 45, mutableRewardsList);
+                player.openInventory(claimItemsMenu.getInventory());
         }
 
         return true;
     }
+}
+```
+
+```
+package com.example;
+
+import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.ItemStack;
+import xyz.janboerman.guilib.api.menu.ClaimButton;
+import xyz.janboerman.guilib.api.menu.MenuHolder;
+import xyz.janboerman.guilib.api.menu.PageMenu;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
+
+public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
+
+    /** rewards list*/
+    private List<ItemStack> rewards;
+    /** list indices*/
+    private int rewardStartIndex /*inclusive*/, rewardEndIndex /*exclusive*/;
+
+    /**
+     * Creates the ClaimItemsMenu
+     * @param plugin the plugin
+     * @param pageSize the size of the embedded page (9 - 45)
+     * @param rewards a mutable list of reward items
+     */
+    public ClaimItemsMenu(ExamplePlugin plugin, int pageSize, List<ItemStack> rewards) {
+        this(plugin, pageSize, rewards, 0, Math.min(rewards.size(), pageSize));
+    }
+
+    /**
+     * Creates the ClaimItemsMenu
+     * @param plugin the plugin
+     * @param pageSize the size of the embedded page (9 - 45)
+     * @param rewards a mutable list of reward items
+     * @param rewardStartIndex the lowerbound of the sublist we are displaying (inclusive)
+     * @param rewardEndIndex the upperbound of the sublist we are displaying (exclusive)
+     */
+    private ClaimItemsMenu(ExamplePlugin plugin, int pageSize, List<ItemStack> rewards, int rewardStartIndex, int rewardEndIndex) {
+        super(plugin, new MenuHolder<>(plugin, pageSize), "Claim your items", null, null);
+        this.rewards = rewards;
+        this.rewardStartIndex = rewardStartIndex;
+        this.rewardEndIndex = rewardEndIndex;
+    }
+
+    @Override
+    public MenuHolder<ExamplePlugin> getPage() {
+        return (MenuHolder<ExamplePlugin>) super.getPage();
+    }
+
+    //shifts all buttons in the page after the buttons that was transferred
+    //actually creates new buttons
+    private void shiftButtons(int slotIndex) {
+        var page = getPage();
+
+        int listIndex = rewardStartIndex + slotIndex;
+        rewards.remove(listIndex);
+
+        while (slotIndex < page.getInventory().getSize()) {
+            if (listIndex < rewards.size()) {
+                ItemStack reward = rewards.get(listIndex);
+                page.setButton(slotIndex, new ShiftingClaimButton(reward));
+            } else {
+                page.unsetButton(slotIndex);
+            }
+
+            slotIndex++;
+            listIndex++;
+        }
+
+        initButtons(); //removes the next-page button if there are no items after the current page
+    }
+
+    @Override
+    public void onOpen(InventoryOpenEvent event) {
+        //setup rewards
+        for (int slot = 0; slot < getPageSize() && rewardStartIndex + slot < rewardEndIndex; slot++) {
+            getPage().setButton(slot, new ShiftingClaimButton(rewards.get(rewardStartIndex + slot)));
+        }
+
+        //required for the page to even work
+        super.onOpen(event);
+    }
+
+    @Override
+    public void onClose(InventoryCloseEvent event) {
+        getPage().clearButtons(); //help gc
+
+        //required
+        super.onClose(event);
+    }
+
+    @Override
+    public Optional<Supplier<ClaimItemsMenu>> getNextPageMenu() {
+        //there is a next page if the current range upper bound is smaller than the end of the list
+        if (rewardEndIndex < rewards.size()) {
+            return Optional.of(() -> new ClaimItemsMenu(getPlugin(), getPageSize(), rewards, rewardEndIndex, Math.min(rewards.size(), rewardEndIndex + getPageSize())));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Supplier<ClaimItemsMenu>> getPreviousPageMenu() {
+        //there is a previous page if we didn't start 0
+        if (rewardStartIndex > 0) {
+            return Optional.of(() -> new ClaimItemsMenu(getPlugin(), getPageSize(), rewards, Math.max(0, rewardStartIndex - getPageSize()), Math.min(rewardStartIndex, rewards.size())));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    //a special claim button that shifts the buttons in the page after it's been removed from the menu.
+    public class ShiftingClaimButton extends ClaimButton<MenuHolder<ExamplePlugin>> {
+        public ShiftingClaimButton(ItemStack reward) {
+            super(reward, (menuHolder, event, itemStack) -> ClaimItemsMenu.this.shiftButtons(event.getSlot()));
+        }
+    }
 
 }
+
 ```
 
 ### Dependency
@@ -121,7 +254,7 @@ public class ExamplePlugin extends JavaPlugin {
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.3.2</version>
+	    <version>v1.3.3</version>
 	</dependency>	
 
 ##### Gradle
@@ -134,10 +267,10 @@ public class ExamplePlugin extends JavaPlugin {
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.2'
+    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.3'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.2"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.3"	

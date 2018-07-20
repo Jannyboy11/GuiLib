@@ -26,12 +26,17 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     private static final ItemStack DEFAULT_PREVIOUS_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Previous").build();
     private static final ItemStack DEFAULT_NEXT_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Next").build();
 
+    /** The holder of the page in this menu */
     private final GuiInventoryHolder myPage;
-    private final int previousButtonIndex, nextButtonIndex;
-    private final ItemStack nextPageButton, previousPageButton;
-
+    /** Positions of the previous and next buttons in our inventory */
+    protected final int previousButtonIndex, nextButtonIndex;
+    /** ItemStacks used for the previous-page and next-page buttons */
+    protected final ItemStack nextPageButton, previousPageButton;
+    /** The suppliers that supply the previoius-page and next-page menus */
     private Supplier<PageMenu<P>> previous, next;
-    private boolean weHaveBeenOpened; //hack to initialise the buttons lazily
+
+    /** hack to initialize the buttons when the inventory is opened for the first time */
+    private boolean weHaveBeenOpened;
 
     /**
      * Creates a page.
@@ -106,11 +111,19 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
+     * Get the size of the page held by this menu.
+     * @return the size of the embedded page
+     */
+    public int getPageSize() {
+        return getPage().getInventory().getSize();
+    }
+
+    /**
      * Tests whether this paging menu has a tryToggle page.
      * @return true if it has a tryToggle page, otherwise false
      */
     public boolean hasNextPage() {
-        return next != null;
+        return getNextPageMenu().isPresent();
     }
 
     /**
@@ -118,14 +131,14 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @return true if it has a previous page, otherwise false
      */
     public boolean hasPreviousPage() {
-        return previous != null;
+        return getPreviousPageMenu().isPresent();
     }
 
     /**
      * Get the supplier that supplies the menu for the tryToggle page.
      * @return the Optional containing the supplier, or the empty Optional of the supplier is absent.
      */
-    public Optional<Supplier<PageMenu<P>>> getNextPageMenu() {
+    public Optional<? extends Supplier<? extends PageMenu<P>>> getNextPageMenu() {
         return Optional.ofNullable(next);
     }
 
@@ -133,7 +146,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * Get the supplier that supplies the menu for the previous page.
      * @return the Optional containing the supplier, or the empty Optional of the supplier is absent.
      */
-    public Optional<Supplier<PageMenu<P>>> getPreviousPageMenu() {
+    public Optional<? extends Supplier<? extends PageMenu<P>>> getPreviousPageMenu() {
         return Optional.ofNullable(previous);
     }
 
@@ -141,12 +154,13 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * Initialises the previous-page and next-page buttons.
      */
     protected void initButtons() {
-        if (hasNextPage()) {
-            this.setButton(nextButtonIndex, new RedirectItemButton(nextPageButton, () -> next.get().getInventory()));
-        }
-        if (hasPreviousPage()) {
-            this.setButton(previousButtonIndex, new RedirectItemButton(previousPageButton, () -> previous.get().getInventory()));
-        }
+        getNextPageMenu().ifPresentOrElse(next -> this.setButton(nextButtonIndex,
+                new RedirectItemButton(nextPageButton, () -> next.get().getInventory())),
+                () -> this.unsetButton(nextButtonIndex));
+
+        getPreviousPageMenu().ifPresentOrElse(previous -> this.setButton(previousButtonIndex,
+                new RedirectItemButton(previousPageButton, () -> previous.get().getInventory())),
+                () -> this.unsetButton(previousButtonIndex));
     }
 
     /**
@@ -223,7 +237,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * Opens the page.
+     * Opens the page. Subclasses that override this method should always call super.onOpen(openEvent)
      * @param openEvent the event
      */
     @Override
@@ -267,7 +281,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * Clicks the page.
+     * Clicks the page. Subclasses that override this method should always call super.onClick(openEvent)
      * @param clickEvent the event
      */
     @Override
@@ -331,7 +345,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * Closes the page.
+     * Closes the page. Subclasses that override this method should always call super.onClose(openEvent)
      * @param closeEvent the event
      */
     @Override
