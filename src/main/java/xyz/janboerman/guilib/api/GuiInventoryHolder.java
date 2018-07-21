@@ -23,7 +23,6 @@ import org.bukkit.plugin.Plugin;
  * @param <P> your Plugin type
  * @see xyz.janboerman.guilib.api.menu.MenuHolder
  */
-//TODO shrinking pages? :)
 public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryHolder {
     
     private final Inventory inventory;
@@ -118,10 +117,12 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
 
     /**
      * Get the inventory associated with this gui holder.
+     * Subclasses that override this method should always return
+     * {@code super.getInventory();} with a cast to a custom inventory type.
      * @return the inventory
      */
     @Override
-    public final Inventory getInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 

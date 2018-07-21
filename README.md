@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.3/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.4/javadoc)!
 
 ### Compiling
 
@@ -127,9 +127,9 @@ import java.util.function.Supplier;
 //more advanced usage - implements a custom page menu
 public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 
-    /** rewards list*/
+    /** rewards list */
     private List<ItemStack> rewards;
-    /** list indices*/
+    /** list indices */
     private int rewardStartIndex /*inclusive*/, rewardEndIndex /*exclusive*/;
 
     /**
@@ -159,6 +159,7 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 
     @Override
     public MenuHolder<ExamplePlugin> getPage() {
+        //we know the GuiInventoryHolder of the page is always a MenuHolder since we always create it ourselves
         return (MenuHolder<ExamplePlugin>) super.getPage();
     }
 
@@ -225,9 +226,11 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
     }
 
     //a special claim button that shifts the buttons in the page after it's been removed from the menu.
-    public class ShiftingClaimButton extends ClaimButton<MenuHolder<ExamplePlugin>> {
+    //technically this class isn't needed because you could just instantiate a new ClaimButton<ClaimItemsMenu>
+    //but using this the lambda is already provided so the code in other places is shorter.
+    public static class ShiftingClaimButton extends ClaimButton<ClaimItemsMenu> {
         public ShiftingClaimButton(ItemStack reward) {
-            super(reward, (menuHolder, event, itemStack) -> ClaimItemsMenu.this.shiftButtons(event.getSlot()));
+            super(reward, (claimItemsMenu, event, itemStack) -> claimItemsMenu.shiftButtons(event.getSlot()));
         }
     }
 }
@@ -252,7 +255,7 @@ is set to `provided`.
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.3.3</version>
+	    <version>v1.3.4</version>
 	</dependency>	
 
 ##### Gradle
@@ -265,13 +268,13 @@ is set to `provided`.
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.3'
+    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.4'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.3"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.4"	
 
 ### Licensing
 
