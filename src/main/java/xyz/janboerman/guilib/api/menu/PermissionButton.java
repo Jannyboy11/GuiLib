@@ -49,8 +49,8 @@ public class PermissionButton<MH extends MenuHolder<?>> implements MenuButton<MH
         HumanEntity whoClicked = event.getWhoClicked();
         if (whoClicked.hasPermission(getPermission())) {
             proxy.onClick(holder, event);
-        } else if (noPermissionCallback != null) {
-            noPermissionCallback.accept(whoClicked);
+        } else {
+            getNoPermissionCallback().ifPresent(callback -> callback.accept(whoClicked));
         }
     }
 
