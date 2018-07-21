@@ -14,6 +14,7 @@ Then run `mvn javadoc:jar install`.
 Available on [GitHub Releases](https://github.com/Jannyboy11/GuiLib/releases).
 
 ### Example Usage
+
 ```
 package com.example;
 
@@ -39,41 +40,37 @@ public class ExamplePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        //check whether the GuiLib plugin is active
-        if (getServer().getPluginManager().isPluginEnabled("GuiLib")) {
+        //basic usage
+        menu1 = new MenuHolder<>(this, 9, "Example Gui");
+        menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui");
 
-            //basic usage
-            menu1 = new MenuHolder<>(this, 9, "Example Gui");
-            menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui");
+        menu1.setButton(0, new RedirectItemButton(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
+        menu1.setButton(8, new CloseButton());
+        String permission = "foo.bar";
+        menu1.setButton(4, new PermissionButton<>(
+                permission,
+                new ItemButton<>(new ItemStack(Material.GREEN_GLAZED_TERRACOTTA)) {
+                    @Override
+                    public void onClick(MenuHolder holder, InventoryClickEvent event) {
+                        event.getWhoClicked().sendMessage("You have permission " + permission + ".");
+                    }
+                },
+                humanEntity -> humanEntity.sendMessage("You don't have permission " + permission + ".")));
 
-            menu1.setButton(0, new RedirectItemButton(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
-            menu1.setButton(8, new CloseButton());
-            String permission = "foo.bar";
-            menu1.setButton(4, new PermissionButton<>(
-                    permission,
-                    new ItemButton<>(new ItemStack(Material.GREEN_GLAZED_TERRACOTTA)) {
-                        @Override
-                        public void onClick(MenuHolder holder, InventoryClickEvent event) {
-                            event.getWhoClicked().sendMessage("You have permission " + permission + ".");
-                        }
-                    },
-                    humanEntity -> humanEntity.sendMessage("You don't have permission " + permission + ".")));
+        ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
+        ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
+        menu2.setButton(0, new ToggleButton(new ItemStack(Material.BARRIER)) {
+            @Override
+            public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
+                event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));
+            }
 
-            ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
-            ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
-            menu2.setButton(0, new ToggleButton(new ItemStack(Material.BARRIER)) {
-                @Override
-                public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
-                    event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));
-                }
-
-                @Override
-                public ItemStack updateIcon(MenuHolder menuHolder, InventoryClickEvent event) {
-                    return isEnabled() ? onStack : offStack;
-                }
-            });
-            menu2.setButton(2, new BackButton(menu1::getInventory));
-        }
+            @Override
+            public ItemStack updateIcon(MenuHolder menuHolder, InventoryClickEvent event) {
+                return isEnabled() ? onStack : offStack;
+            }
+        });
+        menu2.setButton(2, new BackButton(menu1::getInventory));
     }
 
     @Override
@@ -103,7 +100,6 @@ public class ExamplePlugin extends JavaPlugin {
             case "claimallitems":
                 ArrayList<ItemStack> mutableRewardsList = Arrays.stream(Material.values())
                         .map(ItemStack::new)
-                        .filter(itemStack -> itemStack.getItemMeta() != null)
                         .collect(Collectors.toCollection(ArrayList::new));
                 ClaimItemsMenu claimItemsMenu = new ClaimItemsMenu(this, 45, mutableRewardsList);
                 player.openInventory(claimItemsMenu.getInventory());
@@ -234,10 +230,11 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
             super(reward, (menuHolder, event, itemStack) -> ClaimItemsMenu.this.shiftButtons(event.getSlot()));
         }
     }
-
 }
-
 ```
+
+This example uses GuiLib as a runtime dependency, so `depend: ["GuiLib"]` is in the plugin.yml and the dependency scope
+is set to `provided`.
 
 ### Dependency
 
@@ -275,3 +272,11 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 
     resolvers += "jitpack" at "https://jitpack.io"
     libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.3"	
+
+### Licensing
+
+The default license is LGPLv3 because I want this thing to be free software but still usable by closed source plugins.
+If you however want to *include* this codebase in either source or binary form in your own open source project but not
+adopt the (L)GPL license, please [create an issue](https://github.com/Jannyboy11/GuiLib/issues/new) that includes the
+preferred license for GuiLib and includes a link to your project and I'll likely give you permission to use this under
+the conditions of the alternative license.
