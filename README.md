@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.4.0/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.4.1/javadoc)!
 
 ### Compiling
 
@@ -255,7 +255,7 @@ is set to `provided`.
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.4.0</version>
+	    <version>v1.4.1</version>
 	</dependency>	
 
 ##### Gradle
@@ -268,13 +268,13 @@ is set to `provided`.
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:v1.4.0'
+    	implementation 'com.github.Jannyboy11:GuiLib:v1.4.1'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.4.0"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.4.1"	
 
 ### Licensing
 

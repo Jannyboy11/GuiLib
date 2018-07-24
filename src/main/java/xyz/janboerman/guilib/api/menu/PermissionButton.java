@@ -6,15 +6,15 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
  * A button that only works when the player who clicked the button has a permission
  * @param <MH> the menu type
  */
-public class PermissionButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
+public class PermissionButton<MH extends MenuHolder<?>> extends PredicateButton<MH> {
 
-    private final MenuButton<MH> proxy;
     private final String permission;
     private final Consumer<? super HumanEntity> noPermissionCallback;
 
@@ -34,33 +34,9 @@ public class PermissionButton<MH extends MenuHolder<?>> implements MenuButton<MH
      * @param noPermissionCallback the callback that is executed when the player clicks the button but doesn't have the permission
      */
     public PermissionButton(String permission, MenuButton<MH> proxy, Consumer<? super HumanEntity> noPermissionCallback) {
-        this.proxy = Objects.requireNonNull(proxy, "Proxy cannot be null");
+        super(proxy, (menuHolder, event) -> event.getWhoClicked().hasPermission(permission));
         this.permission = Objects.requireNonNull(permission, "Permission cannot be null");
         this.noPermissionCallback = noPermissionCallback;
-    }
-
-    /**
-     * Called by the {@link MenuHolder} - tests whether the player has the permission and calls {@link MenuButton#onClick(MenuHolder, InventoryClickEvent)} on the proxy.
-     * @param holder the MenuHolder
-     * @param event the InventoryClickEvent
-     */
-    @Override
-    public void onClick(MH holder, InventoryClickEvent event) {
-        HumanEntity whoClicked = event.getWhoClicked();
-        if (whoClicked.hasPermission(getPermission())) {
-            proxy.onClick(holder, event);
-        } else {
-            getNoPermissionCallback().ifPresent(callback -> callback.accept(whoClicked));
-        }
-    }
-
-    /**
-     * Gets the icon for this button.
-     * @return the icon of the proxy
-     */
-    @Override
-    public ItemStack getIcon() {
-        return proxy.getIcon();
     }
 
     /**
@@ -69,6 +45,15 @@ public class PermissionButton<MH extends MenuHolder<?>> implements MenuButton<MH
      */
     public String getPermission() {
         return permission;
+    }
+
+    /**
+     * Optionally get the callback that is executed when the button is clicked and the inventory clicker doesn't have the permission.
+     * @return the Optional containing the callback if present. If there is no callback the empty Optional is returned.
+     */
+    @Override
+    protected Optional<BiConsumer<MH, InventoryClickEvent>> getPredicateFailedCallback() {
+        return getNoPermissionCallback().map(consumer -> (menuHolder, event) -> consumer.accept(event.getWhoClicked()));
     }
 
     /**
