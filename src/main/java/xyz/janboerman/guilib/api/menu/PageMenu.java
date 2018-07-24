@@ -164,7 +164,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * @deprecated use {@link #resetButtons()} intead.
+     * @deprecated use {@link #resetButtons()} instead.
      */
     @Deprecated(forRemoval = true, since = "1.4.0")
     protected void initButtons() {
