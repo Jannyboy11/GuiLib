@@ -13,7 +13,7 @@ public class CloseButton extends ItemButton<MenuHolder<?>> {
      * Creates the close button with a wooden door icon and "Close" as displayname
      */
     public CloseButton() {
-        this(Material.WOOD_DOOR);
+        this(Material.OAK_DOOR);
     }
 
     /**

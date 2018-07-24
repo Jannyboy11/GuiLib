@@ -29,7 +29,7 @@ public class BackButton extends RedirectItemButton {
      * @param to the inventory supplier
      */
     public BackButton(String name, Supplier<? extends Inventory> to) {
-        super(new ItemBuilder(Material.WOOD_DOOR).name(name).build(), to);
+        super(new ItemBuilder(Material.OAK_DOOR).name(name).build(), to);
     }
 
 }

@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.3.4/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.4.0/javadoc)!
 
 ### Compiling
 
@@ -183,7 +183,7 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
             listIndex++;
         }
 
-        initButtons(); //removes the next-page button if there are no items after the current page
+        resetButtons(); //removes the next-page button if there are no items after the current page
     }
 
     @Override
@@ -255,7 +255,7 @@ is set to `provided`.
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.3.4</version>
+	    <version>v1.4.0</version>
 	</dependency>	
 
 ##### Gradle
@@ -268,13 +268,13 @@ is set to `provided`.
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:v1.3.4'
+    	implementation 'com.github.Jannyboy11:GuiLib:v1.4.0'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.3.4"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.4.0"	
 
 ### Licensing
 

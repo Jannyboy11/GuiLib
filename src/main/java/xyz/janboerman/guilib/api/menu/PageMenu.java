@@ -153,7 +153,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     /**
      * Initialises the previous-page and next-page buttons.
      */
-    protected void initButtons() {
+    protected void resetButtons() {
         getNextPageMenu().ifPresentOrElse(next -> this.setButton(nextButtonIndex,
                 new RedirectItemButton(nextPageButton, () -> next.get().getInventory())),
                 () -> this.unsetButton(nextButtonIndex));
@@ -161,6 +161,14 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
         getPreviousPageMenu().ifPresentOrElse(previous -> this.setButton(previousButtonIndex,
                 new RedirectItemButton(previousPageButton, () -> previous.get().getInventory())),
                 () -> this.unsetButton(previousButtonIndex));
+    }
+
+    /**
+     * @deprecated use {@link #resetButtons()} intead.
+     */
+    @Deprecated(forRemoval = true, since = "1.4.0")
+    protected void initButtons() {
+        resetButtons();
     }
 
     /**
