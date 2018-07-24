@@ -49,7 +49,7 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
     @Override
     public void onClick(MH menuHolder, InventoryClickEvent event) {
         HumanEntity whoClicked = event.getWhoClicked();
-        if (predicate.test(menuHolder, event)) {
+        if (getPredicate().test(menuHolder, event)) {
             getDelegate().onClick(menuHolder, event);
         } else {
            getPredicateFailedCallback().ifPresent(callback -> callback.accept(menuHolder, event));
@@ -58,10 +58,19 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
 
     /**
      * Get the button that this button delegates to when the predicate is satisfied.
+     * Implementations that override this method must never return null.
      * @return the delegate button
      */
     protected MenuButton<MH> getDelegate() {
         return delegate;
+    }
+
+    /**
+     * Get the predicate for this button.
+     * @return the predicate
+     */
+    protected BiPredicate<MH, InventoryClickEvent> getPredicate() {
+        return predicate;
     }
 
     /**
