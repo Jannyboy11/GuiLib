@@ -251,7 +251,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     @Override
     public void onOpen(InventoryOpenEvent openEvent) {
         if (!weHaveBeenOpened) { //is there a nicer way to lazily init the buttons? I can't think of any
-            initButtons();
+            resetButtons();
             weHaveBeenOpened = true;
         }
 
