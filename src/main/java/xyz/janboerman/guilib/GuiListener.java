@@ -45,7 +45,7 @@ public class GuiListener implements Listener {
      * @param event the InventoryClickEvent
      */
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (event.getView().getTopInventory() == null) return;
         if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
 
@@ -61,7 +61,7 @@ public class GuiListener implements Listener {
      * @param event InventoryCloseEvent
      */
     @EventHandler
-    public void onClose(InventoryCloseEvent event) {
+    public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getView().getTopInventory() == null) return;
         if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
 
