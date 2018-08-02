@@ -30,8 +30,6 @@
                 <version>3.7.0</version>
                 <configuration>
                     <release>10</release>
-                    <source>10</source> <!-- not strictly needed, but this works around an IntelliJ bug -->
-                    <target>10</target> <!-- not strictly needed, but this works around an IntelliJ bug -->
                 </configuration>
             </plugin>
 
