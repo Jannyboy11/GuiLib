@@ -256,6 +256,7 @@ is set to `provided`.
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
 	    <version>v1.4.2</version>
+	    <scope>provided</scope>
 	</dependency>	
 
 ##### Gradle
@@ -268,13 +269,13 @@ is set to `provided`.
 	}
 	
 	dependencies {
-    	implementation 'com.github.Jannyboy11:GuiLib:v1.4.2'
+    	compileOnly 'com.github.Jannyboy11:GuiLib:v1.4.2'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.4.2"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.4.2" % "provided"	
 
 ### Licensing
 
