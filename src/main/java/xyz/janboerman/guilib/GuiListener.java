@@ -26,10 +26,10 @@ import xyz.janboerman.guilib.api.GuiInventoryHolder;
 public class GuiListener implements Listener {
 
     /**
-     * Listens to InventoryOpenEvents and delegates the event to the {@link GuiInventoryHolder} holding the inventory opened inventory, if any.
+     * Delegates the InventoryOpenEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui and the event is not cancelled.
      * @param event the InventoryOpenEvent
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryOpen(InventoryOpenEvent event) {
         if (event.getView().getTopInventory() == null) return;
         if (event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder) {
@@ -41,10 +41,10 @@ public class GuiListener implements Listener {
     }
 
     /**
-     * Delegates the InventoryClickEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui.
+     * Delegates the InventoryClickEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui and the event is not cancelled.
      * @param event the InventoryClickEvent
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getView().getTopInventory() == null) return;
         if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
@@ -60,7 +60,7 @@ public class GuiListener implements Listener {
      * Delegates the InventoryCloseEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui.
      * @param event InventoryCloseEvent
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClose(InventoryCloseEvent event) {
         if (event.getView().getTopInventory() == null) return;
         if (!(event.getView().getTopInventory().getHolder() instanceof GuiInventoryHolder)) return;
