@@ -164,14 +164,6 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     }
 
     /**
-     * @deprecated use {@link #resetButtons()} instead.
-     */
-    @Deprecated(forRemoval = true, since = "1.4.0")
-    protected void initButtons() {
-        resetButtons();
-    }
-
-    /**
      * Create pages from a series of GUIs.
      * @param plugin your plugin
      * @param pageSupplier the iterator that supplies pages - must have at least one element and can be infinite

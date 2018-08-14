@@ -72,7 +72,9 @@ public class ItemBuilder {
      * Specify the data for items being built.
      * @param data the data
      * @return a new ItemBuilder
+     * @deprecated MaterialData is deprecated since Bukkit 1.13
      */
+    @Deprecated(forRemoval = true, since = "1.5.0")
     public ItemBuilder data(MaterialData data) {
         return change(i -> i.setData(data));
     }
@@ -83,7 +85,7 @@ public class ItemBuilder {
      * @return a new ItemBuilder
      * @deprecated magic value
      */
-    @Deprecated
+    @Deprecated(forRemoval = true, since = "1.5.0")
     public ItemBuilder data(byte data) {
         return change(i -> {
             MaterialData materialData = i.getData();

@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  * A button that redirects back to the inventory supplied by the supplier given in the constructor.
  * The material of the icon is wooden door.
  */
-public class BackButton extends RedirectItemButton {
+public class BackButton extends RedirectItemButton<MenuHolder<?>> {
 
     private static final ItemStack BACK_BUTTON = new ItemBuilder(Material.IRON_DOOR).name("Back").build();
 
