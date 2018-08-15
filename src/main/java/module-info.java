@@ -1,6 +1,7 @@
 module xyz.janboerman.guilib {
 
-    requires bukkit;                            //bukkit will you ever define an (automatic) module?
+    requires org.bukkit;
+    opens xyz.janboerman.guilib;
 
     exports xyz.janboerman.guilib.api;
     exports xyz.janboerman.guilib.api.menu;

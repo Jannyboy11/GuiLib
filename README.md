@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.5.0/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.5.1/javadoc)!
 
 ### Compiling
 
@@ -225,12 +225,10 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
         }
     }
 
-    //a special claim button that shifts the buttons in the page after it's been removed from the menu.
-    //technically this class isn't needed because you could just instantiate a new ClaimButton<ClaimItemsMenu>
-    //but using this the lambda is already provided so the code in other places is shorter.
-    public static class ShiftingClaimButton extends ClaimButton<ClaimItemsMenu> {
+    //a special claim button that shift itemsin the page after the itemstack is claimed
+    public class ShiftingClaimButton extends ClaimButton<ClaimItemsMenu> {
         public ShiftingClaimButton(ItemStack reward) {
-            super(reward, (claimItemsMenu, event, itemStack) -> claimItemsMenu.shiftButtons(event.getSlot()));
+            super(reward, (menu, event, itemStack) -> ClaimItemsMenu.this.shiftButtons(event.getSlot()));
         }
     }
 }
@@ -255,7 +253,7 @@ is set to `provided`.
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.5.0</version>
+	    <version>v1.5.1</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -269,13 +267,13 @@ is set to `provided`.
 	}
 	
 	dependencies {
-    	compileOnly 'com.github.Jannyboy11:GuiLib:v1.5.0'
+    	compileOnly 'com.github.Jannyboy11:GuiLib:v1.5.1'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.5.0" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.5.1" % "provided"	
 
 ### Licensing
 

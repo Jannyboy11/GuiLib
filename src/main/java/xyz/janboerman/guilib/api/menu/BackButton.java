@@ -3,6 +3,7 @@ package xyz.janboerman.guilib.api.menu;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.ItemBuilder;
 
 import java.util.function.Supplier;
@@ -11,7 +12,7 @@ import java.util.function.Supplier;
  * A button that redirects back to the inventory supplied by the supplier given in the constructor.
  * The material of the icon is wooden door.
  */
-public class BackButton extends RedirectItemButton<MenuHolder<?>> {
+public class BackButton<P extends Plugin> extends RedirectItemButton<MenuHolder<P>> {
 
     private static final ItemStack BACK_BUTTON = new ItemBuilder(Material.IRON_DOOR).name("Back").build();
 

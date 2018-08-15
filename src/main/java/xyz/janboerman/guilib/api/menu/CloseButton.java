@@ -2,12 +2,13 @@ package xyz.janboerman.guilib.api.menu;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.ItemBuilder;
 
 /**
  * A MenuButton that closes the Inventory when clicked.
  */
-public class CloseButton extends ItemButton<MenuHolder<?>> {
+public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
 
     /**
      * Creates the close button with a wooden door icon and "Close" as displayname

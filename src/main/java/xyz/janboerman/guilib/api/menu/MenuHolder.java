@@ -26,7 +26,7 @@ import java.util.*;
  */
 public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     
-    private final Map<Integer, MenuButton> buttons = new HashMap<>();
+    private final Map<Integer, MenuButton<?>> buttons = new HashMap<>();
 
     /**
      * Creates the MenuHolder with the given InventoryType and title.
@@ -92,7 +92,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
         if (clickedInventory.getHolder() != this) return;
 
         int slot = event.getSlot();
-        MenuButton button = getButton(slot);
+        MenuButton<MenuHolder<P>> button = getButton(slot);
         if (button != null) button.onClick(this, event);
     }
 
@@ -101,7 +101,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * @param slot the slot number
      * @param button the button
      */
-    public void setButton(int slot, MenuButton button) {
+    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> void setButton(int slot, B button) {
         getInventory().setItem(slot, button.getIcon());
         this.buttons.put(slot, button);
     }
@@ -109,19 +109,28 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     /**
      * Gets the button at the given slot.
      * @param slot the slot index
-     * @return a button if one is present at the given slot - otherwise null
+     * @return a button if one is present at the given slot, otherwise null
      */
-    public MenuButton getButton(int slot) {
-        return this.buttons.get(slot);
+    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> B getButton(int slot) {
+        return (B) this.buttons.get(slot);
+    }
+
+    /**
+     * Gets the button at the given slot.
+     * @param slot the slot index
+     * @return the Optional containing a button if one is present at the given slot, otherwise the empty Optional
+     */
+    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> Optional<B> getButtonOptionally(int slot) {
+        return Optional.ofNullable(getButton(slot));
     }
 
     /**
      * Get a snapshot of all registered buttons. If no buttons are registered an empty map is returned.
      * @return a new SortedMap containing the buttons
      */
-    public SortedMap<Integer, MenuButton> getButtons() {
-        var map = new TreeMap<Integer, MenuButton>();
-        map.putAll(this.buttons);
+    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> SortedMap<Integer, B> getButtons() {
+        var map = new TreeMap<Integer, B>();
+        map.putAll((Map<? extends Integer, ? extends B>) this.buttons);
         return map;
     }
 
