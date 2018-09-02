@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.5.1/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.6.0/javadoc)!
 
 ### Compiling
 
@@ -26,6 +26,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.janboerman.guilib.GuiLibrary;
+import xyz.janboerman.guilib.GuiListener;
 import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.api.menu.*;
 
@@ -37,15 +39,25 @@ import java.util.stream.Stream;
 public class ExamplePlugin extends JavaPlugin {
 
     private MenuHolder<ExamplePlugin> menu1, menu2;
+    private GuiListener guiListener;
+
+    public GuiListener getGuiListener() {
+        return guiListener;
+    }
 
     @Override
     public void onEnable() {
+        GuiLibrary guiLibrary = (GuiLibrary) getServer().getPluginManager().getPlugin("GuiLib");
+        guiListener = guiLibrary.getGuiListener();   
+    	
         //basic usage
-        menu1 = new MenuHolder<>(this, 9, "Example Gui");
-        menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui");
+        menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
+        
+        //WE FOUND A SPIGOT BUG - Inventory Holder is null when it's not a chest-inventory?
+        menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2"); //TODO change back to InventoryType.HOPPER
 
-        menu1.setButton(0, new RedirectItemButton(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
-        menu1.setButton(8, new CloseButton());
+        menu1.setButton(0, new RedirectItemButton<>(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
+        menu1.setButton(8, new CloseButton<>());
         String permission = "foo.bar";
         menu1.setButton(4, new PermissionButton<>(
                 permission,
@@ -59,7 +71,7 @@ public class ExamplePlugin extends JavaPlugin {
 
         ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
         ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
-        menu2.setButton(0, new ToggleButton(new ItemStack(Material.BARRIER)) {
+        menu2.setButton(0, new ToggleButton<>(new ItemStack(Material.BARRIER)) {
             @Override
             public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
                 event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));
@@ -70,7 +82,7 @@ public class ExamplePlugin extends JavaPlugin {
                 return isEnabled() ? onStack : offStack;
             }
         });
-        menu2.setButton(2, new BackButton(menu1::getInventory));
+        menu2.setButton(2, new BackButton<>(menu1::getInventory));
     }
 
     @Override
@@ -93,7 +105,7 @@ public class ExamplePlugin extends JavaPlugin {
             case "freediamonds":
                 MenuHolder<ExamplePlugin> menu = new MenuHolder<>(this, 45);
                 for (int slot = 0; slot < menu.getInventory().getSize(); slot++) {
-                    menu.setButton(slot, new ClaimButton(new ItemStack(Material.DIAMOND, 64)));
+                    menu.setButton(slot, new ClaimButton<>(new ItemStack(Material.DIAMOND, 64)));
                 }
                 player.openInventory(menu.getInventory());
                 break;
@@ -151,7 +163,7 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
      * @param rewardEndIndex the upperbound of the sublist we are displaying (exclusive)
      */
     private ClaimItemsMenu(ExamplePlugin plugin, int pageSize, List<ItemStack> rewards, int rewardStartIndex, int rewardEndIndex) {
-        super(plugin, new MenuHolder<>(plugin, pageSize), "Claim your items", null, null);
+        super(plugin.getGuiListener(), plugin, new MenuHolder<>(plugin, pageSize), "Claim your items", null, null);
         this.rewards = rewards;
         this.rewardStartIndex = rewardStartIndex;
         this.rewardEndIndex = rewardEndIndex;
@@ -225,10 +237,9 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
         }
     }
 
-    //a special claim button that shift itemsin the page after the itemstack is claimed
-    public class ShiftingClaimButton extends ClaimButton<ClaimItemsMenu> {
+    public class ShiftingClaimButton extends ClaimButton<MenuHolder<ExamplePlugin>> {
         public ShiftingClaimButton(ItemStack reward) {
-            super(reward, (menu, event, itemStack) -> ClaimItemsMenu.this.shiftButtons(event.getSlot()));
+            super(reward, (page, event, itemStack) -> ClaimItemsMenu.this.shiftButtons(event.getSlot()));
         }
     }
 }
@@ -253,7 +264,7 @@ is set to `provided`.
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.5.1</version>
+	    <version>v1.6.0</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -267,13 +278,13 @@ is set to `provided`.
 	}
 	
 	dependencies {
-    	compileOnly 'com.github.Jannyboy11:GuiLib:v1.5.1'
+    	compileOnly 'com.github.Jannyboy11:GuiLib:v1.6.0'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.5.1" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.6.0" % "provided"	
 
 ### Licensing
 

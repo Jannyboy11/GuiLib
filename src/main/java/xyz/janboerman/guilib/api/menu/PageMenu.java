@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import xyz.janboerman.guilib.GuiListener;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.util.CachedSupplier;
@@ -38,15 +39,29 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
     /** hack to initialize the buttons when the inventory is opened for the first time */
     private boolean weHaveBeenOpened;
 
+    /** use {@link #PageMenu(GuiListener, Plugin, GuiInventoryHolder, Supplier, Supplier)} instead*/
+    @Deprecated
+    public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) throws IllegalArgumentException {
+        this(plugin, page, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    }
+
     /**
      * Creates a page.
      * @param plugin your plugin
      * @param page the gui in this page - cannot be larger than 45 slots
      * @param previous the previous page - can be null
      * @param next the tryToggle page - can be null
+     * @param guiListener the listener that calls the onOpen, onClick and onClose methods
+     * @throws IllegalArgumentException if the page size is below 9 or above 45
      */
-    public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) {
-        this(plugin, page, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) throws IllegalArgumentException {
+        this(guiListener, plugin, page, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    }
+
+    /** @deprecated use {@link #PageMenu(GuiListener, Plugin, GuiInventoryHolder, String, Supplier, Supplier)} instead*/
+    @Deprecated
+    public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) throws IllegalArgumentException {
+        this(plugin, page, title, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
     }
 
     /**
@@ -56,9 +71,17 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param title the title of the page
      * @param previous the previous page - can be null
      * @param next the tryToggle page - can be null
+     * @param guiListener the listener that calls the onOpen, onClick and onClose methods
+     * @throws IllegalArgumentException if the page size is below 9 or above 45
      */
-    public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) {
-        this(plugin, page, title, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next) throws IllegalArgumentException {
+        this(guiListener, plugin, page, title, previous, next, DEFAULT_PREVIOUS_PAGE_BUTTON.clone(), DEFAULT_NEXT_PAGE_BUTTON.clone());
+    }
+
+    /** @deprecated use {@link #PageMenu(GuiListener, Plugin, GuiInventoryHolder, Supplier, Supplier, ItemStack, ItemStack)} instead.*/
+    @Deprecated
+    public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) throws IllegalArgumentException {
+        this(GuiListener.getInstance(), plugin, page, previous, next, previousPageButton, nextPageButton);
     }
 
     /**
@@ -69,9 +92,11 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param next the tryToggle page - can be null
      * @param previousPageButton - the ItemStack used for the previous-page button
      * @param nextPageButton - the ItemStack used for the tryToggle-page button
+     * @param guiListener the listener that calls the onOpen, onClick and onClose methods
+     * @throws IllegalArgumentException if the page size is below 9 or above 45
      */
-    public PageMenu(P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) {
-        super(plugin, calculateInnerPageSize(page) + 9);
+    public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) throws IllegalArgumentException {
+        super(guiListener, plugin, calculateInnerPageSize(page) + 9);
         this.myPage = page;
         this.previousButtonIndex = myPage.getInventory().getSize() + 2;
         this.nextButtonIndex = myPage.getInventory().getSize() + 6;
@@ -81,6 +106,12 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
         this.previousPageButton = previousPageButton;
     }
 
+    /** @deprecated use {@link #PageMenu(GuiListener, Plugin, GuiInventoryHolder, String, Supplier, Supplier, ItemStack, ItemStack)} instead*/
+    @Deprecated
+    public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) throws IllegalArgumentException {
+        this(GuiListener.getInstance(), plugin, page, title, previous, next, previousPageButton, nextPageButton);
+    }
+
     /**
      * Creates a page.
      * @param plugin your plugin
@@ -88,11 +119,13 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> {
      * @param title the title of the page
      * @param previous the previous page - can be null
      * @param next the tryToggle page - can be null
-     * @param previousPageButton - the ItemStack used for the previous-page button
-     * @param nextPageButton - the ItemStack used for the tryToggle-page button
+     * @param previousPageButton the ItemStack used for the previous-page button
+     * @param nextPageButton the ItemStack used for the tryToggle-page button
+     * @param guiListener the listener that calls the onOpen, onClick and onClose methods
+     * @throws IllegalArgumentException if the page size is below 9 or above 45
      */
-    public PageMenu(P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) {
-        super(plugin, calculateInnerPageSize(page) + 9, title);
+    public PageMenu(GuiListener guiListener, P plugin, GuiInventoryHolder page, String title, Supplier<PageMenu<P>> previous, Supplier<PageMenu<P>> next, ItemStack previousPageButton, ItemStack nextPageButton) throws IllegalArgumentException {
+        super(guiListener, plugin, calculateInnerPageSize(page) + 9, title);
         this.myPage = page;
         this.previousButtonIndex = myPage.getInventory().getSize() + 2;
         this.nextButtonIndex = myPage.getInventory().getSize() + 6;
