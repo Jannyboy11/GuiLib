@@ -54,10 +54,10 @@ public class GuiListener implements Listener {
      *
      * @param holder the gui holder
      * @param inventory the inventory that holds the gui item stacks
-     * @return whether the gui was registered successfully
+     * @return true if the gui was registered successfully, otherwise false
      */
     public boolean registerGui(GuiInventoryHolder<?> holder, Inventory inventory) {
-        return guiInventories.putIfAbsent(inventory, new WeakReference<>(holder)) != null;
+        return guiInventories.putIfAbsent(inventory, new WeakReference<>(holder)) == null;
     }
 
     /**
@@ -110,7 +110,7 @@ public class GuiListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onInventoryOpen(InventoryOpenEvent event) {
-        onGuiInventoryEvent(event, gui -> gui.onOpen(event) );
+        onGuiInventoryEvent(event, gui -> gui.onOpen(event));
     }
 
     /**
@@ -131,7 +131,7 @@ public class GuiListener implements Listener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClose(InventoryCloseEvent event) {
-        onGuiInventoryEvent(event, gui -> gui.onClose(event) );
+        onGuiInventoryEvent(event, gui -> gui.onClose(event));
     }
 
 }
