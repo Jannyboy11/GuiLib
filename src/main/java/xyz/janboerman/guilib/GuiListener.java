@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 
+import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
@@ -33,7 +34,7 @@ public class GuiListener implements Listener {
 
     private static final GuiListener INSTANCE = new GuiListener();
 
-    private final WeakHashMap<Inventory, GuiInventoryHolder<?>> guiInventories = new WeakHashMap<>();
+    private final WeakHashMap<Inventory, WeakReference<GuiInventoryHolder<?>>> guiInventories = new WeakHashMap<>();
 
     private GuiListener() {}
 
@@ -45,6 +46,9 @@ public class GuiListener implements Listener {
         return INSTANCE;
     }
 
+
+    // ===== registering stuff =====
+
     /**
      * Registers an inventory gui.
      *
@@ -53,7 +57,7 @@ public class GuiListener implements Listener {
      * @return whether the gui was registered successfully
      */
     public boolean registerGui(GuiInventoryHolder<?> holder, Inventory inventory) {
-        return guiInventories.putIfAbsent(inventory, holder) != null;
+        return guiInventories.putIfAbsent(inventory, new WeakReference<>(holder)) != null;
     }
 
     /**
@@ -62,7 +66,10 @@ public class GuiListener implements Listener {
      * @return the holder - or null if no holder was registered with the inventory.
      */
     public GuiInventoryHolder<?> getHolder(Inventory inventory){
-        return guiInventories.get(inventory);
+        WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
+        if (reference == null) return null;
+
+        return reference.get();
     }
 
     /**
@@ -73,8 +80,14 @@ public class GuiListener implements Listener {
      * @return whether the holder and inventory are registered
      */
     public boolean isGuiRegistered(GuiInventoryHolder<?> holder, Inventory inventory) {
-        return guiInventories.get(inventory) == holder; //yes, reference equality!
+        WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
+        if (reference == null) return false;
+
+        return reference.get() == holder; //yes, reference equality!
     }
+
+
+    // ===== event stuff =====
 
     private void onGuiInventoryEvent(InventoryEvent event, Consumer<GuiInventoryHolder> action) {
         if (event.getInventory() == null) return;
