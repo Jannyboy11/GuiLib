@@ -2,6 +2,7 @@ package xyz.janboerman.guilib.api.menu;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.ItemBuilder;
 
@@ -11,14 +12,14 @@ import xyz.janboerman.guilib.api.ItemBuilder;
 public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
 
     /**
-     * Creates the close button with a wooden door icon and "Close" as displayname
+     * Creates the close button with a wooden door icon and "Close" as the display name.
      */
     public CloseButton() {
         this(Material.OAK_DOOR);
     }
 
     /**
-     * Creates the close button with a custom material and "Close" as displayname
+     * Creates the close button with a custom material and "Close" as the display name.
      * @param material the icon material
      */
     public CloseButton(Material material) {
@@ -26,7 +27,15 @@ public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
     }
 
     /**
-     * Creates the close button with a custom material and custom display name
+     * Creates the close button with the custom icon.
+     * @param icon the icon
+     */
+    public CloseButton(ItemStack icon) {
+        super(icon);
+    }
+
+    /**
+     * Creates the close button with a custom material and custom display name.
      * @param material the icon material
      * @param displayName the display name
      */
