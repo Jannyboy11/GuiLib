@@ -53,8 +53,7 @@ public class ExamplePlugin extends JavaPlugin {
         //basic usage
         menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
         
-        //WE FOUND A SPIGOT BUG - Inventory Holder is null when it's not a chest-inventory?
-        menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2"); //TODO change back to InventoryType.HOPPER
+        menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2");
 
         menu1.setButton(0, new RedirectItemButton<>(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
         menu1.setButton(8, new CloseButton<>());
