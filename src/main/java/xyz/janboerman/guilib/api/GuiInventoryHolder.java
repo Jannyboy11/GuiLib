@@ -8,6 +8,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.Plugin;
+import xyz.janboerman.guilib.GuiListener;
+
+import java.util.Objects;
 
 /**
  * An InventoryHolder for GUIs.
@@ -27,51 +30,112 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     
     private final Inventory inventory;
     private final P plugin;
+    protected final GuiListener guiListener;
+
+    /**
+     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, InventoryType, String)}
+     */
+    @Deprecated
+    public GuiInventoryHolder(P plugin, InventoryType type, String title) {
+        this(GuiListener.getInstance(), plugin, type, title);
+    }
 
     /**
      * Constructs a new GuiInventoryHolder for your plugin with the given inventory type and title.
      * @param plugin your plugin
      * @param type the inventory type
      * @param title the title
+     * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
      */
-    public GuiInventoryHolder(P plugin, InventoryType type, String title) {
+    public GuiInventoryHolder(GuiListener guiListener, P plugin, InventoryType type, String title) {
+        this.guiListener = guiListener;
         this.plugin = plugin;
         this.inventory = plugin.getServer().createInventory(this, type, title); //implicit null check
+
+        guiListener.registerGui(this, inventory); //implicit null check
     }
 
     /**
-     * Contructs a new chest-GuiInventoryHolder for your plugin with the given size and title.
+     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, int, String)}
+     */
+    @Deprecated
+    public GuiInventoryHolder(P plugin, int size, String title) {
+        this(GuiListener.getInstance(), plugin, size, title);
+    }
+
+    /**
+     * Constructs a new chest-GuiInventoryHolder for your plugin with the given size and title.
      * @param plugin your plugin
      * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54)
      * @param title the title
+     * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
      */
-    public GuiInventoryHolder(P plugin, int size, String title) {
+    public GuiInventoryHolder(GuiListener guiListener, P plugin, int size, String title) {
+        this.guiListener = guiListener;
         this.plugin = plugin;
         this.inventory = plugin.getServer().createInventory(this, size, title); //implicit null check
+
+        guiListener.registerGui(this, inventory); //implicit null check
+    }
+
+    /**
+     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, InventoryType)}
+     */
+    @Deprecated
+    public GuiInventoryHolder(P plugin, InventoryType type) {
+        this(GuiListener.getInstance(), plugin, type);
     }
 
     /**
      * Constructs a new GuiInventoryHolder for your plugin with the given inventory type.
      * @param plugin your plugin
      * @param type the inventory type
+     * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
      */
-    public GuiInventoryHolder(P plugin, InventoryType type) {
+    public GuiInventoryHolder(GuiListener guiListener, P plugin, InventoryType type) {
+        this.guiListener = guiListener;
         this.plugin = plugin;
-        this.inventory = plugin.getServer().createInventory(this, type);
+        this.inventory = plugin.getServer().createInventory(this, type); //implicit null check
+
+        guiListener.registerGui(this, inventory); //implicit null check
     }
 
     /**
-     * Contructs a new chest-GuiInventoryHolder for your plugin with the given size.
+     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, int)}
+     */
+    @Deprecated
+    public GuiInventoryHolder(P plugin, int size) {
+        this(GuiListener.getInstance(), plugin, size);
+    }
+
+    /**
+     * Constructs a new chest-GuiInventoryHolder for your plugin with the given size.
      * @param plugin your plugin
      * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54)
+     * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
      */
-    public GuiInventoryHolder(P plugin, int size) {
+    public GuiInventoryHolder(GuiListener guiListener, P plugin, int size) {
+        this.guiListener = guiListener;
         this.plugin = plugin;
         this.inventory = plugin.getServer().createInventory(this, size); //implicit null check
+
+        guiListener.registerGui(this, inventory); //implicit null check
     }
 
     /**
-     * Contructs a GuiInventoryHolder for your plugin using the given inventory.
+     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, Inventory)}
+     */
+    @Deprecated
+    public GuiInventoryHolder(P plugin, Inventory inventory) {
+        this(GuiListener.getInstance(), plugin, inventory);
+    }
+
+    /**
+     * Constructs a GuiInventoryHolder for your plugin using the given inventory.
      * This is especially usefull when you are using OBC or NMS classes in your plugin and your inventory cannot be created
      * by {@link org.bukkit.Server#createInventory(InventoryHolder, InventoryType, String)} or any of its overloads.
      * One reason you might want to do this is to implement custom shift-click behaviour in your own Container implementation.
@@ -104,15 +168,15 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      *
      * @param plugin your plugin
      * @param inventory the custom inventory
-     * @throws IllegalArgumentException if the holder if the inventory is not this new GuiInventoryHolder.
+     * @param guiListener the listener that invokes the {@link #onOpen(InventoryOpenEvent)},
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
      */
-    public GuiInventoryHolder(P plugin, Inventory inventory) {
-        this.plugin = plugin;
-        this.inventory = inventory;
+    public GuiInventoryHolder(GuiListener guiListener, P plugin, Inventory inventory) {
+        this.guiListener = guiListener;
+        this.plugin = Objects.requireNonNull(plugin, "Plugin cannot be null");
+        this.inventory = Objects.requireNonNull(inventory, "Inventory cannot be null");
 
-        if (getInventory().getHolder() != this) {
-            throw new IllegalArgumentException("InventoryHolder returned by inventory.getHolder() should be this new InventoryHolder.");
-        }
+        guiListener.registerGui(this, inventory); //implicit null check
     }
 
     /**

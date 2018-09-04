@@ -5,6 +5,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.Plugin;
+import xyz.janboerman.guilib.GuiListener;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 
 import java.util.*;
@@ -26,16 +27,33 @@ import java.util.*;
  */
 public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     
-    private final Map<Integer, MenuButton<?>> buttons = new HashMap<>();
+    private final Map<Integer, MenuButton<?>> buttons = new HashMap<>(); //I wish java had the MenuHolder.type like Scala :(
+
+    /**
+     * @deprecated se {@link #MenuHolder(GuiListener, Plugin, InventoryType, String)} instead
+     */
+    @Deprecated
+    public MenuHolder(P plugin, InventoryType type, String title) {
+        super(plugin, type, title);
+    }
 
     /**
      * Creates the MenuHolder with the given InventoryType and title.
      * @param plugin your plugin
      * @param type the inventory type
      * @param title the title
+     * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
      */
-    public MenuHolder(P plugin, InventoryType type, String title) {
-        super(plugin, type, title);
+    public MenuHolder(GuiListener guiListener, P plugin, InventoryType type, String title) {
+        super(guiListener, plugin, type, title);
+    }
+
+    /**
+     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, int, String)} instead
+     */
+    @Deprecated
+    public MenuHolder(P plugin, int size, String title) {
+        super(plugin, size, title);
     }
 
     /**
@@ -43,39 +61,65 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * @param plugin your plugin
      * @param size the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
      * @param title the title
+     * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
      */
-    public MenuHolder(P plugin, int size, String title) {
-        super(plugin, size, title);
+    public MenuHolder(GuiListener guiListener, P plugin, int size, String title) {
+        super(guiListener, plugin, size, title);
+    }
+
+    /**
+     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, InventoryType)} instead.
+     */
+    @Deprecated
+    public MenuHolder(P plugin, InventoryType type) {
+        super(plugin, type);
     }
 
     /**
      * Creates the MenuHolder with the given InventoryType.
      * @param plugin your plugin
      * @param type the inventory type
+     * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
      */
-    public MenuHolder(P plugin, InventoryType type) {
-        super(plugin, type);
+    public MenuHolder(GuiListener guiListener, P plugin, InventoryType type) {
+        super(guiListener, plugin, type);
+    }
+
+    /**
+     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, int)} instead.
+     */
+    @Deprecated
+    public MenuHolder(P plugin, int size) {
+        super(plugin, size);
     }
 
     /**
      * Creates the MenuHolder with the given size.
      * @param plugin your plugin
      * @param size the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
+     * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
      */
-    public MenuHolder(P plugin, int size) {
-        super(plugin, size);
+    public MenuHolder(GuiListener guiListener, P plugin, int size) {
+        super(guiListener, plugin, size);
+    }
+
+    /**
+     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, Inventory)} instead
+     */
+    @Deprecated
+    public MenuHolder(P plugin, Inventory inventory) {
+        super(plugin, inventory);
     }
 
     /**
      * Creates the MenuHolder with the given inventory.
-     * The InventoryHolder returned by the inventory must be this MenuHolder.
      * @param plugin your Plugin
      * @param inventory the Inventory
+     * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
      * @see xyz.janboerman.guilib.api.GuiInventoryHolder#GuiInventoryHolder(Plugin, Inventory)
-     * @throws IllegalArgumentException if the owner of the supplied inventory is not this MenuHolder
      */
-    public MenuHolder(P plugin, Inventory inventory) {
-        super(plugin, inventory);
+    public MenuHolder(GuiListener guiListener, P plugin, Inventory inventory) {
+        super(guiListener, plugin, inventory);
     }
 
     /**
@@ -89,11 +133,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
         //only use the buttons when the top inventory was clicked.
         Inventory clickedInventory = getClickedInventory(event);
         if (clickedInventory == null) return;
-        if (clickedInventory.getHolder() != this) return;
 
-        int slot = event.getSlot();
-        MenuButton<MenuHolder<P>> button = getButton(slot);
-        if (button != null) button.onClick(this, event);
+        getButtonOptionally(event.getSlot()).ifPresent((MenuButton button) -> button.onClick(this, event));
     }
 
     /**
@@ -101,7 +142,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * @param slot the slot number
      * @param button the button
      */
-    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> void setButton(int slot, B button) {
+    public void setButton(int slot, MenuButton<?> button) {
         getInventory().setItem(slot, button.getIcon());
         this.buttons.put(slot, button);
     }
@@ -111,8 +152,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * @param slot the slot index
      * @return a button if one is present at the given slot, otherwise null
      */
-    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> B getButton(int slot) {
-        return (B) this.buttons.get(slot);
+    public MenuButton<?> getButton(int slot) {
+        return this.buttons.get(slot);
     }
 
     /**
@@ -120,7 +161,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * @param slot the slot index
      * @return the Optional containing a button if one is present at the given slot, otherwise the empty Optional
      */
-    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> Optional<B> getButtonOptionally(int slot) {
+    public Optional<MenuButton<?>> getButtonOptionally(int slot) {
         return Optional.ofNullable(getButton(slot));
     }
 
@@ -128,9 +169,9 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * Get a snapshot of all registered buttons. If no buttons are registered an empty map is returned.
      * @return a new SortedMap containing the buttons
      */
-    public <MH extends MenuHolder<? extends P>, B extends MenuButton<? extends MH>> SortedMap<Integer, B> getButtons() {
-        var map = new TreeMap<Integer, B>();
-        map.putAll((Map<? extends Integer, ? extends B>) this.buttons);
+    public SortedMap<Integer, MenuButton<?>> getButtons() {
+        var map = new TreeMap<Integer, MenuButton<?>>();
+        map.putAll(this.buttons);
         return map;
     }
 

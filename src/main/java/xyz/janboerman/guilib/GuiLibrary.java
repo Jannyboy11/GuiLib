@@ -16,12 +16,18 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class GuiLibrary extends JavaPlugin {
 
+    private GuiListener guiListener;
+
     /**
      * Registers the {@link GuiListener}. This method is only called when GuiLib is used as a runtime dependency.
      */
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new GuiListener(), this);
+        getServer().getPluginManager().registerEvents(guiListener = GuiListener.getInstance(), this);
+    }
+
+    public GuiListener getGuiListener() {
+        return guiListener;
     }
 
 }
