@@ -2,6 +2,7 @@ package xyz.janboerman.guilib.api.menu;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.ItemBuilder;
 
@@ -32,6 +33,14 @@ public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
      */
     public CloseButton(Material material, String displayName) {
         super(new ItemBuilder(material).name(displayName).build());
+    }
+
+    /**
+     * Creates the close button with a custom ItemStack
+     * @param stack the ItemStack
+     */
+    public CloseButton(ItemStack stack) {
+        super(stack);
     }
 
     /**
