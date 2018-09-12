@@ -108,7 +108,7 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
      * @param event the InventoryClickEvent
      * @return the plugin that sends the plugin message.
      */
-    public Plugin getSendingPlugin(MH menuHolder, InventoryClickEvent event) {
+    protected Plugin getSendingPlugin(MH menuHolder, InventoryClickEvent event) {
         return getSendingPlugin();
     }
 
@@ -118,7 +118,7 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
      * @param event the InventoryClickEvent
      * @return the channel
      */
-    public String getChannel(MH menuHolder, InventoryClickEvent event) {
+    protected String getChannel(MH menuHolder, InventoryClickEvent event) {
         return getChannel();
     }
 
