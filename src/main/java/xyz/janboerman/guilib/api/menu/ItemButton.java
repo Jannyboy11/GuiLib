@@ -3,7 +3,7 @@ package xyz.janboerman.guilib.api.menu;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * A Button with an icon.
+ * A button with an icon.
  *
  * @param <MH> the type of the menu
  */
@@ -15,7 +15,7 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
     protected ItemStack stack;
 
     /**
-     * Creates an ItemButton without an ItemStack.
+     * Creates an ItemButton without an icon.
      */
     protected ItemButton() {
     }
@@ -31,7 +31,7 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
 
     /**
      * Gets the icon.
-     * @return a clone of the ItemStack given in the constructor
+     * @return a clone of the ItemStack that was provided in the constructor, or null if there is no icon.
      */
     @Override
     public final ItemStack getIcon() {

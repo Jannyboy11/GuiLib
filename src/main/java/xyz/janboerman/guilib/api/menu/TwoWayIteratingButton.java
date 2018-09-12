@@ -7,7 +7,7 @@ import java.util.ListIterator;
 import java.util.function.UnaryOperator;
 
 /**
- * Button that can update it's internal state to a previous state (on right click), or next state (on left click).
+ * A button that can update it's internal state to a previous state (on right click), or next state (on left click).
  * @param <T> the state's type
  * @param <MH> the menu holder's type
  */

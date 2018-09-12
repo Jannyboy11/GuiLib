@@ -24,6 +24,9 @@ import java.util.*;
  * @see RedirectItemButton
  * @see CloseButton
  * @see PermissionButton
+ * @see TeleportButton
+ * @see ChatButton
+ * @see ClaimButton
  */
 public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
     
