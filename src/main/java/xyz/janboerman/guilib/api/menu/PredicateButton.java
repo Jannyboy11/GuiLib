@@ -1,6 +1,5 @@
 package xyz.janboerman.guilib.api.menu;
 
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,7 +47,6 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
      */
     @Override
     public void onClick(MH menuHolder, InventoryClickEvent event) {
-        HumanEntity whoClicked = event.getWhoClicked();
         if (getPredicate().test(menuHolder, event)) {
             getDelegate().onClick(menuHolder, event);
         } else {

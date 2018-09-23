@@ -115,6 +115,7 @@ public class GuiListener implements Listener {
 
     /**
      * Delegates the InventoryClickEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui and the event is not cancelled.
+     * InventoryClickEvents are cancelled before they are passed to the Gui.
      * @param event the InventoryClickEvent
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

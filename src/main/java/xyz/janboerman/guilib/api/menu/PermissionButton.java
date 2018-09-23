@@ -2,7 +2,6 @@ package xyz.janboerman.guilib.api.menu;
 
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 import java.util.Optional;

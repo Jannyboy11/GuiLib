@@ -26,6 +26,10 @@ public class GuiLibrary extends JavaPlugin {
         getServer().getPluginManager().registerEvents(guiListener = GuiListener.getInstance(), this);
     }
 
+    /**
+     * Get the listener that delegates inventory events to GUIs.
+     * @return the listener
+     */
     public GuiListener getGuiListener() {
         return guiListener;
     }

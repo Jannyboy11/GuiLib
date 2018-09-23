@@ -23,7 +23,7 @@ public class RedirectItemButton<MH extends MenuHolder<?>> extends ItemButton<MH>
      */
     public RedirectItemButton(ItemStack icon, Supplier<? extends Inventory> redirect) {
         this(icon, (menuHolder, event) -> redirect.get());
-        Objects.requireNonNull(redirect, "redirect cannot be null");
+        Objects.requireNonNull(redirect, "Redirect cannot be null");
     }
 
     /**
@@ -33,7 +33,7 @@ public class RedirectItemButton<MH extends MenuHolder<?>> extends ItemButton<MH>
      */
     public RedirectItemButton(ItemStack icon, BiFunction<MH, InventoryClickEvent, ? extends Inventory> redirect) {
         super(icon);
-        this.redirect = Objects.requireNonNull(redirect,"redirect cannot be null");
+        this.redirect = Objects.requireNonNull(redirect, "Redirect cannot be null");
     }
 
     /**

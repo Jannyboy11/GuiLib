@@ -4,4 +4,4 @@ before_install:
   - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
   - source ./install-jdk.sh --feature 10 --license GPL
 install:
-   - mvn javadoc:jar install
+  - mvn javadoc:jar install

@@ -34,6 +34,10 @@ public class ToggleButton<MH extends MenuHolder<?>> extends CycleButton<Boolean,
         super(icon, new Boolean[]{false, true}, enabled ? 1 : 0, false);
     }
 
+    /**
+     * Get whether this button is toggled on.
+     * @return true if this button is toggled on, otherwise false
+     */
     public final boolean isEnabled() {
         return getCurrentState();
     }
