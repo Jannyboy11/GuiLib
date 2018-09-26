@@ -15,7 +15,7 @@ public class ItemButton<MH extends MenuHolder<?>> implements MenuButton<MH> {
 
     /**
      * The representation of this button.
-     * Buttons that wish to update their inventories should use {@link #setIcon(ItemStack)} intead.
+     * Buttons that wish to update their inventories should use {@link #setIcon(ItemStack)} instead.
      */
     protected ItemStack stack;
 
