@@ -1,6 +1,6 @@
 language: java
 jdk:
-- oraclejdk10
+- oraclejdk11
 script: mvn javadoc:jar install -DfinalName=GuiLib
 deploy:
   provider: releases
