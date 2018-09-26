@@ -203,6 +203,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
      * @return a button if one is present at the given slot, otherwise null
      */
     public MenuButton<?> getButton(int slot) {
+        if (slot < 0 || slot >= buttons.length) return null;
+
         return this.buttons[slot];
     }
 
