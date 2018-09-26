@@ -3,6 +3,10 @@ package xyz.janboerman.guilib.api.menu;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * A button that can sit in a {@link MenuHolder}.
+ * @param <MH> the specific MenuHolder type
+ */
 public interface MenuButton<MH extends MenuHolder<?>> {
 
     /**
