@@ -72,7 +72,8 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
     public final void onClick(MH holder, InventoryClickEvent event) {
         boolean toggleSuccess = tryToggle(holder, event);
         if (toggleSuccess) {
-            event.setCurrentItem(this.stack = updateIcon(holder, event));
+            setIcon(updateIcon(holder, event));
+            event.setCurrentItem(getIcon());
         }
     }
 
@@ -112,7 +113,7 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
 
     /**
      * Determines what the icon should look like.
-     * Implementations can override this method.
+     * Subclasses can safely override this method without calling or overriding {@link #setIcon(ItemStack)}.
      * @param menuHolder the inventory holder for the menu
      * @param event the InventoryClickEvent that caused the button to toggle
      * @return the updated icon

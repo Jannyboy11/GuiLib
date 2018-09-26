@@ -26,5 +26,27 @@ public interface MenuButton<MH extends MenuHolder<?>> {
     public default ItemStack getIcon() {
         return null;
     }
+
+    /**
+     * Called when the button is added to the menu.
+     *
+     * @param menuHolder the menu
+     * @param slot the position in the menu
+     * @return whether the button could be added, true by default
+     */
+    public default boolean onAdd(MH menuHolder, int slot) {
+        return true;
+    }
+
+    /**
+     * Called when the button is removed from the menu.
+     *
+     * @param menuHolder the menu
+     * @param slot the position in the menu
+     * @return whether the button could be removed, true by default
+     */
+    public default boolean onRemove(MH menuHolder, int slot) {
+        return true;
+    }
     
 }

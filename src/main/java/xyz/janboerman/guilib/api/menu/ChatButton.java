@@ -74,9 +74,9 @@ public class ChatButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
      * Subclasses can override this method for chat messages that are not constant.
      * The default implementation delegates to {@link #getMessage()}.
      *
-     * @param menuHolder the menu holder.
+     * @param menuHolder the menu holder
      * @param event the InventoryClickEvent
-     * @return the customized message.
+     * @return the customized message
      */
     protected String getMessage(MH menuHolder, InventoryClickEvent event) {
         return getMessage();

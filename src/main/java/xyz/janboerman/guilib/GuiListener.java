@@ -39,7 +39,7 @@ public class GuiListener implements Listener {
     private GuiListener() {}
 
     /**
-     * Get's the GuiListener.
+     * Gets the GuiListener.
      * @return the Gui listener singleton instance
      */
     public static GuiListener getInstance() {
@@ -61,7 +61,7 @@ public class GuiListener implements Listener {
     }
 
     /**
-     * Substiture for {@link Inventory#getHolder()} for gui inventories.
+     * Substitute for {@link Inventory#getHolder()} for gui inventories.
      * @param inventory the inventory
      * @return the holder - or null if no holder was registered with the inventory.
      */

@@ -8,7 +8,9 @@ import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.GuiListener;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * A GuiInventoryHolder that only responds to clicks in the top inventory of the {@link InventoryView}.
@@ -28,16 +30,21 @@ import java.util.*;
  * @see ChatButton
  * @see ClaimButton
  */
-public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
-    
-    private final Map<Integer, MenuButton<?>> buttons = new HashMap<>(); //I wish java had the MenuHolder.type like Scala :(
+public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implements Iterable<MenuButton<?>> {
+
+    private final MenuButton<?>[] buttons;
+
+    private final LinkedList<WeakReference<ButtonAddCallback>> addButtonCallbacks = new LinkedList<>();
+    private final LinkedList<WeakReference<ButtonRemoveCallback>> removeButtonCallbacks = new LinkedList<>();
 
     /**
-     * @deprecated se {@link #MenuHolder(GuiListener, Plugin, InventoryType, String)} instead
+     * Creates the MenuHolder with the given InventoryType and title.
+     * @param plugin your plugin
+     * @param type the inventory type
+     * @param title the title
      */
-    @Deprecated
     public MenuHolder(P plugin, InventoryType type, String title) {
-        super(plugin, type, title);
+        this(GuiListener.getInstance(), plugin, type, title);
     }
 
     /**
@@ -49,14 +56,18 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      */
     public MenuHolder(GuiListener guiListener, P plugin, InventoryType type, String title) {
         super(guiListener, plugin, type, title);
+
+        this.buttons = new MenuButton<?>[getInventory().getSize()];
     }
 
     /**
-     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, int, String)} instead
+     * Creates the MenuHolder with the given size and title.
+     * @param plugin your plugin
+     * @param size the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
+     * @param title the title
      */
-    @Deprecated
     public MenuHolder(P plugin, int size, String title) {
-        super(plugin, size, title);
+        this(GuiListener.getInstance(), plugin, size, title);
     }
 
     /**
@@ -68,14 +79,17 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      */
     public MenuHolder(GuiListener guiListener, P plugin, int size, String title) {
         super(guiListener, plugin, size, title);
+
+        this.buttons = new MenuButton<?>[getInventory().getSize()];
     }
 
     /**
-     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, InventoryType)} instead.
+     * Creates the MenuHolder with the given InventoryType.
+     * @param plugin your plugin
+     * @param type the inventory type
      */
-    @Deprecated
     public MenuHolder(P plugin, InventoryType type) {
-        super(plugin, type);
+        this(GuiListener.getInstance(), plugin, type);
     }
 
     /**
@@ -86,14 +100,17 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      */
     public MenuHolder(GuiListener guiListener, P plugin, InventoryType type) {
         super(guiListener, plugin, type);
+
+        this.buttons = new MenuButton<?>[getInventory().getSize()];
     }
 
     /**
-     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, int)} instead.
+     * Creates the MenuHolder with the given size.
+     * @param plugin your plugin
+     * @param size the chest size (should be a multiple of 9 and between 9 - 54 (inclusive)
      */
-    @Deprecated
     public MenuHolder(P plugin, int size) {
-        super(plugin, size);
+        this(GuiListener.getInstance(), plugin, size);
     }
 
     /**
@@ -104,14 +121,18 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      */
     public MenuHolder(GuiListener guiListener, P plugin, int size) {
         super(guiListener, plugin, size);
+
+        this.buttons = new MenuButton<?>[getInventory().getSize()];
     }
 
     /**
-     * @deprecated use {@link #MenuHolder(GuiListener, Plugin, Inventory)} instead
+     * Creates the MenuHolder with the given inventory.
+     * @param plugin your Plugin
+     * @param inventory the Inventory
+     * @see xyz.janboerman.guilib.api.GuiInventoryHolder#GuiInventoryHolder(Plugin, Inventory)
      */
-    @Deprecated
     public MenuHolder(P plugin, Inventory inventory) {
-        super(plugin, inventory);
+        this(GuiListener.getInstance(), plugin, inventory);
     }
 
     /**
@@ -119,10 +140,12 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * @param plugin your Plugin
      * @param inventory the Inventory
      * @param guiListener the gui listener that calls the onOpen, onClick and onClose methods
-     * @see xyz.janboerman.guilib.api.GuiInventoryHolder#GuiInventoryHolder(Plugin, Inventory)
+     * @see xyz.janboerman.guilib.api.GuiInventoryHolder#GuiInventoryHolder(GuiListener, Plugin, Inventory)
      */
     public MenuHolder(GuiListener guiListener, P plugin, Inventory inventory) {
         super(guiListener, plugin, inventory);
+
+        this.buttons = new MenuButton<?>[getInventory().getSize()];
     }
 
     /**
@@ -142,12 +165,36 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
 
     /**
      * Set a button on a slot.
+     * Subclasses that override this method must either call {@link MenuButton#onAdd(MenuHolder, int)} or call super.setButton(slot, button).
+     *
      * @param slot the slot number
      * @param button the button
+     * @return true if the button could be added to this menu, otherwise false
      */
-    public void setButton(int slot, MenuButton<?> button) {
-        getInventory().setItem(slot, button.getIcon());
-        this.buttons.put(slot, button);
+    public boolean setButton(int slot, MenuButton<?> button) {
+        if (!unsetButton(slot)) return false;
+
+        MenuButton rawButton = (MenuButton) button;
+
+        var iterator = addButtonCallbacks.iterator();
+        while (iterator.hasNext()) {
+            var nextReference = iterator.next();
+            var nextCallback = nextReference.get();
+            if (nextCallback == null) {
+                iterator.remove(); //if a callback was garbage collected, remove it from our list
+            } else {
+                if (!nextCallback.onAdd(slot, button)) return false;
+            }
+        }
+
+        if (rawButton.onAdd(this, slot)) {
+            getInventory().setItem(slot, button.getIcon());
+            this.buttons[slot] = button;
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -156,7 +203,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      * @return a button if one is present at the given slot, otherwise null
      */
     public MenuButton<?> getButton(int slot) {
-        return this.buttons.get(slot);
+        return this.buttons[slot];
     }
 
     /**
@@ -174,35 +221,143 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> {
      */
     public SortedMap<Integer, MenuButton<?>> getButtons() {
         var map = new TreeMap<Integer, MenuButton<?>>();
-        map.putAll(this.buttons);
+        for (int i = 0; i < this.buttons.length; i++) {
+            MenuButton button = this.buttons[i];
+            if (button != null) map.put(i, button);
+        }
         return map;
     }
 
     /**
      * Remove a button from a slot.
+     * Subclasses that override this method must either call {@link MenuButton#onRemove(MenuHolder, int)} when a button is removed, or call super.unsetButton(slot).
+     *
      * @param slot the slot number
      * @return whether a button was removed successfully from the slot
      */
     public boolean unsetButton(int slot) {
-        boolean isButtonRemoved = this.buttons.remove(slot) != null;
+        MenuButton menuButton = this.buttons[slot];
+        if (menuButton == null) return true;
 
-        if (isButtonRemoved) {
-            getInventory().setItem(slot, null);
+        var iterator = removeButtonCallbacks.iterator();
+        while (iterator.hasNext()) {
+            var nextReference = iterator.next();
+            var nextCallback = nextReference.get();
+            if (nextCallback == null) {
+                iterator.remove(); //if a callback was garbage collected, remove it from our list
+            } else {
+                if (!nextCallback.onRemove(slot, menuButton)) return false;
+            }
         }
 
-        return isButtonRemoved;
+        if (menuButton.onRemove(this, slot)) {
+            this.buttons[slot] = null;
+            getInventory().setItem(slot, null);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * Removes all buttons from the menu.
+     * Subclasses that override this method must either call {@link MenuButton#onRemove(MenuHolder, int)} when a button is removed, or call super.unsetButton(slot).
      */
     public void clearButtons() {
-        Iterator<Integer> slotIterator = buttons.keySet().iterator();
-        while (slotIterator.hasNext()) {
-            int slot = slotIterator.next();
-            getInventory().setItem(slot, null);
-            slotIterator.remove();            
+        for (int i = 0; i < this.buttons.length; i++) {
+            unsetButton(i);
         }
     }
-    
+
+    /**
+     * Get an iterator that iterates over all buttons in this menu.
+     * @return a new iterator
+     */
+    @Override
+    public Iterator<MenuButton<?>> iterator() {
+        return Arrays.stream(buttons).filter(Objects::nonNull).iterator();
+    }
+
+    /**
+     * Perform an action for every button in this menu.
+     *
+     * This action can set or remove buttons in this menu,
+     * meaning that this method will not throw a ConcurrentModificationException when doing so.
+     *
+     * @param action the action
+     */
+    public void forEach(BiConsumer<Integer, ? super MenuButton<?>> action) {
+        for (int i = 0; i < buttons.length; i++) {
+            MenuButton<?> button = buttons[i];
+            if (button != null) action.accept(i, button);
+        }
+    }
+
+    /**
+     * Add a callback that is invoked when a button is added to this menu.
+     *
+     * @param buttonAddListener the callback
+     * @see #removeButtonAddCallback(ButtonAddCallback)
+     */
+    public void addButtonAddCallback(ButtonAddCallback buttonAddListener) {
+        if (buttonAddListener == null) return;
+        addButtonCallbacks.add(new WeakReference<>(buttonAddListener));
+    }
+
+    /**
+     * Add a callback that is invoked when a button is removed from this menu.
+     *
+     * @param buttonRemoveListener the callback
+     * @see #removeButtonRemoveCallback(ButtonRemoveCallback)
+     */
+    public void addButtonRemoveCallback(ButtonRemoveCallback buttonRemoveListener) {
+        if (buttonRemoveListener == null) return;
+        removeButtonCallbacks.add(new WeakReference<>(buttonRemoveListener));
+    }
+
+    /**
+     * Remove a callback that is (no longer) invoked when a button is added to this menu.
+     *
+     * @param buttonAddListener the callback
+     */
+    public void removeButtonAddCallback(ButtonAddCallback buttonAddListener) {
+        Objects.requireNonNull(buttonAddListener, "Button-Add callback cannot be null");
+        //need to use removeIf since WeakReference doesn't override equals.
+        //this doesn't matter though as the remove operation of LinkedList is O(n) anyway.
+        addButtonCallbacks.removeIf(ref -> buttonAddListener.equals(ref.get()));
+    }
+
+    /**
+     * Remove a callback that is (no longer) invoked when a button is removed from this menu.
+     *
+     * @param buttonRemoveListener the callback
+     */
+    public void removeButtonRemoveCallback(ButtonRemoveCallback buttonRemoveListener) {
+        Objects.requireNonNull(buttonRemoveListener, "Button-Remove callback cannot be null");
+        //need to use removeIf since WeakReference doesn't override equals.
+        //this doesn't matter though as the remove operation of LinkedList is O(n) anyway.
+        removeButtonCallbacks.removeIf(ref -> buttonRemoveListener.equals(ref.get()));
+    }
+
+    /**
+     * A callback that - when registered - is invoked when buttons are added to this menu.
+     * @see #addButtonAddCallback(ButtonAddCallback)
+     */
+    @FunctionalInterface
+    public static interface ButtonAddCallback {
+
+        public boolean onAdd(int slot, MenuButton<?> button);
+
+    }
+
+    /**
+     * A callback that - when registered - is invoked when buttons are removed from this menu.
+     * @see #addButtonRemoveCallback(ButtonRemoveCallback)
+     */
+    @FunctionalInterface
+    public static interface ButtonRemoveCallback {
+
+        public boolean onRemove(int slot, MenuButton<?> button);
+
+    }
 }

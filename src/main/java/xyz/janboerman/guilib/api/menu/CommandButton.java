@@ -19,6 +19,15 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     private CommandResultHandler<MH> resultHandler;
 
     /**
+     * Protected constructor for command buttons that wish to use non-constant commands and arguments.
+     * Subclasses that use this super constructor must override {@link #getArguments()} or {@link #getCommand} or their overloads.
+     * @param icon the icon
+     */
+    protected CommandButton(ItemStack icon) {
+        super(icon);
+    }
+
+    /**
      * Creates the CommandButton.
      * @param icon the icon of the button
      * @param command the command to be executed
@@ -50,9 +59,10 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
      */
     @Override
     public void onClick(MH menuHolder, InventoryClickEvent event) {
-        Command command = getCommand();
+        Command command = getCommand(menuHolder, event);
+        String[] arguments = getArguments(menuHolder, event);
+
         HumanEntity player = event.getWhoClicked();
-        String[] arguments = getArguments();
         boolean success = command.execute(player, command.getLabel(), arguments);
 
         getResultHandler().ifPresent(resultHandler -> resultHandler.afterCommand(player, command, arguments, success, menuHolder, event));
@@ -76,10 +86,36 @@ public class CommandButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
 
     /**
      * Set the result handler.
-     * @param resultHandler
+     * @param resultHandler the result handler
      */
     public void setResultHandler(CommandResultHandler<MH> resultHandler) {
         this.resultHandler = resultHandler;
+    }
+
+    /**
+     * Computes the command to be used from the MenuHolder and InventoryClickEvent.
+     * This method is called by {@link #onClick(MenuHolder, InventoryClickEvent)}.
+     * The default implementation delegates to {@link #getCommand()}.
+     *
+     * @param menuHolder the menu holder
+     * @param event the InventoryClickEvent
+     * @return the command to be executed
+     */
+    protected Command getCommand(MH menuHolder, InventoryClickEvent event) {
+        return getCommand();
+    }
+
+    /**
+     * Computes the arguments to be used from the MenuHolder and InventoryClickEvent.
+     * This method is called by {@link #onClick(MenuHolder, InventoryClickEvent)}.
+     * The default implementation delegates to {@link #getArguments()}.
+     *
+     * @param menuHolder the menu holder
+     * @param event the InventoryClickEvent
+     * @return the arguments with which to execute command
+     */
+    protected String[] getArguments(MH menuHolder, InventoryClickEvent event) {
+        return getArguments();
     }
 
     /**

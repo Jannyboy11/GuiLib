@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 /**
  * A button that redirects back to the inventory supplied by the supplier given in the constructor.
- * The material of the icon is wooden door.
+ * The material of the icon is an iron door.
  */
 public class BackButton<P extends Plugin> extends RedirectItemButton<MenuHolder<P>> {
 
@@ -30,7 +30,7 @@ public class BackButton<P extends Plugin> extends RedirectItemButton<MenuHolder<
      * @param to the inventory supplier
      */
     public BackButton(String name, Supplier<? extends Inventory> to) {
-        super(new ItemBuilder(Material.OAK_DOOR).name(name).build(), to);
+        super(new ItemBuilder(Material.IRON_DOOR).name(name).build(), to);
     }
 
 }

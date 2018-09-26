@@ -33,9 +33,14 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     protected final GuiListener guiListener;
 
     /**
-     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, InventoryType, String)}
+     * Constructs a new GuiInventoryHolder for your plugin with the given inventory type and title.
+     * @param plugin your plugin
+     * @param type the inventory type
+     * @param title the title
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
+     *
+     * @apiNote if you're shading GuiLib, be sure to register GuiListener's single instance for events.
      */
-    @Deprecated
     public GuiInventoryHolder(P plugin, InventoryType type, String title) {
         this(GuiListener.getInstance(), plugin, type, title);
     }
@@ -57,9 +62,14 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     }
 
     /**
-     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, int, String)}
+     * Constructs a new GuiInventoryHolder for your plugin with the given size and title.
+     * @param plugin your plugin
+     * @param title the title
+     * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54)
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
+     *
+     * @apiNote if you're shading GuiLib, be sure to register GuiListener's single instance for events.
      */
-    @Deprecated
     public GuiInventoryHolder(P plugin, int size, String title) {
         this(GuiListener.getInstance(), plugin, size, title);
     }
@@ -81,9 +91,13 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     }
 
     /**
-     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, InventoryType)}
+     * Constructs a new GuiInventoryHolder for your plugin with the given inventory type.
+     * @param plugin your plugin
+     * @param type the inventory type
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
+     *
+     * @apiNote if you're shading GuiLib, be sure to register GuiListener's single instance for events.
      */
-    @Deprecated
     public GuiInventoryHolder(P plugin, InventoryType type) {
         this(GuiListener.getInstance(), plugin, type);
     }
@@ -104,9 +118,13 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     }
 
     /**
-     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, int)}
+     * Constructs a new chest-GuiInventoryHolder for your plugin with the given size.
+     * @param plugin your plugin
+     * @param size the chest size (should be a multiple of 9 and ranging from 9 to 54)
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
+     *
+     * @apiNote if you're shading GuiLib, be sure to register GuiListener's single instance for events.
      */
-    @Deprecated
     public GuiInventoryHolder(P plugin, int size) {
         this(GuiListener.getInstance(), plugin, size);
     }
@@ -127,9 +145,43 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     }
 
     /**
-     * @deprecated if you're shading GuiLib, use {@link #GuiInventoryHolder(GuiListener, Plugin, Inventory)}
+     * Constructs a GuiInventoryHolder for your plugin using the given inventory.
+     * This is especially usefull when you are using OBC or NMS classes in your plugin and your inventory cannot be created
+     * by {@link org.bukkit.Server#createInventory(InventoryHolder, InventoryType, String)} or any of its overloads.
+     * One reason you might want to do this is to implement custom shift-click behaviour in your own Container implementation.
+     * <p>
+     * The InventoryHolder of the inventory given as the argument should be this new GuiInventoryHolder.
+     * A code example:
+     * <pre><code>
+     * public class MyNMSInventory extends InventorySubContainer implements ITileEntityContainer {
+     *
+     *     private final MyBukkitWrapper bukkitInventory;
+     *
+     *     public MyNMSInventory(MyPlugin plugin, String title) {
+     *         super(title, true, 6*9);
+     *         this.bukkitInventory = new MyBukkitWrapper(this);
+     *         this.bukkitOwner = new MyGuiInventoryHolder(plugin, this);
+     *     }
+     *
+     *     {@literal @}Override
+     *     public Container createContainer(PlayerInventory playerInventory, EntityHuman human) {
+     *         EntityPlayer player = (EntityPlayer) human;
+     *         return new MyContainer(player.nextContainerCounter(), player.getBukkitEntity(), bukkitInventory);
+     *     }
+     *
+     *     {@literal @}Override
+     *     public String getContainerName() {
+     *          return "minecraft:container";
+     *     }
+     * }
+     * </code></pre>
+     *
+     * @param plugin your plugin
+     * @param inventory the custom inventory
+     * {@link #onClick(InventoryClickEvent)} and {@link #onClose(InventoryCloseEvent)} methods
+     *
+     * @apiNote if you're shading GuiLib, be sure to register GuiListener's single instance for events.
      */
-    @Deprecated
     public GuiInventoryHolder(P plugin, Inventory inventory) {
         this(GuiListener.getInstance(), plugin, inventory);
     }
