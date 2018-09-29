@@ -12,7 +12,7 @@ import xyz.janboerman.guilib.api.ItemBuilder;
 public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
 
     /**
-     * Creates the close button with a wooden door icon and "Close" as the display name.
+     * Creates the close button with an oak door icon and "Close" as the display name.
      */
     public CloseButton() {
         this(Material.OAK_DOOR);

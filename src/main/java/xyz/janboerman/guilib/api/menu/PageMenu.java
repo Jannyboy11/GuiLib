@@ -17,12 +17,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-//TODO create a (sub)class that works for a constant inventory size that doesn't require a new inventory to be opened all the time.
-
 /**
  * A menu that implements pages. This menu by default only has two buttons - on the bottom row of the top inventory.
  * The pages themselves can therefore not be larger than 45 slots.
  * @param <P> your plugin type
+ * @see ResetButton
  */
 public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHolder.ButtonAddCallback, MenuHolder.ButtonRemoveCallback {
 
@@ -347,7 +346,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
     }
 
     /**
-     * Initialises the previous-page and next-page buttons.
+     * Initialises the page view as well as previous-page and next-page buttons.
      */
     protected void resetButtons() {
 
@@ -411,6 +410,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
         InventoryOpenEvent proxyEvent = new InventoryOpenEvent(proxyView);
         getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
 
+        //if our page is a menu, then we already receive updates because of our callbacks
+        //see addButtonListeners and resetButtons
         if (!(getPage() instanceof MenuHolder)) {
             updateView();
         }
@@ -473,6 +474,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
 
             getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
 
+            //if our page is a menu, then we already receive updates because of our callbacks
+            //see addButtonListeners and resetButtons
             if (!(getPage() instanceof MenuHolder)) {
                 updateView();
             }
@@ -509,6 +512,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
             }
         }));
 
+        //if our page is a menu, then we already receive updates because of our callbacks
+        //see addButtonListeners and resetButtons
         if (!(getPage() instanceof MenuHolder)) {
             updateView();
         }
@@ -516,8 +521,8 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
 
     private static int calculateInnerPageSize(GuiInventoryHolder guiInventoryHolder) {
         int containedSize = guiInventoryHolder.getInventory().getSize();
-        if (containedSize == 0) {
-            throw new IllegalArgumentException("Page cannot be a 0-sized inventory");
+        if (containedSize <= 0) {
+            throw new IllegalArgumentException("Page cannot have a size of 0 or below");
         } else if (containedSize <= 45) {
             int remainder = containedSize % 9;
             if (remainder == 0) {

@@ -173,6 +173,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
      */
     public boolean setButton(int slot, MenuButton<?> button) {
         if (!unsetButton(slot)) return false;
+        if (button == null) return true;
 
         MenuButton rawButton = (MenuButton) button;
 
