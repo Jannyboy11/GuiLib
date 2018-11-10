@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.7.4/javadoc)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/v1.7.5/javadoc)!
 
 ### Compiling
 
@@ -15,7 +15,7 @@ Available on [GitHub Releases](https://github.com/Jannyboy11/GuiLib/releases).
 
 ### Example Usage
 
-```
+```java
 package com.example;
 
 import org.bukkit.Material;
@@ -121,7 +121,7 @@ public class ExamplePlugin extends JavaPlugin {
 }
 ```
 
-```
+```java
 package com.example;
 
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -247,43 +247,43 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 This example uses GuiLib as a runtime dependency, so `depend: ["GuiLib"]` is in the plugin.yml and the dependency scope
 is set to `provided`.
 
-### Dependency
+### Dependency Information
 
 [![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
 
 ##### Maven
 
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 	
 	<dependency>
 	    <groupId>com.github.Jannyboy11</groupId>
 	    <artifactId>GuiLib</artifactId>
-	    <version>v1.7.4</version>
+	    <version>v1.7.5</version>
 	    <scope>provided</scope>
 	</dependency>	
 
 ##### Gradle
 
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
-	
-	dependencies {
-    	compileOnly 'com.github.Jannyboy11:GuiLib:v1.7.4'
+    allprojects {
+        repositories {
+            ...
+            maven { url 'https://jitpack.io' }
+        }
+    }
+    	
+    dependencies {
+        compileOnly 'com.github.Jannyboy11:GuiLib:v1.7.5'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.7.4" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.7.5" % "provided"	
 
 ### Licensing
 
