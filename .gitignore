@@ -3,7 +3,8 @@
 **.iml
 
 #Maven
-**/target/*
+GuiLib-API/target/*
+GuiLib-Plugin/target/*
 
 #Eclipse
 .settings/*
