@@ -7,3 +7,4 @@ before_install:
   - mvn -f maven-shade-plugin/pom.xml clean install
 install:
   - mvn install
+  - mvn -f GuiLib-API/pom.xml javadoc:jar

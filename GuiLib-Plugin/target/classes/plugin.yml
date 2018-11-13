@@ -1,7 +1,0 @@
-name: GuiLib-Plugin
-author: Jannyboy11
-main: xyz.janboerman.guilib.GuiLibrary
-version: 1.8
-description: Simple library plugin for creating inventory GUIs
-load: STARTUP
-api-version: 1.13
