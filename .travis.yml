@@ -1,6 +1,9 @@
 language: java
 jdk:
 - oraclejdk11
+before_script:
+  - git clone https://github.com/apache/maven-shade-plugin.git
+  - mvn -f maven-shade-plugin/pom.xml clean install
 script: mvn install -DfinalName=GuiLib
 deploy:
   provider: releases
