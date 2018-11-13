@@ -3,5 +3,7 @@ jdk:
 before_install:
   - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
   - source ./install-jdk.sh --feature 11 --license GPL
+  - git clone https://github.com/apache/maven-shade-plugin.git
+  - mvn -f maven-shade-plugin/pom.xml clean install
 install:
-  - mvn javadoc:jar install
+  - mvn install

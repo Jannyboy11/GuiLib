@@ -7,7 +7,7 @@ Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/c
 ### Compiling
 
 Prerequisites: Apache Maven 3.5+, JDK11+.
-Then run `mvn javadoc:jar install`.
+Then run `mvn clean install`.
 
 ### Pre-built jars
 
@@ -27,7 +27,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.janboerman.guilib.GuiLibrary;
-import xyz.janboerman.guilib.GuiListener;
+import xyz.janboerman.guilib.api.GuiListener;
 import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.api.menu.*;
 
@@ -247,9 +247,10 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 This example uses GuiLib as a runtime dependency, so `depend: ["GuiLib"]` is in the plugin.yml and the dependency scope
 is set to `provided`.
 
-### Dependency Information
+### Dependency Information [![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
 
-[![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
+There are two artifacts that you can depend on, either `GuiLib-API` or `GuiLib-Plugin`.
+The examples below use the plugin variant.
 
 ##### Maven
 
@@ -261,9 +262,9 @@ is set to `provided`.
     </repositories>
 	
 	<dependency>
-	    <groupId>com.github.Jannyboy11</groupId>
-	    <artifactId>GuiLib</artifactId>
-	    <version>v1.7.5</version>
+	    <groupId>com.github.Jannyboy11.GuiLib</groupId>
+	    <artifactId>GuiLib-Plugin</artifactId>
+	    <version>v1.8</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -277,13 +278,13 @@ is set to `provided`.
     }
     	
     dependencies {
-        compileOnly 'com.github.Jannyboy11:GuiLib:v1.7.5'
+        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.8'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11" % "GuiLib" % "v1.7.5" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.8" % "provided"	
 
 ### Licensing
 

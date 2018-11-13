@@ -6,7 +6,12 @@
 
     <groupId>xyz.janboerman</groupId>
     <artifactId>GuiLib</artifactId>
-    <version>1.7.5</version>
+    <packaging>pom</packaging>
+    <version>1.8</version>
+    <modules>
+        <module>GuiLib-API</module>
+        <module>GuiLib-Plugin</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -36,7 +41,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version> <!-- version 3.0.1 won't properly create hyperlinks for bukkit types -->
+                <version>3.0.1</version>
                 <configuration>
                     <!-- bukkit library javadoc -->
                     <links>
