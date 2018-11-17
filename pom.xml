@@ -7,7 +7,7 @@
     <groupId>xyz.janboerman</groupId>
     <artifactId>GuiLib</artifactId>
     <packaging>pom</packaging>
-    <version>1.8</version>
+    <version>1.8.1</version>
     <modules>
         <module>GuiLib-API</module>
         <module>GuiLib-Plugin</module>
@@ -66,6 +66,17 @@
                     <!-- the javadoc tool is too picky for me -->
                     <failOnError>false</failOnError>
                 </configuration>
+
+                <!-- I don't even get why this workaround is required.
+                    Why is the javadoc plugin reading bytecode anyway?
+                    link to the bugtracker: https://issues.apache.org/jira/projects/MJAVADOC/issues/MJAVADOC-542 -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>7.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
