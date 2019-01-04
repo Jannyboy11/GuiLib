@@ -5,11 +5,22 @@
     <parent>
         <artifactId>GuiLib</artifactId>
         <groupId>xyz.janboerman</groupId>
-        <version>1.8.2</version>
+        <version>1.8.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>GuiLib-API</artifactId>
 
+    <dependencies>
+        <!-- We are depending on a more recent version than that's bundled with Minecraft currently \
+         because the old version doesn't provide a jigsaw module. We need this dependency to access the Multimap class
+         that's used by ItemMeta#setAttributeModifiers. -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.0.1-jre</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

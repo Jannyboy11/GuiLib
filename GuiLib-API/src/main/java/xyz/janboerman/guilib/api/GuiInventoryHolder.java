@@ -145,7 +145,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
 
     /**
      * Constructs a GuiInventoryHolder for your plugin using the given inventory.
-     * This is especially usefull when you are using OBC or NMS classes in your plugin and your inventory cannot be created
+     * This is especially useful when you are using OBC or NMS classes in your plugin and your inventory cannot be created
      * by {@link org.bukkit.Server#createInventory(InventoryHolder, InventoryType, String)} or any of its overloads.
      * One reason you might want to do this is to implement custom shift-click behaviour in your own Container implementation.
      * <p>
@@ -187,7 +187,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
 
     /**
      * Constructs a GuiInventoryHolder for your plugin using the given inventory.
-     * This is especially usefull when you are using OBC or NMS classes in your plugin and your inventory cannot be created
+     * This is especially useful when you are using OBC or NMS classes in your plugin and your inventory cannot be created
      * by {@link org.bukkit.Server#createInventory(InventoryHolder, InventoryType, String)} or any of its overloads.
      * One reason you might want to do this is to implement custom shift-click behaviour in your own Container implementation.
      * <p>
