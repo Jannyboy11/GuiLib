@@ -49,11 +49,13 @@ public class RedirectItemButton<MH extends MenuHolder<?>> extends ItemButton<MH>
 
     /**
      * Redirects the player to the inventory supplied by {@link #to(MenuHolder, InventoryClickEvent)}.
+     * <p>
+     * Subclasses that override this method should always call {@code super.onClick(menuHolder, event);}.
      * @param menuHolder the MenuHolder
      * @param event the InventoryClickEvent
      */
     @Override
-    public final void onClick(MH menuHolder, InventoryClickEvent event) {
+    public void onClick(MH menuHolder, InventoryClickEvent event) {
         RedirectButton.super.onClick(menuHolder, event);
     }
     

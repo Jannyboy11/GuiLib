@@ -20,7 +20,8 @@ public interface RedirectButton<MH extends MenuHolder<?>> extends MenuButton<MH>
            event.getView().close();
            
            HumanEntity player = event.getWhoClicked();
-           player.openInventory(to(holder, event));
+           Inventory to = to(holder, event);
+           if (to != null) player.openInventory(to);
         });
     }
 
