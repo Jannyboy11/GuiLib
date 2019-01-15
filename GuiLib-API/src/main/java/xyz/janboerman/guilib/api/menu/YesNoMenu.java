@@ -1,6 +1,5 @@
 package xyz.janboerman.guilib.api.menu;
 
-import com.google.common.collect.Multimap;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;

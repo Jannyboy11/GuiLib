@@ -1,4 +1,4 @@
-name: ${project.artifactId}
+name: GuiLib
 author: Jannyboy11
 main: xyz.janboerman.guilib.GuiLibrary
 version: ${project.version}
