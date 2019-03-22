@@ -4,7 +4,7 @@ Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/c
 
 ### Compiling
 
-Prerequisites: Apache Maven 3.5+, JDK11+.
+Prerequisites: Apache Maven 3.5+, JDK12+.
 Then run `mvn clean install`.
 
 ### Pre-built jars
