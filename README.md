@@ -46,11 +46,15 @@ public class ExamplePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         GuiLibrary guiLibrary = (GuiLibrary) getServer().getPluginManager().getPlugin("GuiLib");
-        guiListener = guiLibrary.getGuiListener();   
+        guiListener = guiLibrary.getGuiListener();
+
+    	// DEBUG!
+    	new TestCommandExecutor(this);
+   
     	
         //basic usage
         menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
-        
+
         menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2");
 
         menu1.setButton(0, new RedirectItemButton<>(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
@@ -91,30 +95,31 @@ public class ExamplePlugin extends JavaPlugin {
 
         Player player = (Player) sender;
 
-        switch(command.getName().toLowerCase()) {
+        return switch(command.getName().toLowerCase()) {
             case "gui":
                 player.openInventory(menu1.getInventory());
-                break;
+                break true;
             case "pages":
                 PageMenu<ExamplePlugin> pageMenu = PageMenu.create(this, Stream.generate(() -> menu1).limit(5).iterator());
                 player.openInventory(pageMenu.getInventory());
-                break;
+                break true;
             case "freediamonds":
                 MenuHolder<ExamplePlugin> menu = new MenuHolder<>(this, 45);
                 for (int slot = 0; slot < menu.getInventory().getSize(); slot++) {
                     menu.setButton(slot, new ClaimButton<>(new ItemStack(Material.DIAMOND, 64)));
                 }
                 player.openInventory(menu.getInventory());
-                break;
+                break true;
             case "claimallitems":
                 ArrayList<ItemStack> mutableRewardsList = Arrays.stream(Material.values())
                         .map(ItemStack::new)
                         .collect(Collectors.toCollection(ArrayList::new));
                 ClaimItemsMenu claimItemsMenu = new ClaimItemsMenu(this, 45, mutableRewardsList);
                 player.openInventory(claimItemsMenu.getInventory());
-        }
-
-        return true;
+                break true;
+            default:
+                break false;
+        };
     }
 }
 ```
@@ -262,7 +267,7 @@ The examples below use the plugin variant.
 	<dependency>
 	    <groupId>com.github.Jannyboy11.GuiLib</groupId>
 	    <artifactId>GuiLib-Plugin</artifactId>
-	    <version>v1.8.4</version>
+	    <version>v1.8.5</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -276,13 +281,13 @@ The examples below use the plugin variant.
     }
     	
     dependencies {
-        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.8.4'
+        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.8.5'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.8.4" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.8.5" % "provided"	
 
 ### Licensing
 

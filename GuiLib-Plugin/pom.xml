@@ -5,7 +5,7 @@
     <parent>
         <artifactId>GuiLib</artifactId>
         <groupId>xyz.janboerman</groupId>
-        <version>1.8.4</version>
+        <version>1.8.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -37,6 +37,21 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <!--Workaround for the maven shade plugin removing both module-info.java's.
+                                Sadly this means that internal packages will be visible again.-->
+                            <Automatic-Module-Name>xyz.janboerman.guilib</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
