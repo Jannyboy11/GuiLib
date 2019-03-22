@@ -48,10 +48,6 @@ public class ExamplePlugin extends JavaPlugin {
         GuiLibrary guiLibrary = (GuiLibrary) getServer().getPluginManager().getPlugin("GuiLib");
         guiListener = guiLibrary.getGuiListener();
 
-    	// DEBUG!
-    	new TestCommandExecutor(this);
-   
-    	
         //basic usage
         menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
 
