@@ -79,43 +79,6 @@ public class ItemBuilder {
     }
 
     /**
-     * Specify the data for items being built.
-     * @param data the data
-     * @return a new ItemBuilder
-     * @deprecated MaterialData is deprecated since Bukkit 1.13
-     */
-    @Deprecated(forRemoval = true, since = "1.5.0")
-    public ItemBuilder data(MaterialData data) {
-        return change(i -> i.setData(data));
-    }
-
-    /**
-     * Specify the data for the items being built.
-     * @param data the data
-     * @return a new ItemBuilder
-     * @deprecated magic value
-     */
-    @Deprecated(forRemoval = true, since = "1.5.0")
-    public ItemBuilder data(byte data) {
-        return change(i -> {
-            MaterialData materialData = i.getData();
-            materialData.setData(data);
-            i.setData(materialData);
-        });
-    }
-
-    /**
-     * Specify the durability for the items being built.
-     * @param durability the damage (0 = full health)
-     * @return a new ItemBuilder
-     * @deprecated use {@link #damage(int)} instead
-     */
-    @Deprecated(forRemoval = true, since = "1.8.3")
-    public ItemBuilder durability(short durability) {
-        return change(i -> i.setDurability(durability));
-    }
-
-    /**
      * Specify the damage for the items being built.
      * @param damage the damage (0 = full health)
      * @return a new ItemBuilder

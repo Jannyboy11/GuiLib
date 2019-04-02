@@ -7,7 +7,7 @@
     <groupId>xyz.janboerman</groupId>
     <artifactId>GuiLib</artifactId>
     <packaging>pom</packaging>
-    <version>1.8.6</version>
+    <version>1.9.0</version>
     <modules>
         <module>GuiLib-API</module>
         <module>GuiLib-Plugin</module>
@@ -34,8 +34,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <release>12</release>
-                    <compilerArgs>--enable-preview</compilerArgs>
+                    <release>11</release>
                 </configuration>
             </plugin>
 

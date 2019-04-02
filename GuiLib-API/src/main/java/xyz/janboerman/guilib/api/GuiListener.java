@@ -5,6 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
@@ -121,6 +122,19 @@ public class GuiListener implements Listener {
         onGuiInventoryEvent(event, gui -> {
             event.setCancelled(true);
             gui.onClick(event);
+        });
+    }
+
+    /**
+     * Delegates the InventoryDragEvent to the {@link GuiInventoryHolder} if the top inventory is held by a Gui and the event is not cancelled.
+     * InventoryDragEvents are cancelled before they are passed to the Gui.
+     * @param event the InventoryDragEvent
+     */
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onInventoryDragEvent(InventoryDragEvent event) {
+        onGuiInventoryEvent(event, gui -> {
+            event.setCancelled(true);
+            gui.onDrag(event);
         });
     }
 

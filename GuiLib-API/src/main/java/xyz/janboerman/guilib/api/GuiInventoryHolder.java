@@ -2,6 +2,7 @@ package xyz.janboerman.guilib.api;
 
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
@@ -279,6 +280,14 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      * @param event the inventory open event.
      */
     public void onOpen(InventoryOpenEvent event) {
+    }
+
+    /**
+     * Called when items are dragged in the corresponding InventoryView.
+     * This method makes no guarantees about which inventory items were dragged into.
+     * @param event
+     */
+    public void onDrag(InventoryDragEvent event) {
     }
 
     /**
