@@ -15,6 +15,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.tags.CustomItemTagContainer;
 import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.material.MaterialData;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -222,6 +224,162 @@ public class ItemBuilder {
     }
 
     /**
+     * Set custom model data for the items being built.
+     * @param customModelData an integer that may be associated client side with a custom item model
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder customModelData(Integer customModelData) {
+        return changeMeta(meta -> meta.setCustomModelData(customModelData));
+    }
+
+    /**
+     * Change the persistent data of the ItemMeta of the ItemStack being built.
+     * @param consumer the PersistentDataContainer consumer
+     * @return a new ItemBuilder
+     * @see #persistentData(NamespacedKey, PersistentDataType, Object)
+     */
+    public ItemBuilder changePersistentData(Consumer<? super PersistentDataContainer> consumer) {
+        return changeMeta(meta -> consumer.accept(meta.getPersistentDataContainer()));
+    }
+
+    /**
+     * Set custom data on the item that will persist when the item is being transferred to different inventories,
+     * falls on the ground and will persist after server restarts.
+     * @param key the key of the data
+     * @param type the type of the data
+     * @param value the value of the data
+     * @param <T> the data's primitive type
+     * @param <Z> the data's complex type
+     * @return a new ItemBuilder
+     * @see #persistentData(NamespacedKey, byte)
+     * @see #persistentData(NamespacedKey, byte[])
+     * @see #persistentData(NamespacedKey, double)
+     * @see #persistentData(NamespacedKey, float)
+     * @see #persistentData(NamespacedKey, int)
+     * @see #persistentData(NamespacedKey, int[])
+     * @see #persistentData(NamespacedKey, long)
+     * @see #persistentData(NamespacedKey, long[])
+     * @see #persistentData(NamespacedKey, short)
+     * @see #persistentData(NamespacedKey, String)
+     * @see #persistentData(NamespacedKey, PersistentDataContainer)
+     */
+    public <T, Z> ItemBuilder persistentData(NamespacedKey key, PersistentDataType<T, Z> type, Z value) {
+        return changePersistentData(data -> data.set(key, type, value));
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the byte type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, byte value) {
+        return persistentData(key, PersistentDataType.BYTE, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the byte[] type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, byte[] value) {
+        return persistentData(key, PersistentDataType.BYTE_ARRAY, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the double type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, double value) {
+        return persistentData(key, PersistentDataType.DOUBLE, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the float type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, float value) {
+        return persistentData(key, PersistentDataType.FLOAT, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the int type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, int value) {
+        return persistentData(key, PersistentDataType.INTEGER, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the int[] type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, int[] value) {
+        return persistentData(key, PersistentDataType.INTEGER_ARRAY, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the long type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, long value) {
+        return persistentData(key, PersistentDataType.LONG, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the long[] type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, long[] value) {
+        return persistentData(key, PersistentDataType.LONG_ARRAY, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the short type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, short value) {
+        return persistentData(key, PersistentDataType.SHORT, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the String type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, String value) {
+        return persistentData(key, PersistentDataType.STRING, value);
+    }
+
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the PersistentDataContainer type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, PersistentDataContainer value) {
+        return persistentData(key, PersistentDataType.TAG_CONTAINER, value);
+    }
+
+    // deprecated CustomTagContainer variants of persistentData
+
+    /**
      * Specify custom tags for the items being built.
      * @param key the key of the tag
      * @param type the type of the tag
@@ -229,7 +387,9 @@ public class ItemBuilder {
      * @param <T> the tag's primitive type
      * @param <Z> the tag's complex type
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, PersistentDataType, Object)} instead.
      */
+    @Deprecated
     public <T, Z> ItemBuilder tag(NamespacedKey key, ItemTagType<T, Z> type, Z value) {
         return changeMeta(meta -> meta.getCustomTagContainer().setCustomTag(key, type, value));
     }
@@ -239,7 +399,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, byte)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, byte value) {
         return tag(key, ItemTagType.BYTE, value);
     }
@@ -249,7 +411,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, byte[])} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, byte[] value) {
         return tag(key, ItemTagType.BYTE_ARRAY, value);
     }
@@ -259,7 +423,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, double)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, double value) {
         return tag(key, ItemTagType.DOUBLE, value);
     }
@@ -269,7 +435,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, float)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, float value) {
         return tag(key, ItemTagType.FLOAT, value);
     }
@@ -279,7 +447,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, int)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, int value) {
         return tag(key, ItemTagType.INTEGER, value);
     }
@@ -289,7 +459,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, int[])} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, int[] value) {
         return tag(key, ItemTagType.INTEGER_ARRAY, value);
     }
@@ -299,7 +471,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, long)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, long value) {
         return tag(key, ItemTagType.LONG, value);
     }
@@ -309,7 +483,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, long[])} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, long[] value) {
         return tag(key, ItemTagType.LONG_ARRAY, value);
     }
@@ -319,7 +495,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, short)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, short value){
         return tag(key, ItemTagType.SHORT, value);
     }
@@ -329,7 +507,9 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, String)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, String value) {
         return tag(key, ItemTagType.STRING, value);
     }
@@ -339,10 +519,13 @@ public class ItemBuilder {
      * @param key the key of the tag
      * @param value the value of the tag
      * @return a new ItemBuilder
+     * @deprecated Use {@link #persistentData(NamespacedKey, PersistentDataContainer)} instead.
      */
+    @Deprecated
     public ItemBuilder tag(NamespacedKey key, CustomItemTagContainer value) {
         return tag(key, ItemTagType.TAG_CONTAINER, value);
     }
+    // It was nice knowing you Bukkit 1.13.2, thanks for the first ever official nbt (although not really) api.
 
     /**
      * Customise meta for the items being built. Example:

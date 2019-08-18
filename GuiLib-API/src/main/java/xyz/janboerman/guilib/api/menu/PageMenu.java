@@ -385,27 +385,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
 
         //delegate event to myPage
         InventoryView view = openEvent.getView();
-        InventoryView proxyView = new InventoryView() {
-            @Override
-            public Inventory getTopInventory() {
-                return myPage.getInventory();
-            }
-
-            @Override
-            public Inventory getBottomInventory() {
-                return view.getBottomInventory();
-            }
-
-            @Override
-            public HumanEntity getPlayer() {
-                return view.getPlayer();
-            }
-
-            @Override
-            public InventoryType getType() {
-                return InventoryType.CHEST;
-            }
-        };
+        InventoryView proxyView = new ProxyView(view);
 
         InventoryOpenEvent proxyEvent = new InventoryOpenEvent(proxyView);
         getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
@@ -433,27 +413,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
         } else {
             //my button row is not clicked - delegate event to myPage
             InventoryView view = clickEvent.getView();
-            InventoryView proxyView = new InventoryView() {
-                @Override
-                public Inventory getTopInventory() {
-                    return myPage.getInventory();
-                }
-
-                @Override
-                public Inventory getBottomInventory() {
-                    return view.getBottomInventory();
-                }
-
-                @Override
-                public HumanEntity getPlayer() {
-                    return view.getPlayer();
-                }
-
-                @Override
-                public InventoryType getType() {
-                    return InventoryType.CHEST;
-                }
-            };
+            InventoryView proxyView = new ProxyView(view);
 
             InventoryType.SlotType slotType = clickEvent.getSlotType();
             InventoryType.SlotType proxySlotType;
@@ -490,27 +450,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
     public void onClose(InventoryCloseEvent closeEvent) {
         //delegate event to myPage
         InventoryView view = closeEvent.getView();
-        getPlugin().getServer().getPluginManager().callEvent(new InventoryCloseEvent(new InventoryView() {
-            @Override
-            public Inventory getTopInventory() {
-                return myPage.getInventory();
-            }
-
-            @Override
-            public Inventory getBottomInventory() {
-                return view.getBottomInventory();
-            }
-
-            @Override
-            public HumanEntity getPlayer() {
-                return view.getPlayer();
-            }
-
-            @Override
-            public InventoryType getType() {
-                return InventoryType.CHEST;
-            }
-        }));
+        getPlugin().getServer().getPluginManager().callEvent(new InventoryCloseEvent(new ProxyView(view)));
 
         //if our page is a menu, then we already receive updates because of our callbacks
         //see addButtonListeners and resetButtons
@@ -533,6 +473,38 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
             }
         } else {
             throw new IllegalArgumentException("The page cannot be larger than 45 slots");
+        }
+    }
+
+    private class ProxyView extends InventoryView {
+        private final InventoryView original;
+        private ProxyView(InventoryView from) {
+            this.original = from;
+        }
+
+        @Override
+        public Inventory getTopInventory() {
+            return myPage.getInventory();
+        }
+
+        @Override
+        public Inventory getBottomInventory() {
+            return original.getBottomInventory();
+        }
+
+        @Override
+        public HumanEntity getPlayer() {
+            return original.getPlayer();
+        }
+
+        @Override
+        public InventoryType getType() {
+            return InventoryType.CHEST;
+        }
+
+        @Override
+        public String getTitle() {
+            return original.getTitle();
         }
     }
 
