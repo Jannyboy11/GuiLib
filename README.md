@@ -1,10 +1,10 @@
 # GuiLib [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.9.0/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.9.1/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
 
 ### Compiling
 
-Prerequisites: Apache Maven 3.5+, JDK12+.
+Prerequisites: Apache Maven 3.5+, JDK11+.
 Then run `mvn clean install`.
 
 ### Pre-built jars
@@ -263,7 +263,7 @@ The examples below use the plugin variant.
 	<dependency>
 	    <groupId>com.github.Jannyboy11.GuiLib</groupId>
 	    <artifactId>GuiLib-Plugin</artifactId>
-	    <version>v1.9.0</version>
+	    <version>v1.9.1</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -277,13 +277,13 @@ The examples below use the plugin variant.
     }
     	
     dependencies {
-        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.9.0'
+        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.9.1'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.9.0" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.9.1" % "provided"	
 
 ### Licensing
 
