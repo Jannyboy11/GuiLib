@@ -131,7 +131,7 @@ public class GuiListener implements Listener {
      * @param event the InventoryDragEvent
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onInventoryDragEvent(InventoryDragEvent event) {
+    public void onInventoryDrag(InventoryDragEvent event) {
         onGuiInventoryEvent(event, gui -> {
             event.setCancelled(true);
             gui.onDrag(event);
