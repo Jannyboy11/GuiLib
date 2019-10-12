@@ -94,27 +94,27 @@ public class ExamplePlugin extends JavaPlugin {
         return switch(command.getName().toLowerCase()) {
             case "gui":
                 player.openInventory(menu1.getInventory());
-                break true;
+                yield true;
             case "pages":
                 PageMenu<ExamplePlugin> pageMenu = PageMenu.create(this, Stream.generate(() -> menu1).limit(5).iterator());
                 player.openInventory(pageMenu.getInventory());
-                break true;
+                yield true;
             case "freediamonds":
                 MenuHolder<ExamplePlugin> menu = new MenuHolder<>(this, 45);
                 for (int slot = 0; slot < menu.getInventory().getSize(); slot++) {
                     menu.setButton(slot, new ClaimButton<>(new ItemStack(Material.DIAMOND, 64)));
                 }
                 player.openInventory(menu.getInventory());
-                break true;
+                yield true;
             case "claimallitems":
                 ArrayList<ItemStack> mutableRewardsList = Arrays.stream(Material.values())
                         .map(ItemStack::new)
                         .collect(Collectors.toCollection(ArrayList::new));
                 ClaimItemsMenu claimItemsMenu = new ClaimItemsMenu(this, 45, mutableRewardsList);
                 player.openInventory(claimItemsMenu.getInventory());
-                break true;
+                yield true;
             default:
-                break false;
+                yield false;
         };
     }
 }

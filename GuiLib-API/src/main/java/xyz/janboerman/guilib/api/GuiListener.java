@@ -85,7 +85,7 @@ public class GuiListener implements Listener {
         return reference.get() == holder; //yes, reference equality!
     }
 
-    //TODO unregisterGui?
+    //TODO unregisterGui? if we add it, we should not detect gui inventory holders anymore by Inventory#getHolder() (in #onGuiInventoryEvent(InventoryEvent, Consumer))
 
 
     // ===== event stuff =====
