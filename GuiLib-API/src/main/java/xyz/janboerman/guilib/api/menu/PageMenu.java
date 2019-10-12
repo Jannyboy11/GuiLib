@@ -12,10 +12,13 @@ import xyz.janboerman.guilib.api.GuiInventoryHolder;
 import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.util.CachedSupplier;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * A menu that implements pages. This menu by default only has two buttons - on the bottom row of the top inventory.
@@ -397,10 +400,6 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
         }
     }
 
-    /**
-     * Clicks the page. Subclasses that override this method should always call super.onClick(openEvent)
-     * @param clickEvent the event
-     */
     @Override
     public void onClick(InventoryClickEvent clickEvent) {
         int rawSlot = clickEvent.getRawSlot();
@@ -433,6 +432,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
                     clickEvent.getHotbarButton());
 
             getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
+            clickEvent.setCancelled(proxyEvent.isCancelled());
 
             //if our page is a menu, then we already receive updates because of our callbacks
             //see addButtonListeners and resetButtons
@@ -440,6 +440,78 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
                 updateView();
             }
         }
+    }
+
+    @Override
+    public void onDrag(InventoryDragEvent dragEvent) {
+        dragEvent.setCancelled(false);
+
+        InventoryView view = dragEvent.getView();
+        InventoryView proxyView = new ProxyView(view);
+
+        ItemStack newCursor = dragEvent.getCursor();
+        ItemStack oldCursor = dragEvent.getOldCursor();
+        boolean isRightClick = dragEvent.getType() == DragType.SINGLE;
+        Map<Integer, ItemStack> newItems = dragEvent.getNewItems(); //immutable. craftbukkit does not allow changing the slots for dragging items.
+
+        //instead, let's cancel the event if any of the slots is the bottom row. otherwise delegate to page using a proxy event.
+        int myPageSize = myPage.getInventory().getSize();
+        if (newItems.keySet().stream().anyMatch(i -> i >= myPageSize && i < myPageSize + 9)) {
+            dragEvent.setCancelled(true);
+        } else {
+            final Map<Integer, ItemStack> proxyItems = newItems.entrySet().stream().map(entry -> {
+                Integer slot = entry.getKey();
+                ItemStack item = entry.getValue();
+
+                //pretend control buttons don't exist in the proxyEvent
+                //everything in the bottom inventory moves 9 indices up
+                if (slot > myPageSize) slot = slot - 9;
+                return Map.entry(slot, item);
+            }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+            InventoryDragEvent proxyEvent = new InventoryDragEvent(proxyView, newCursor, oldCursor, isRightClick, proxyItems);
+            getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
+            dragEvent.setCursor(proxyEvent.getCursor());
+            dragEvent.setResult(proxyEvent.getResult());
+        }
+
+        //genius algorithm to delegate drags to the page. does not work unfortunately because craftbukkit does not allow changing the slots for dragged items.
+//        //cancel dragging over the bottom 9 slots of the top inventory - put the items back onto the cursor
+//        int myPageSize = myPage.getInventory().getSize();
+//        Iterator<Integer> slotIterator = newItems.keySet().stream().filter(i -> i >= myPageSize && i < myPageSize + 9).iterator();
+//        while (slotIterator.hasNext()) {
+//            Integer slot = slotIterator.next();
+//            ItemStack needsToGoBackToCursor = newItems.remove(slot);
+//            if (newCursor == null) newCursor = needsToGoBackToCursor;
+//            if (newCursor != null) newCursor.setAmount(newCursor.getAmount() + needsToGoBackToCursor.getAmount()); //assume same Material and ItemMeta
+//        }
+//
+//        dragEvent.setCursor(newCursor);
+//
+//        final Map<Integer, ItemStack> proxyItems = newItems.entrySet().stream().map(entry -> {
+//            Integer slot = entry.getKey();
+//            ItemStack item = entry.getValue();
+//
+//            //pretend control buttons don't exist in the proxyEvent
+//            //everything in the bottom inventory moves 9 indices up
+//            if (slot > myPageSize) slot = slot - 9;
+//            return Map.entry(slot, item);
+//        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+//        boolean cancel = dragEvent.isCancelled();
+//
+//        final InventoryDragEvent proxyEvent = new InventoryDragEvent(proxyView, newCursor, oldCursor, right, proxyItems);
+//
+//        getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
+//        dragEvent.setCancelled(proxyEvent.isCancelled());
+//
+//        dragEvent.setCursor(proxyEvent.getCursor());
+//        newItems.clear();
+//        proxyEvent.getNewItems().forEach((slot, item) -> {
+//            if (slot > myPageSize) slot += 9; //skip the page control buttons
+//            newItems.put(slot, item);
+//        });
+
+        updateView();
     }
 
     /**

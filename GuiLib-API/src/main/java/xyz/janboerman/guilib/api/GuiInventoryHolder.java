@@ -16,8 +16,9 @@ import java.util.Objects;
  * An InventoryHolder for GUIs.
  * <p>
  * This class is meant to be extended by your own plugin.
- * Just override the {@link #onClick(InventoryClickEvent)}, {@link #onOpen(InventoryOpenEvent)} or
- * {@link #onClose(InventoryCloseEvent)} methods. The InventoryClickEvent is set to be cancelled by default,
+ * Just override the {@link #onClick(InventoryClickEvent)}, {@link #onDrag(InventoryDragEvent)},
+ * {@link #onOpen(InventoryOpenEvent)} or {@link #onClose(InventoryCloseEvent)} methods.
+ * The InventoryClickEvent and InventoryDragEvent are set to be cancelled by default,
  * however you can un-cancel them in your subclass just fine using {@code event.setCancelled(false)}.
  * <p>
  * If you just need a menu with buttons, then {@link xyz.janboerman.guilib.api.menu.MenuHolder} is
@@ -277,7 +278,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      * Called when the corresponding InventoryView opens.
      * <p>
      * This method is intended to be overridden by your subclass.
-     * @param event the inventory open event.
+     * @param event the inventory open event
      */
     public void onOpen(InventoryOpenEvent event) {
     }
@@ -285,7 +286,7 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
     /**
      * Called when items are dragged in the corresponding InventoryView.
      * This method makes no guarantees about which inventory items were dragged into.
-     * @param event
+     * @param event the inventory drag event
      */
     public void onDrag(InventoryDragEvent event) {
     }
@@ -296,17 +297,25 @@ public abstract class GuiInventoryHolder<P extends Plugin> implements InventoryH
      * @return the inventory that was clicked, or null if the player clicked outside the inventory
      */
     protected static Inventory getClickedInventory(InventoryClickEvent event) {
+        return getClickedInventory(event.getRawSlot(), event.getView());
+    }
+
+    /**
+     * Overload of {@link #getClickedInventory(InventoryClickEvent)} that doesn't require an InventoryClickEvent.
+     * @param rawSlot the slot that was clicked
+     * @param view the view in which there was a click
+     * @return the Inventory that was clicked, or null if the player clicked outside both inventories
+     */
+    protected static Inventory getClickedInventory(int rawSlot, InventoryView view) {
         //Adopted from the spigot-api patches
         //See https://hub.spigotmc.org/stash/projects/SPIGOT/repos/spigot/browse/Bukkit-Patches/0010-InventoryClickEvent-getClickedInventory.patch
-        int slot = event.getRawSlot();
-        if (slot < 0) {
+        if (rawSlot < 0) {
             return null;
         } else {
-            InventoryView view = event.getView();
             Inventory topInventory = view.getTopInventory();
             //apparently it is possible that the top inventory is null.
             //does this happen when a player opens his/her own inventory?
-            if (topInventory != null && slot < topInventory.getSize()) {
+            if (topInventory != null && rawSlot < topInventory.getSize()) {
                 return topInventory;
             } else {
                 return view.getBottomInventory();

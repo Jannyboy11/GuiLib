@@ -343,7 +343,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
     }
 
     /**
-     * A callback that - when registered - is invoked when buttons are added to this menu.
+     * A callback that - when registered - is invoked when buttons are added to a menu.
      * @see #addButtonAddCallback(ButtonAddCallback)
      */
     @FunctionalInterface
@@ -354,7 +354,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
     }
 
     /**
-     * A callback that - when registered - is invoked when buttons are removed from this menu.
+     * A callback that - when registered - is invoked when buttons are removed from a menu.
      * @see #addButtonRemoveCallback(ButtonRemoveCallback)
      */
     @FunctionalInterface

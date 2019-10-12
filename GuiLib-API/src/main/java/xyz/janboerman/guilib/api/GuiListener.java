@@ -85,12 +85,12 @@ public class GuiListener implements Listener {
         return reference.get() == holder; //yes, reference equality!
     }
 
+    //TODO unregisterGui?
+
 
     // ===== event stuff =====
 
     private void onGuiInventoryEvent(InventoryEvent event, Consumer<GuiInventoryHolder> action) {
-        if (event.getInventory() == null) return;
-
         GuiInventoryHolder<?> guiHolder;
         if (event.getInventory().getHolder() instanceof GuiInventoryHolder) {
             guiHolder = (GuiInventoryHolder) event.getInventory().getHolder();
