@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
@@ -45,7 +46,6 @@ public class GuiListener implements Listener {
         return INSTANCE;
     }
 
-
     // ===== registering stuff =====
 
     /**
@@ -56,6 +56,8 @@ public class GuiListener implements Listener {
      * @return true if the gui was registered successfully, otherwise false
      */
     public boolean registerGui(GuiInventoryHolder<?> holder, Inventory inventory) {
+        if (holder == inventory.getHolder()) return true; //yes, reference equality
+
         return guiInventories.putIfAbsent(inventory, new WeakReference<>(holder)) == null;
     }
 
@@ -65,10 +67,13 @@ public class GuiListener implements Listener {
      * @return the holder - or null if no holder was registered with the inventory.
      */
     public GuiInventoryHolder<?> getHolder(Inventory inventory){
+        InventoryHolder holder = inventory.getHolder();
+        if (inventory instanceof GuiInventoryHolder) return (GuiInventoryHolder<?>) holder;
+
         WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
         if (reference == null) return null;
 
-        return reference.get();
+        return reference.get(); //can still be null
     }
 
     /**
@@ -79,24 +84,34 @@ public class GuiListener implements Listener {
      * @return whether the holder and inventory are registered
      */
     public boolean isGuiRegistered(GuiInventoryHolder<?> holder, Inventory inventory) {
+        if (inventory.getHolder() == holder) return true; //yes, reference equality!
+
         WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
         if (reference == null) return false;
 
         return reference.get() == holder; //yes, reference equality!
     }
 
-    //TODO unregisterGui? if we add it, we should not detect gui inventory holders anymore by Inventory#getHolder() (in #onGuiInventoryEvent(InventoryEvent, Consumer))
+    /**
+     * Checks whether there is a gui registered with this inventory.
+     *
+     * @param inventory the inventory that is maybe registered
+     * @return true if there is a {@link GuiInventoryHolder} registered for the given inventory
+     */
+    public boolean isGuiRegistered(Inventory inventory) {
+        if (inventory.getHolder() instanceof GuiInventoryHolder) return true;
 
+        var reference = guiInventories.get(inventory);
+        return reference != null && reference.get() != null;
+    }
+
+    // We cannot ever make an unregisterGui method because to do that we would need to unset the GuiInventoryHolder from the Inventory.
+    // So until such a method is added to bukkit's api, this is impossible to do without nms/reflection hacks.
 
     // ===== event stuff =====
 
     private void onGuiInventoryEvent(InventoryEvent event, Consumer<GuiInventoryHolder> action) {
-        GuiInventoryHolder<?> guiHolder;
-        if (event.getInventory().getHolder() instanceof GuiInventoryHolder) {
-            guiHolder = (GuiInventoryHolder) event.getInventory().getHolder();
-        } else {
-            guiHolder = getHolder(event.getInventory());
-        }
+        GuiInventoryHolder<?> guiHolder = getHolder(event.getInventory());
 
         if (guiHolder != null && guiHolder.getPlugin().isEnabled()) {
             action.accept(guiHolder);
