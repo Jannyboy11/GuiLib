@@ -1,6 +1,6 @@
 # GuiLib [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.9.2/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.9.4/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
 
 ### Compiling
 
@@ -243,13 +243,16 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 }
 ```
 
-This example uses GuiLib as a runtime dependency, so `depend: ["GuiLib"]` is in the plugin.yml and the dependency scope
-is set to `provided`.
+This example uses GuiLib as a runtime dependency, so `depend: ["GuiLib"]` is in the plugin.yml.
 
 ### Dependency Information [![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
 
 There are two artifacts that you can depend on, either `GuiLib-API` or `GuiLib-Plugin`.
 The examples below use the plugin variant.
+
+##### module-info.java
+
+    requires xyz.janboerman.guilib
 
 ##### Maven
 
@@ -263,7 +266,7 @@ The examples below use the plugin variant.
 	<dependency>
 	    <groupId>com.github.Jannyboy11.GuiLib</groupId>
 	    <artifactId>GuiLib-Plugin</artifactId>
-	    <version>v1.9.2</version>
+	    <version>v1.9.4</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -277,13 +280,13 @@ The examples below use the plugin variant.
     }
     	
     dependencies {
-        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.9.2'
+        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.9.4'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.9.2" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.9.4" % "provided"	
 
 ### Licensing
 
