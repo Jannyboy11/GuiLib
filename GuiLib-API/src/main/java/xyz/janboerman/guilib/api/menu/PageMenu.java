@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
  * @see ResetButton
  */
 public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHolder.ButtonAddCallback, MenuHolder.ButtonRemoveCallback {
-    //TODO does not work well - does not show stuff from the pages themselves.
-    //TODO this makes it look like pages 'eat' all their contents.
 
     private static final ItemStack DEFAULT_PREVIOUS_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Previous").build();
     private static final ItemStack DEFAULT_NEXT_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Next").build();
@@ -302,7 +300,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
      */
     public void updateView() {
         //copy icons from the page back to my inventory
-        for (int index = 0; index < myPage.getInventory().getSize(); index++) {
+        for (int index = 0; index < getPageSize(); index++) {
             getInventory().setItem(index, myPage.getInventory().getItem(index));
         }
     }
@@ -472,8 +470,29 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
 
             InventoryDragEvent proxyEvent = new InventoryDragEvent(proxyView, newCursor, oldCursor, isRightClick, proxyItems);
             getPlugin().getServer().getPluginManager().callEvent(proxyEvent);
+
             dragEvent.setCursor(proxyEvent.getCursor());
             dragEvent.setResult(proxyEvent.getResult());
+
+            //run a task later such that we take the changes from event listeners on the page into account.
+            getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+                for (int i = 0; i < getPageSize(); i++) {
+                    Map<Integer, ItemStack> proxyNewItems = proxyEvent.getNewItems();
+                    ItemStack oldItem = getPage().getInventory().getItem(i);
+                    ItemStack addItem = proxyNewItems.get(i);
+
+                    if (addItem != null) {
+                        ItemStack setItem;
+                        if (oldItem == null) {
+                            setItem = addItem;
+                        } else {
+                            setItem = oldItem;
+                            setItem.setAmount(setItem.getAmount() + addItem.getAmount()); //assume equal Material and ItemMeta
+                        }
+                        getPage().getInventory().setItem(i, setItem);
+                    }
+                }
+            });
         }
 
         //genius algorithm to delegate drags to the page. does not work unfortunately because craftbukkit does not allow changing the slots for dragged items.

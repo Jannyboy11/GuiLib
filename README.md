@@ -5,7 +5,7 @@ Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/c
 ### Compiling
 
 Prerequisites: Apache Maven 3.5+, JDK11+.
-Then run `mvn clean install`.
+Then run `cd GuiLib-Plugin` and `mvn clean package`.
 
 ### Pre-built jars
 
