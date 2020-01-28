@@ -7,10 +7,11 @@
     <groupId>xyz.janboerman</groupId>
     <artifactId>GuiLib</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.3</version>
+    <version>1.9.4</version>
     <modules>
         <module>GuiLib-API</module>
         <module>GuiLib-Plugin</module>
+        <module>ExamplePlugin</module>
     </modules>
 
     <properties>
@@ -29,15 +30,6 @@
         </resources>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <release>11</release>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>

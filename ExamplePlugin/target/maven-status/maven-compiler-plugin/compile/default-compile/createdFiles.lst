@@ -1,0 +1,9 @@
+com\example\DragPage.class
+module-info.class
+com\example\ClaimItemsMenu$ShiftingClaimButton.class
+com\example\ClaimItemsMenu.class
+com\example\TestCommandExecutor.class
+com\example\ExamplePlugin$1.class
+com\example\TestCommandExecutor$TestInventoryHolder.class
+com\example\ExamplePlugin.class
+com\example\ExamplePlugin$2.class

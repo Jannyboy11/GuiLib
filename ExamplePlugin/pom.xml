@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>GuiLib-Plugin</artifactId>
+    <artifactId>ExamplePlugin</artifactId>
 
     <build>
-        <finalName>${finalName}</finalName>
+        <finalName>GuiLib-ExamplePlugin-${project.version}</finalName>
 
         <resources>
             <resource>
@@ -27,7 +27,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <release>11</release>
+                    <release>13</release>
                 </configuration>
             </plugin>
 
@@ -68,8 +68,9 @@
     <dependencies>
         <dependency>
             <groupId>xyz.janboerman</groupId>
-            <artifactId>GuiLib-API</artifactId>
+            <artifactId>GuiLib-Plugin</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

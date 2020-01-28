@@ -1,0 +1,53 @@
+name: ExamplePlugin
+author: Jannyboy11
+main: com.example.ExamplePlugin
+version: 1.9.4
+api-version: 1.13
+depend: [GuiLib]
+
+commands:
+  gui:
+    description: Open the example gui
+    usage: /gui
+    permission: guiexample.command.gui
+  pages:
+    description: Open a gui with pages
+    usage: /pages
+    permission: guiexample.command.pages
+  freediamonds:
+    description: Open a gui with free diamonds
+    usage: /freediamonds
+    permission: guiexample.command.freediamonds
+  claimallitems:
+    description: Opens an inventory with every item
+    usage: /claimallitems
+    permission: guiexample.command.claimallitems
+  testinventoryholder:
+    description: development test command
+    usage: /test
+    permission: guiexample.command.testinventoryholder
+  dragpage:
+  dragpages:
+    description: Opens pages that override item dragging
+    usage: /dragpage
+    permission: guiexample.command.dragpage
+
+permissions:
+  guiexample.command.gui:
+    description: allows players to use the /gui command
+    default: op
+  guiexample.command.pages:
+    description: allows players to use the /pages command
+    default: op
+  guiexample.command.freediamonds:
+    description: allows players to use the /freediamonds command
+    default: op
+  guiexample.command.claimallitems:
+    description: allows players to use the /claimallitems command
+    default: true
+  guiexample.command.testinventoryholder:
+    description: YOLO
+    default: op
+  guiexample.command.dragpages:
+    description: allows players to use the /dragpages
+    default: op

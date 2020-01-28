@@ -34,6 +34,7 @@ public class GuiListener implements Listener {
 
     private static final GuiListener INSTANCE = new GuiListener();
 
+    //Does not contain inventories whose holders are GuiInventoryHolders. See CraftInventoryCreator.
     private final WeakHashMap<Inventory, WeakReference<GuiInventoryHolder<?>>> guiInventories = new WeakHashMap<>();
 
     private GuiListener() {}
@@ -68,7 +69,7 @@ public class GuiListener implements Listener {
      */
     public GuiInventoryHolder<?> getHolder(Inventory inventory){
         InventoryHolder holder = inventory.getHolder();
-        if (inventory instanceof GuiInventoryHolder) return (GuiInventoryHolder<?>) holder;
+        if (holder instanceof GuiInventoryHolder) return (GuiInventoryHolder<?>) holder;
 
         WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
         if (reference == null) return null;
@@ -104,7 +105,6 @@ public class GuiListener implements Listener {
 
     private void onGuiInventoryEvent(InventoryEvent event, Consumer<GuiInventoryHolder> action) {
         GuiInventoryHolder<?> guiHolder = getHolder(event.getInventory());
-        //TODO bugreport: guiHolder not always detected correctly
 
         if (guiHolder != null && guiHolder.getPlugin().isEnabled()) {
             action.accept(guiHolder);

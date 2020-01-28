@@ -5,11 +5,24 @@
     <parent>
         <artifactId>GuiLib</artifactId>
         <groupId>xyz.janboerman</groupId>
-        <version>1.9.3</version>
+        <version>1.9.4</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>GuiLib-API</artifactId>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <!-- We are depending on a more recent version than that's bundled with Minecraft currently \
