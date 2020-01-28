@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
  * @see ResetButton
  */
 public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHolder.ButtonAddCallback, MenuHolder.ButtonRemoveCallback {
+    //TODO does not work well - does not show stuff from the pages themselves.
+    //TODO this makes it look like pages 'eat' all their contents.
 
     private static final ItemStack DEFAULT_PREVIOUS_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Previous").build();
     private static final ItemStack DEFAULT_NEXT_PAGE_BUTTON = new ItemBuilder(Material.MAGENTA_GLAZED_TERRACOTTA).name("Next").build();

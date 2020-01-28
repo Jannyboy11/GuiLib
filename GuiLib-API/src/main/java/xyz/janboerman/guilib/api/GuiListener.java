@@ -84,12 +84,7 @@ public class GuiListener implements Listener {
      * @return whether the holder and inventory are registered
      */
     public boolean isGuiRegistered(GuiInventoryHolder<?> holder, Inventory inventory) {
-        if (inventory.getHolder() == holder) return true; //yes, reference equality!
-
-        WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
-        if (reference == null) return false;
-
-        return reference.get() == holder; //yes, reference equality!
+        return getHolder(inventory) == holder; //yes, reference equality!
     }
 
     /**
@@ -99,10 +94,7 @@ public class GuiListener implements Listener {
      * @return true if there is a {@link GuiInventoryHolder} registered for the given inventory
      */
     public boolean isGuiRegistered(Inventory inventory) {
-        if (inventory.getHolder() instanceof GuiInventoryHolder) return true;
-
-        var reference = guiInventories.get(inventory);
-        return reference != null && reference.get() != null;
+       return getHolder(inventory) != null;
     }
 
     // We cannot ever make an unregisterGui method because to do that we would need to unset the GuiInventoryHolder from the Inventory.
@@ -112,6 +104,7 @@ public class GuiListener implements Listener {
 
     private void onGuiInventoryEvent(InventoryEvent event, Consumer<GuiInventoryHolder> action) {
         GuiInventoryHolder<?> guiHolder = getHolder(event.getInventory());
+        //TODO bugreport: guiHolder not always detected correctly
 
         if (guiHolder != null && guiHolder.getPlugin().isEnabled()) {
             action.accept(guiHolder);

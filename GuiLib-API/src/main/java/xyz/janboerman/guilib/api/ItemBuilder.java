@@ -16,11 +16,7 @@ import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -31,6 +27,9 @@ import java.util.function.Function;
  * so that instances can be reused.
  */
 public class ItemBuilder {
+    //TODO if JEP 303 ever gets accepted, update this class to use a custom?? 'immutable' itemstack - which will be Constable.
+    //TODO such that the compiler only generates an LDC for the itemstack being built (and maybe a conversion?) in the class of the caller.
+
     private final ItemStack itemStack;
 
     /**

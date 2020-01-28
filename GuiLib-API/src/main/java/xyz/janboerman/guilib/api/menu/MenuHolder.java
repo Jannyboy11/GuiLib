@@ -278,6 +278,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
      */
     @Override
     public Iterator<MenuButton<?>> iterator() {
+        //TODO now that we are backed by an array - we can implement a custom iterator that supports the remove() operation
+        //TODO supporting hasNext is going to be a bit harder though.
         return Arrays.stream(buttons).filter(Objects::nonNull).iterator();
     }
 
