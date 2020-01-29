@@ -37,6 +37,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
     private final LinkedList<WeakReference<ButtonAddCallback>> addButtonCallbacks = new LinkedList<>();
     private final LinkedList<WeakReference<ButtonRemoveCallback>> removeButtonCallbacks = new LinkedList<>();
 
+    private int buttonCount = 0;
+
     /**
      * Creates the MenuHolder with the given InventoryType and title.
      * @param plugin your plugin
@@ -191,7 +193,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
         if (rawButton.onAdd(this, slot)) {
             getInventory().setItem(slot, button.getIcon());
             this.buttons[slot] = button;
-
+            buttonCount += 1;
             return true;
         } else {
             return false;
@@ -256,6 +258,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
         if (menuButton.onRemove(this, slot)) {
             this.buttons[slot] = null;
             getInventory().setItem(slot, null);
+            buttonCount -= 1;
             return true;
         } else {
             return false;
@@ -274,7 +277,8 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
 
     /**
      * Get an iterator that iterates over all buttons in this menu.
-     * @return a new iterator
+     * @return a new Iterator
+     * @apiNote Slots without a button are not covered by this iterator.
      */
     @Override
     public ListIterator<MenuButton<?>> iterator() {
@@ -373,6 +377,16 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
                 throw new UnsupportedOperationException("Adding is not supported by this ListIterator. Use MenuHolder#setButton instead.");
             }
         };
+    }
+
+    /**
+     * Get a spliterator that covers every button in the menu.
+     * @return a new Spliterator that has the characteristics SIZED, SUBSIZED, NONNULL and ORDERED
+     * @apiNote Slots without a button are not covered by this spliterator.
+     */
+    @Override
+    public Spliterator<MenuButton<?>> spliterator() {
+        return Spliterators.spliterator(iterator(), buttonCount, Spliterator.NONNULL | Spliterator.ORDERED);
     }
 
     /**
