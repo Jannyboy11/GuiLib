@@ -7,7 +7,7 @@
     <groupId>xyz.janboerman</groupId>
     <artifactId>GuiLib</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.6</version>
+    <version>1.9.7</version>
     <modules>
         <module>GuiLib-API</module>
         <module>GuiLib-Plugin</module>

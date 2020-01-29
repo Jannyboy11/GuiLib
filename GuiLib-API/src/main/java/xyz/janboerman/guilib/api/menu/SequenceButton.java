@@ -11,7 +11,7 @@ import java.util.Objects;
  * @param <P> the Plugin for the buttons
  * @param <MH1> the menu holder type of the first button
  * @param <MH2> the menu holder type of the second button
- * @param <MHR> the super type of both {@link MH1} and {@link MH2}
+ * @param <MHR> the super type of both {@code MH1} and {@code MH2}
  */
 public class SequenceButton<P extends Plugin, MHR extends MenuHolder<P>, MH1 extends MHR, MH2 extends MHR>
         implements MenuButton<MHR> {
@@ -67,6 +67,7 @@ public class SequenceButton<P extends Plugin, MHR extends MenuHolder<P>, MH1 ext
      * @param holder the holder to which this button is added
      * @param slot the position in the menu
      * @return whether both buttons' onAdd callbacks returned true
+     * @see MenuHolder#setButton(int, MenuButton) 
      */
     @Override
     public boolean onAdd(MHR holder, int slot) {
@@ -79,6 +80,7 @@ public class SequenceButton<P extends Plugin, MHR extends MenuHolder<P>, MH1 ext
      * @param holder the holder from which this button is removed
      * @param slot the position in the menu
      * @return whether both buttons' onRemove callbacks returned true
+     * @see MenuHolder#unsetButton(int)
      */
     @Override
     public boolean onRemove(MHR holder, int slot) {

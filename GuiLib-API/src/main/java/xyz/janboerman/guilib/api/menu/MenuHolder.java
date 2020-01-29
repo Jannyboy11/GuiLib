@@ -277,10 +277,102 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
      * @return a new iterator
      */
     @Override
-    public Iterator<MenuButton<?>> iterator() {
-        //TODO now that we are backed by an array - we can implement a custom iterator that supports the remove() operation
-        //TODO supporting hasNext is going to be a bit harder though.
-        return Arrays.stream(buttons).filter(Objects::nonNull).iterator();
+    public ListIterator<MenuButton<?>> iterator() {
+        return new ListIterator<>() {
+            int cursor = -1;
+            int lastFound = -1;
+            int lastReturned = -1;
+            int lastUpdated = -1;
+
+            private void advanceTillNextButton() {
+                if (cursor == -1) cursor = 0;
+
+                while (lastFound < cursor && cursor < buttons.length) {
+                    if (buttons[cursor] != null) {
+                        lastFound = cursor;
+                        break;
+                    }
+                    cursor += 1;
+                }
+            }
+
+            private void advanceTillPreviousButton() {
+                if (cursor == buttons.length) cursor -= 1;
+
+                while (cursor >= 0) {
+                    if (buttons[cursor] != null) {
+                        lastFound = cursor;
+                        break;
+                    }
+                    cursor -= 1;
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                advanceTillNextButton();
+                return cursor < buttons.length;
+            }
+
+            @Override
+            public MenuButton<?> next() {
+                advanceTillNextButton(); //no-op if hasNext has been called before us
+
+                if (cursor == buttons.length) throw new NoSuchElementException();   //there are no elements to explore
+                if (lastFound == lastReturned) throw new NoSuchElementException();  //if after advancing till the next button we still didn't find a new one
+
+                cursor += 1; //makes sure that advanceTillNextButton can actually advance again
+                return buttons[lastReturned = lastFound];
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                advanceTillPreviousButton();
+                return cursor >= 0;
+            }
+
+            @Override
+            public MenuButton<?> previous() {
+                advanceTillPreviousButton();
+
+                if (cursor == -1) throw new NoSuchElementException();               //there ae no more elements to explore
+                if (lastFound == lastReturned) throw new NoSuchElementException();  //if after advancing till the previous button we still didn't find a new one
+
+                cursor -= 1; //makes sure that advanceTillPreviousButton can actually advance again
+                return buttons[lastReturned = lastFound];
+            }
+
+            @Override
+            public int nextIndex() {
+                advanceTillNextButton();
+                return cursor;
+            }
+
+            @Override
+            public int previousIndex() {
+                advanceTillPreviousButton();
+                return cursor;
+            }
+
+            @Override
+            public void remove() {
+                if (lastUpdated == lastReturned) throw new IllegalStateException("Need to call next() or previous() first");
+
+                unsetButton(lastUpdated = lastReturned);
+            }
+
+            @Override
+            public void set(MenuButton<?> menuButton) {
+                if (lastUpdated == lastReturned) throw new IllegalStateException("Need to call next() or previous() first");
+
+                setButton(lastUpdated = lastReturned, menuButton);
+            }
+
+            @Override
+            public void add(MenuButton<?> menuButton) {
+                throw new UnsupportedOperationException("Adding is not supported by this ListIterator. Use MenuHolder#setButton instead.");
+            }
+        };
     }
 
     /**
