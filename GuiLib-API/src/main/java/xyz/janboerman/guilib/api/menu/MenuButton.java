@@ -37,6 +37,7 @@ public interface MenuButton<MH extends MenuHolder<?>> {
      * @param menuHolder the menu
      * @param slot the position in the menu
      * @return whether the button could be added, true by default
+     * @see MenuHolder#setButton(int, MenuButton)
      */
     public default boolean onAdd(MH menuHolder, int slot) {
         return true;
@@ -48,6 +49,7 @@ public interface MenuButton<MH extends MenuHolder<?>> {
      * @param menuHolder the menu
      * @param slot the position in the menu
      * @return whether the button could be removed, true by default
+     * @see MenuHolder#unsetButton(int) 
      */
     public default boolean onRemove(MH menuHolder, int slot) {
         return true;

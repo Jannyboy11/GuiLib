@@ -1,4 +1,0 @@
---patch-module
-com.example.guilib=_
---add-reads
-com.example.guilib=ALL-UNNAMED

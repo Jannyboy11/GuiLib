@@ -87,4 +87,33 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
     public ItemStack getIcon() {
         return delegate.getIcon();
     }
+
+    /**
+     * Decides whether this button can be added to the menu.
+     * The default implementation delegates to the delegate.
+     *
+     * @param menuHolder the menu
+     * @param slot the position in the menu
+     * @return true if the button can be added to the menu, otherwise false
+     * @see MenuHolder#setButton(int, MenuButton) 
+     */
+    @Override
+    public boolean onAdd(MH menuHolder, int slot) {
+        return getDelegate().onAdd(menuHolder, slot);
+    }
+
+    /**
+     * Decides whether this button can be removed from the menu.
+     * The default implementation delegates to the delegate.
+     *
+     * @param menuHolder the menu
+     * @param slot the position in the menu
+     * @return true if the button can be removed from the menu, otherwise false
+     * @see MenuHolder#unsetButton(int) 
+     */
+    @Override
+    public boolean onRemove(MH menuHolder, int slot) {
+        return getDelegate().onRemove(menuHolder, slot);
+    }
+
 }

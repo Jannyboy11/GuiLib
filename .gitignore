@@ -6,6 +6,7 @@
 target/*
 GuiLib-API/target/*
 GuiLib-Plugin/target/*
+ExamplePlugin/taget/*
 
 #Eclipse
 .settings/*
