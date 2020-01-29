@@ -95,7 +95,7 @@ public class PredicateButton<MH extends MenuHolder<?>> implements MenuButton<MH>
      * @param menuHolder the menu
      * @param slot the position in the menu
      * @return true if the button can be added to the menu, otherwise false
-     * @see MenuHolder#setButton(int, MenuButton) 
+     * @see MenuHolder#setButton(int, MenuButton)
      */
     @Override
     public boolean onAdd(MH menuHolder, int slot) {
