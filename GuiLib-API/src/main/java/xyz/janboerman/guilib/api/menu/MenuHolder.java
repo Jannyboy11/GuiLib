@@ -337,7 +337,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
 
             @Override
             public MenuButton<?> previous() {
-                advanceTillPreviousButton();
+                advanceTillPreviousButton(); //no-op if hasPrevious has been called before us
 
                 if (cursor == -1) throw new NoSuchElementException();               //there ae no more elements to explore
                 if (lastFound == lastReturned) throw new NoSuchElementException();  //if after advancing till the previous button we still didn't find a new one
@@ -374,7 +374,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
 
             @Override
             public void add(MenuButton<?> menuButton) {
-                throw new UnsupportedOperationException("Adding is not supported by this ListIterator. Use MenuHolder#setButton instead.");
+                throw new UnsupportedOperationException("Adding is not supported by this ListIterator. Use MenuHolder#setButton(int, MenuButton) instead.");
             }
         };
     }
