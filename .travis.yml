@@ -1,6 +1,6 @@
 language: java
 jdk:
-- openjdk13
+- openjdk14
 script: mvn javadoc:jar install -DfinalName=GuiLib
 deploy:
   provider: releases
