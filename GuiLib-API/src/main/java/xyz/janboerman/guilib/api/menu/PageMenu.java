@@ -37,7 +37,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
     /** ItemStacks used for the previous-page and next-page buttons */
     protected final ItemStack nextPageButton, previousPageButton;
     /** The suppliers that supply the previous-page and next-page menus */
-    private Supplier<PageMenu<P>> previous, next;
+    private Supplier<PageMenu<P>> previous, next; //TODO might want to change this into a Stack<Supplier<PageMenu<P>>>
 
     /** hack to initialize the buttons when the inventory is opened for the first time */
     private boolean weHaveBeenOpened;
@@ -363,6 +363,9 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
             }
         }
 
+        //TODO can we do this without redirect buttons? to prevent resetting the cursor.
+        //TODO I'd probably have to restructure the next and previous fields..
+        //TODO maybe even the constructor parameters.. that will mean a breaking change, so it'll be 1.10.0 then.
         //reset next-page and previous-page buttons
         getNextPageMenu().ifPresentOrElse(next -> this.setButton(nextButtonIndex,
                 new RedirectItemButton(nextPageButton, () -> next.get().getInventory())),

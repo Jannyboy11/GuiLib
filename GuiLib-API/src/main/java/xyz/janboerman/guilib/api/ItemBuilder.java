@@ -374,6 +374,16 @@ public class ItemBuilder {
         return persistentData(key, PersistentDataType.TAG_CONTAINER, value);
     }
 
+    /**
+     * Specialised case of {@link #persistentData(NamespacedKey, PersistentDataType, Object)} for the PersistentDataContainer[] type.
+     * @param key the key of the data
+     * @param value the value of the data
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder persistentData(NamespacedKey key, PersistentDataContainer[] value) {
+        return persistentData(key, PersistentDataType.TAG_CONTAINER_ARRAY, value);
+    }
+
     // deprecated CustomTagContainer variants of persistentData
 
     /**

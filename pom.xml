@@ -7,7 +7,7 @@
     <groupId>xyz.janboerman</groupId>
     <artifactId>GuiLib</artifactId>
     <packaging>pom</packaging>
-    <version>1.9.8</version>
+    <version>1.9.9</version>
     <modules>
         <module>GuiLib-API</module>
         <module>GuiLib-Plugin</module>
@@ -35,7 +35,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source> <!-- needed for the javadoc plugin to generate links to the standard lib classes -->
                     <release>11</release>
                 </configuration>
             </plugin>
@@ -73,6 +72,9 @@
 
                     <!-- the javadoc tool is too picky for me -->
                     <failOnError>false</failOnError>
+
+                    <!-- set the source as 11 so that proper links to standard jdk classes will be generated -->
+                    <additionalOptions>-source 11</additionalOptions>
                 </configuration>
 
                 <!-- I don't even get why this workaround is required.
@@ -82,7 +84,7 @@
                     <dependency>
                         <groupId>org.ow2.asm</groupId>
                         <artifactId>asm</artifactId>
-                        <version>7.3.1</version>
+                        <version>8.0.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -98,9 +100,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
