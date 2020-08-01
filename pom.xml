@@ -7,7 +7,7 @@
     <groupId>xyz.janboerman</groupId>
     <artifactId>GuiLib</artifactId>
     <packaging>pom</packaging>
-    <version>1.10.0</version>
+    <version>1.10.1</version>
     <modules>
         <module>GuiLib-API</module>
         <module>GuiLib-Plugin</module>
@@ -73,8 +73,8 @@
                     <!-- the javadoc tool is too picky for me -->
                     <failOnError>false</failOnError>
 
-                    <!-- set the source as 11 so that proper links to standard jdk classes will be generated -->
-                    <additionalOptions>-source 11</additionalOptions>
+                    <!-- set the source as 14 so that proper links to standard jdk classes will be generated -->
+                    <additionalOptions>-source 14</additionalOptions>
                 </configuration>
 
                 <!-- I don't even get why this workaround is required.

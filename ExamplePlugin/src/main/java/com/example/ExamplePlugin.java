@@ -85,7 +85,7 @@ public class ExamplePlugin extends JavaPlugin {
 
         Player player = (Player) sender;
 
-        switch(command.getName().toLowerCase()) {
+        switch (command.getName().toLowerCase()) {
             case "gui":
                 player.openInventory(menu1.getInventory());
                 return true;
