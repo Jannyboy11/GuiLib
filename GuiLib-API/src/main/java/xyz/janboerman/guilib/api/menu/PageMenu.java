@@ -617,7 +617,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
                         };
                     }
 
-                    PageMenu pageMenu = new PageMenu(getPlugin(), page, previousPageSupplier, nextPageSupplier);
+                    PageMenu pageMenu = new PageMenu(getPlugin(), page, view.getTitle(), previousPageSupplier, nextPageSupplier);
                     target = pageMenu.getInventory();
                 }
 
