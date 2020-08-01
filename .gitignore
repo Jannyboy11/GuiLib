@@ -10,5 +10,8 @@ ExamplePlugin/target/*
 
 #Eclipse
 .settings/*
+GuiLib-API/.settings/*
+GuiLib-Plugin/.settings/*
+ExamplePlugin/.settings/*
 .project
 .classpath

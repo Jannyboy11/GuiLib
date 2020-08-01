@@ -45,6 +45,7 @@ public class ExamplePlugin extends JavaPlugin {
         menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
         menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2");
 
+        //menu 1 stuff
         menu1.setButton(0, new RedirectItemButton<>(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
         menu1.setButton(8, new CloseButton<>());
         String permission = "foo.bar";
@@ -58,6 +59,7 @@ public class ExamplePlugin extends JavaPlugin {
                 },
                 humanEntity -> humanEntity.sendMessage("You don't have permission " + permission + ".")));
 
+        //menu 2 stuff
         ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
         ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
         menu2.setButton(0, new ToggleButton<>(new ItemStack(Material.BARRIER)) {
@@ -100,6 +102,7 @@ public class ExamplePlugin extends JavaPlugin {
                 return true;
             case "claimallitems":
                 ArrayList<ItemStack> mutableRewardsList = Arrays.stream(Material.values())
+                        .filter(Material::isItem)
                         .map(ItemStack::new)
                         .collect(Collectors.toCollection(ArrayList::new));
                 ClaimItemsMenu claimItemsMenu = new ClaimItemsMenu(this, 45, mutableRewardsList);

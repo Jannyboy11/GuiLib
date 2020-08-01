@@ -33,11 +33,10 @@ import java.util.function.BiConsumer;
 public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implements Iterable<MenuButton<?>> {
 
     private final MenuButton<?>[] buttons;
+    private int buttonCount = 0;
 
     private final LinkedList<WeakReference<ButtonAddCallback>> addButtonCallbacks = new LinkedList<>();
     private final LinkedList<WeakReference<ButtonRemoveCallback>> removeButtonCallbacks = new LinkedList<>();
-
-    private int buttonCount = 0;
 
     /**
      * Creates the MenuHolder with the given InventoryType and title.
@@ -162,7 +161,7 @@ public class MenuHolder<P extends Plugin> extends GuiInventoryHolder<P> implemen
         Inventory clickedInventory = getClickedInventory(event);
         if (clickedInventory == null) return;
 
-        getButtonOptionally(event.getSlot()).ifPresent((MenuButton button) -> button.onClick(this, event));
+        getButtonOptionally(event.getRawSlot()).ifPresent((MenuButton button) -> button.onClick(this, event));
     }
 
     /**

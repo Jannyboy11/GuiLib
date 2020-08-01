@@ -259,6 +259,7 @@ public class ItemBuilder {
      * @see #persistentData(NamespacedKey, short)
      * @see #persistentData(NamespacedKey, String)
      * @see #persistentData(NamespacedKey, PersistentDataContainer)
+     * @see #persistentData(NamespacedKey, PersistentDataContainer[])
      */
     public <T, Z> ItemBuilder persistentData(NamespacedKey key, PersistentDataType<T, Z> type, Z value) {
         return changePersistentData(data -> data.set(key, type, value));

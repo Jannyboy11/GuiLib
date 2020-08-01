@@ -5,11 +5,11 @@
     <parent>
         <artifactId>GuiLib</artifactId>
         <groupId>xyz.janboerman</groupId>
-        <version>1.9.9</version>
+        <version>1.10.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ExamplePlugin</artifactId>
+    <artifactId>GuiLibExamples</artifactId>
 
     <build>
         <finalName>GuiLib-ExamplePlugin-${project.version}</finalName>
@@ -27,7 +27,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <release>13</release>
+                    <release>14</release>
                 </configuration>
             </plugin>
 

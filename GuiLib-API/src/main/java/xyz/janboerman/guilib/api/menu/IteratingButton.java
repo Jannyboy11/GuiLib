@@ -79,6 +79,7 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
 
     /**
      * Toggles the button if allowed by {@link #beforeToggle(MenuHolder, InventoryClickEvent)}.
+     * This method is called by {@link #onClick(MenuHolder, InventoryClickEvent)}
      * @see #afterToggle(MenuHolder, InventoryClickEvent)
      * @param menuHolder the menu holder
      * @param event the InventoryClickEvent
@@ -92,7 +93,7 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
     }
 
     /**
-     * Check whether the button can be toggled.
+     * Check whether the button can be toggled. This method is called by {@link #tryToggle(MenuHolder, InventoryClickEvent)}
      * The default implementation always return true.
      * @param menuHolder the inventory holder for the menu
      * @param event the InventoryClickEvent that caused the button to toggle
@@ -103,7 +104,7 @@ public class IteratingButton<T, MH extends MenuHolder<?>> extends ItemButton<MH>
     }
 
     /**
-     * Run a side-effect after the button is toggled.
+     * Run a side-effect after the button is toggled. This method is called by {@link #tryToggle(MenuHolder, InventoryClickEvent)}
      * The default implementation does nothing.
      * @param menuHolder the inventory holder for the menu
      * @param event the InventoryClickEvent that caused the button to toggle
