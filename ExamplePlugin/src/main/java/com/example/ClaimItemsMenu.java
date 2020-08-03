@@ -39,12 +39,13 @@ public class ClaimItemsMenu extends PageMenu<ExamplePlugin> {
 
     @Override
     public ItemPage getPage() {
-        //we know the GuiInventoryHolder of the page is always a MenuHolder since we always create it ourselves
+        //we know the GuiInventoryHolder of the page is always an ItemPage since we always create it ourselves
         return (ItemPage) super.getPage();
     }
 
     @Override
     protected boolean needsRedirects() {
+        //makes it so that the next- and previous-buttons don't close and open a new inventory.
         return false;
     }
 

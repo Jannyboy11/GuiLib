@@ -50,7 +50,6 @@ public class ExamplePlugin extends JavaPlugin {
 
         //basic usage
         menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
-
         menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2");
 
         menu1.setButton(0, new RedirectItemButton<>(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
@@ -68,7 +67,7 @@ public class ExamplePlugin extends JavaPlugin {
 
         ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
         ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
-        menu2.setButton(0, new ToggleButton<>(new ItemStack(Material.BARRIER)) {
+        menu2.setButton(0, new ToggleButton<>(offStack) {
             @Override
             public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
                 event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));

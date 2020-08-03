@@ -62,7 +62,7 @@ public class ExamplePlugin extends JavaPlugin {
         //menu 2 stuff
         ItemStack onStack = new ItemBuilder(Material.STRUCTURE_VOID).name("Enabled").build();
         ItemStack offStack = new ItemBuilder(Material.BARRIER).name("Disabled").build();
-        menu2.setButton(0, new ToggleButton<>(new ItemStack(Material.BARRIER)) {
+        menu2.setButton(0, new ToggleButton<>(offStack) {
             @Override
             public void afterToggle(MenuHolder holder, InventoryClickEvent event) {
                 event.getWhoClicked().sendMessage("Is the button enabled? " + (isEnabled() ? "yes" : "no"));

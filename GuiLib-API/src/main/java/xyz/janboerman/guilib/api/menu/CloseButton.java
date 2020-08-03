@@ -49,7 +49,7 @@ public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
      * @param event the InventoryClickEvent
      */
     @Override
-    public final void onClick(MenuHolder holder, InventoryClickEvent event) {
+    public final void onClick(MenuHolder<P> holder, InventoryClickEvent event) {
         holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), event.getView()::close);
     }
 
