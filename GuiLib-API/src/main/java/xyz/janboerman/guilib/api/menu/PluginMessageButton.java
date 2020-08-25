@@ -240,6 +240,7 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
          * @param sender the sending plugin
          * @param playerName the name of the Player whose IP address will be requested
          * @return a new PluginMessageButton
+         * @see <a href="https://www.spigotmc.org/wiki/bukkit-bungee-plugin-messaging-channel/#ipother">IPOther</a>
          */
         public static PluginMessageButton<?> IPOther(ItemStack icon, Plugin sender, String playerName) {
             var out = ByteStreams.newDataOutput();
@@ -319,6 +320,7 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
          * @param rawMessage the message - represented as a serialised chat component
          * @return a new PluginMessageButton
          * @see #ALL
+         * @see <a href="https://www.spigotmc.org/wiki/bukkit-bungee-plugin-messaging-channel/#messageraw">MessageRaw</a>
          */
         public static PluginMessageButton<?> MessageRaw(ItemStack icon, Plugin sender, String playerName, String rawMessage) {
             var out = ByteStreams.newDataOutput();
