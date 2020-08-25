@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import java.io.DataOutputStream;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -174,7 +175,7 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
         private static final String Connect = "Connect";
         private static final String ConnectOther = "ConnectOther";
         private static final String IP = "IP";
-        //TODO wait for a reply from md_5 to see if IPOther will be added or not.
+        private static final String IPOther = "IPOther";
         private static final String PlayerCount = "PlayerCount";
         private static final String PlayerList = "PlayerList";
         private static final String GetServers = "GetServers";
@@ -227,10 +228,23 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
          * @return a new PluginMessageButton
          * @see <a href="https://www.spigotmc.org/wiki/bukkit-bungee-plugin-messaging-channel/#ip">IP</a>
          */
-        //Interestingly, there is no IPOther message. In the source code all special-cases can be found in the DownstreamBridge class.
         public static PluginMessageButton<?> IP(ItemStack icon, Plugin sender) {
             var out = ByteStreams.newDataOutput();
             out.writeUTF(IP);
+            return new PluginMessageButton<>(icon, sender, BungeeCord, out.toByteArray());
+        }
+
+        /**
+         * Creates a PluginMessageButton that will request the IP address of the given player.
+         * @param icon the icon of the button
+         * @param sender the sending plugin
+         * @param playerName the name of the Player whose IP address will be requested
+         * @return a new PluginMessageButton
+         */
+        public static PluginMessageButton<?> IPOther(ItemStack icon, Plugin sender, String playerName) {
+            var out = ByteStreams.newDataOutput();
+            out.writeUTF(IPOther);
+            out.writeUTF(playerName);
             return new PluginMessageButton<>(icon, sender, BungeeCord, out.toByteArray());
         }
 

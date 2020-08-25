@@ -1,4 +1,4 @@
-name: ${project.artifactId}
+name: GuiLibExamples
 author: Jannyboy11
 main: com.example.ExamplePlugin
 version: ${project.version}
