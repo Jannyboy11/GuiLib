@@ -8,6 +8,7 @@ import xyz.janboerman.guilib.api.GuiInventoryHolder;
 import xyz.janboerman.guilib.api.animate.Animation;
 import xyz.janboerman.guilib.api.animate.AnimationRunner;
 import xyz.janboerman.guilib.api.animate.Frame;
+import xyz.janboerman.guilib.api.animate.Schedule;
 import xyz.janboerman.guilib.api.util.IntGenerator;
 import xyz.janboerman.guilib.api.util.Option;
 
@@ -21,14 +22,13 @@ public class AnimationDemo extends GuiInventoryHolder<ExamplePlugin> {
     public AnimationDemo(ExamplePlugin plugin) {
         super(plugin, SIZE, "Animation Demo");
 
-
         Animation animation = Animation.infinite(new CustomFrame(0), CustomFrame::next);
         this.animation = new AnimationRunner<>(plugin, animation, getInventory()::setItem);
     }
 
     @Override
     public void onOpen(InventoryOpenEvent event) {
-        animation.play(0, 10L);
+        animation.play(Schedule.now().append(Schedule.fixedRate(5L)));
     }
 
     @Override

@@ -89,7 +89,7 @@ public interface Pattern<Symbol> {
      * @return the pattern
      */
     public static Pattern<Integer> ofIndex() {
-        return i -> Integer.valueOf(i);
+        return Integer::valueOf;
     }
 
     /**

@@ -73,6 +73,78 @@ public interface Animation {
     public default Animation andThen(Animation next) {
         return new ConcatAnimation(this, next);
     }
+
+    /**
+     * Limit the animation to a fixed number of frames.
+     * @param numberOfFrames the maximum number of frames
+     * @return a new Animation
+     */
+    public default Animation limit(int numberOfFrames) {
+        return new LimitAnimation(numberOfFrames, this);
+    }
+}
+
+class LimitAnimation implements Animation {
+    private final int limit;
+    private final Animation wrapped;
+    private int count;
+
+    private LimitAnimation(int limit, Animation wrapped, int count) {
+        this.limit = limit;
+        this.wrapped = wrapped;
+        this.count = count;
+    }
+
+    LimitAnimation(int limit, Animation wrapped) {
+        if (limit < 0) throw new IllegalArgumentException("negative limit: " + limit);
+        Objects.requireNonNull(wrapped, "wrapped cannot be null");
+
+        this.limit = limit;
+        this.wrapped = wrapped;
+    }
+
+    @Override
+    public void reset() {
+        count = 0;
+        wrapped.reset();
+    }
+
+    @Override
+    public Frame<?, ?> nextFrame() {
+        count += 1;
+        return wrapped.nextFrame();
+    }
+
+    @Override
+    public boolean hasNextFrame() {
+        return count < limit && wrapped.hasNextFrame();
+    }
+
+    @Override
+    public Animation limit(int numberOfFrames) {
+        return new LimitAnimation(Math.min(numberOfFrames, limit), wrapped, count);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(limit, wrapped, count);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof LimitAnimation)) return false;
+
+        LimitAnimation that = (LimitAnimation) obj;
+        return this.limit == that.limit
+                && Objects.equals(this.wrapped, that.wrapped)
+                && this.count == that.count;
+    }
+
+    @Override
+    public String toString() {
+        return "LimitAnimation(limit=" + limit + ",wrapped=" + wrapped + ",count=" + count + ")";
+    }
 }
 
 class ConcatAnimation implements Animation {
@@ -242,9 +314,9 @@ class InfiniteAnimation<F extends Frame<?, ?>> implements Animation {
 class SimpleAnimation implements Animation {
 
     private int currentIndex;
-    private final ArrayList<? extends Frame<?, ?>> frames;
+    private final List<? extends Frame<?, ?>> frames;
 
-    private SimpleAnimation(int index, ArrayList<? extends Frame<?, ?>> frames) {
+    private SimpleAnimation(int index, List<? extends Frame<?, ?>> frames) {
         this.currentIndex = index;
         this.frames = frames;
     }
@@ -283,6 +355,11 @@ class SimpleAnimation implements Animation {
         } else {
             return Animation.super.andThen(next);
         }
+    }
+
+    @Override
+    public Animation limit(int numberOfFrames) {
+        return new SimpleAnimation(currentIndex, frames.subList(0, Math.min(frames.size(), numberOfFrames)));
     }
 
     @Override

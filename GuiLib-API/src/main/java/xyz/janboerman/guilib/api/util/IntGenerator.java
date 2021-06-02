@@ -82,6 +82,152 @@ public interface IntGenerator extends PrimitiveIterator.OfInt {
     public default IntGenerator cycled() {
         return new CycleIntGenerator(this);
     }
+
+    /**
+     * Limit the number of steps of this generator.
+     * @param limit the limit to the number of steps
+     * @return a new generator
+     */
+    public default IntGenerator limit(int limit) {
+        return new LimitIntGenerator(this, limit);
+    }
+
+    /**
+     * Map the generated values to another set of values.
+     * @param mapper a pure function from int to int
+     * @return a new generator
+     */
+    public default IntGenerator map(IntUnaryOperator mapper) {
+        return new MapIntGenerator(this, mapper);
+    }
+}
+
+class MapIntGenerator implements IntGenerator {
+
+    private final IntGenerator source;
+    private final IntUnaryOperator mapper;
+
+    MapIntGenerator(IntGenerator source, IntUnaryOperator mapper) {
+        this.source = Objects.requireNonNull(source, "source cannot be null");
+        this.mapper = Objects.requireNonNull(mapper, "mapper cannot be null");
+    }
+
+    @Override
+    public void reset() {
+        source.reset();
+    }
+
+    @Override
+    public IntStream toStream() {
+        return source.toStream().map(mapper);
+    }
+
+    @Override
+    public int nextInt() {
+        return mapper.applyAsInt(source.nextInt());
+    }
+
+    @Override
+    public boolean hasNext() {
+        return source.hasNext();
+    }
+
+    @Override
+    public IntGenerator map(IntUnaryOperator mapper) {
+        return new MapIntGenerator(source, this.mapper.andThen(mapper));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, mapper);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof MapIntGenerator)) return false;
+
+        MapIntGenerator that = (MapIntGenerator) obj;
+        return Objects.equals(this.source, that.source)
+                && Objects.equals(this.mapper, that.mapper);
+    }
+
+    @Override
+    public String toString() {
+        return "MapIntGenerator(source=" + source + ",mapper=" + mapper + ")";
+    }
+}
+
+class LimitIntGenerator implements IntGenerator {
+
+    private final int limit;
+    private final IntGenerator wrapped;
+    private int count = 0;
+
+    private LimitIntGenerator(IntGenerator wrapped, int limit, int count) {
+        this.wrapped = wrapped;
+        this.limit = limit;
+        this.count = count;
+    }
+
+    LimitIntGenerator(IntGenerator wrapped, int limit) {
+        this.wrapped = Objects.requireNonNull(wrapped, "wrapped cannot be null");
+        if (limit < 0) throw new IllegalArgumentException("negative limit: " + limit);
+        this.limit = limit;
+    }
+
+    @Override
+    public void reset() {
+        wrapped.reset();
+        count = 0;
+    }
+
+    @Override
+    public int nextInt() {
+        count += 1;
+        return wrapped.nextInt();
+    }
+
+    @Override
+    public boolean hasNext() {
+        return count < limit && wrapped.hasNext();
+    }
+
+    @Override
+    public IntStream toStream() {
+        return wrapped.toStream().limit(limit).skip(count);
+    }
+
+    @Override
+    public IntGenerator limit(int steps) {
+        return new LimitIntGenerator(wrapped, Math.min(steps, limit), count);
+    }
+
+    @Override
+    public IntGenerator map(IntUnaryOperator mapper) {
+        return new LimitIntGenerator(wrapped.map(mapper), limit, count);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(limit, wrapped, count);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof LimitIntGenerator)) return false;
+
+        LimitIntGenerator that = (LimitIntGenerator) obj;
+        return this.limit == that.limit
+                && Objects.equals(this.wrapped, that.wrapped)
+                && this.count == that.count;
+    }
+
+    @Override
+    public String toString() {
+        return "LimitIntGenerator(limit=" + limit + ",wrapped=" + wrapped + ",count=" + count + ")";
+    }
 }
 
 class RangeIntGenerator implements IntGenerator {
@@ -180,6 +326,11 @@ class ConstantIntGenerator implements IntGenerator {
     @Override
     public IntGenerator concat(IntGenerator another) {
         return this;
+    }
+
+    @Override
+    public IntGenerator map(IntUnaryOperator mapper) {
+        return new ConstantIntGenerator(mapper.applyAsInt(value));
     }
 
     @Override
@@ -305,6 +456,11 @@ class CycleIntGenerator implements IntGenerator {
     }
 
     @Override
+    public IntGenerator map(IntUnaryOperator mapper) {
+        return new CycleIntGenerator(wrapped.map(mapper));
+    }
+
+    @Override
     public int hashCode() {
         return wrapped.hashCode();
     }
@@ -354,6 +510,11 @@ class ConcatIntGenerator implements IntGenerator {
     @Override
     public IntStream toStream() {
         return IntStream.concat(first.toStream(), second.toStream());
+    }
+
+    @Override
+    public IntGenerator map(IntUnaryOperator mapper) {
+        return new ConcatIntGenerator(first.map(mapper), second.map(mapper));
     }
 
     @Override
@@ -425,6 +586,24 @@ class ArrayIntGenerator implements IntGenerator {
         } else {
             return IntGenerator.super.concat(another);
         }
+    }
+
+    @Override
+    public IntGenerator limit(int limit) {
+        if (limit >= this.ints.length) return this;
+
+        int[] ints = new int[limit];
+        System.arraycopy(this.ints, 0, ints, 0, limit);
+        return new ArrayIntGenerator(index, ints);
+    }
+
+    @Override
+    public IntGenerator map(IntUnaryOperator mapper) {
+        int[] mapped = new int[ints.length];
+        for (int i = 0; i < ints.length; i++) {
+            mapped[i] = mapper.applyAsInt(ints[i]);
+        }
+        return new ArrayIntGenerator(index, ints);
     }
 
     @Override
