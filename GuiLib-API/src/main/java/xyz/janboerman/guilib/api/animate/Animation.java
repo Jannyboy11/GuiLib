@@ -64,6 +64,62 @@ public interface Animation {
     public default Animation continuously() {
         return new ContinuousAnimation(this);
     }
+
+    /**
+     * Append another animation to this animation.
+     * @param next the appended animation
+     * @return an animation that first steps through the current animation, and then through the next animation
+     */
+    public default Animation andThen(Animation next) {
+        return new ConcatAnimation(this, next);
+    }
+}
+
+class ConcatAnimation implements Animation {
+
+    private final Animation one, two;
+
+    ConcatAnimation(Animation one, Animation two) {
+        this.one = Objects.requireNonNull(one, "one cannot be null");
+        this.two = Objects.requireNonNull(two, "two cannot be null");
+    }
+
+    @Override
+    public void reset() {
+        one.reset();
+        two.reset();
+    }
+
+    @Override
+    public Frame nextFrame() {
+        if (one.hasNextFrame()) return one.nextFrame();
+        return two.nextFrame();
+    }
+
+    @Override
+    public boolean hasNextFrame() {
+        return one.hasNextFrame() || two.hasNextFrame();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(one, two);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ConcatAnimation)) return false;
+
+        ConcatAnimation that = (ConcatAnimation) obj;
+        return Objects.equals(this.one, that.one)
+                && Objects.equals(this.two, that.two);
+    }
+
+    @Override
+    public String toString() {
+        return "ConcatAnimation(one=" + one + ",two=" + two + ")";
+    }
 }
 
 class ContinuousAnimation implements Animation {
@@ -92,6 +148,11 @@ class ContinuousAnimation implements Animation {
 
     @Override
     public Animation continuously() {
+        return this;
+    }
+
+    @Override
+    public Animation andThen(Animation next) {
         return this;
     }
 
@@ -152,6 +213,11 @@ class InfiniteAnimation<F extends Frame> implements Animation {
     }
 
     @Override
+    public Animation andThen(Animation next) {
+        return this;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(startingFrame, nextFrame, state);
     }
@@ -178,6 +244,11 @@ class SimpleAnimation implements Animation {
     private int currentIndex;
     private final ArrayList<? extends Frame> frames;
 
+    private SimpleAnimation(int index, ArrayList<? extends Frame> frames) {
+        this.currentIndex = index;
+        this.frames = frames;
+    }
+
     SimpleAnimation(List<? extends Frame> frames) {
         Objects.requireNonNull(frames, "frames cannot be null");
         if (frames.isEmpty()) throw new IllegalArgumentException("frames cannot be empty");
@@ -198,6 +269,20 @@ class SimpleAnimation implements Animation {
     @Override
     public boolean hasNextFrame() {
         return currentIndex < frames.size();
+    }
+
+    @Override
+    public Animation andThen(Animation next) {
+        if (next instanceof SimpleAnimation) {
+            SimpleAnimation that = (SimpleAnimation) next;
+
+            ArrayList<Frame> newFrames = new ArrayList<>(this.frames.size() + that.frames.size());
+            newFrames.addAll(this.frames);
+            newFrames.addAll(that.frames);
+            return new SimpleAnimation(currentIndex, newFrames);
+        } else {
+            return Animation.super.andThen(next);
+        }
     }
 
     @Override
