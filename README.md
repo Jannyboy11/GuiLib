@@ -272,7 +272,7 @@ The examples below use the plugin variant.
 	<dependency>
 	    <groupId>com.github.Jannyboy11.GuiLib</groupId>
 	    <artifactId>GuiLib-Plugin</artifactId>
-	    <version>v1.10.1</version>
+	    <version>v1.11.1</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -286,13 +286,13 @@ The examples below use the plugin variant.
     }
     	
     dependencies {
-        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.10.1'
+        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.11.1'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.10.1" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.11.1" % "provided"	
 
 ### Licensing
 

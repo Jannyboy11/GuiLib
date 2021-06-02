@@ -9,34 +9,76 @@ import java.util.function.IntUnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
+/**
+ * A generator for int values. In addition to being an iterator, IntGenerators can always be reset to their initial state.
+ */
 public interface IntGenerator extends PrimitiveIterator.OfInt {
 
+    /**
+     * Reset the generator to its initial state.
+     */
     public void reset();
 
+    /**
+     * Construct a generator using a fixed array of ints.
+     * @param ints the array
+     * @return a new generator
+     */
     public static IntGenerator of(int... ints) {
         return new ArrayIntGenerator(ints);
     }
 
+    /**
+     * Construct a generator that always emits the same value.
+     * @param constant the constant that will be emitted every time
+     * @return a new generator
+     */
     public static IntGenerator repeat(int constant) {
         return new ConstantIntGenerator(constant);
     }
 
+    /**
+     * Construct a generator that starts out at an initial value and updates using an update function.
+     * @param startValue the seed value
+     * @param updater the update function
+     * @return a new generator
+     */
     public static IntGenerator iterate(int startValue, IntUnaryOperator updater) {
         return new InfiniteIntGenerator(startValue, updater);
     }
 
+    /**
+     * Construct a generator that generates ints that are between some lower and upper bound values.
+     * @param startValue the lower bound (inclusive)
+     * @param endExclusive the upper bound (exclusive)
+     * @param step how much difference between each {@link IntGenerator#nextInt()} call.
+     * @return a new generator
+     */
     public static IntGenerator range(int startValue, int endExclusive, int step) {
         return new RangeIntGenerator(startValue, endExclusive, step);
     }
 
+    /**
+     * Convert this generator to an IntStream.
+     * @return a new IntStream
+     */
     public default IntStream toStream() {
         return StreamSupport.intStream(Spliterators.spliteratorUnknownSize(this, Spliterator.NONNULL | Spliterator.ORDERED), false);
     }
 
+    /**
+     * Concatenate another generator to this generator. The returned generator will first generate items from the first generator, and only when the first one is done, the second generator is queried.
+     * @param another the second generator
+     * @return a new generator
+     */
     public default IntGenerator concat(IntGenerator another) {
         return new ConcatIntGenerator(this, another);
     }
 
+    /**
+     * Convert this generator into a generator that starts over again automatically after this generator is done.
+     * @return a new generator
+     */
     public default IntGenerator cycled() {
         return new CycleIntGenerator(this);
     }

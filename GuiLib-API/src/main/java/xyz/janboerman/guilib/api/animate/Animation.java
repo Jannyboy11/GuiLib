@@ -5,26 +5,62 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
+/**
+ * An Animation is a container of {@link Frame}s.
+ * Animations can be executed using an {@link AnimationRunner}.
+ */
 public interface Animation {
 
+    /**
+     * Resets the animation to its initial state.
+     */
     public void reset();
 
+    /**
+     * Get the next frame of the animation.
+     * @return the next frame
+     */
     public Frame nextFrame();
 
+    /**
+     * Tests whether this animation has another frame.
+     * @return true if this animation has at least one more frame, otherwise false
+     */
     public boolean hasNextFrame();
 
+    /**
+     * Create an Animation from an array of frames.
+     * @param frames the frames
+     * @return a new Animation
+     */
     public static Animation ofFrames(Frame... frames) {
         return new SimpleAnimation(List.of(frames));
     }
 
+    /**
+     * Create an animation from a list of frames.
+     * @param frames the frames
+     * @return a new Animation
+     */
     public static Animation ofFrames(List<? extends Frame> frames) {
         return new SimpleAnimation(frames);
     }
 
+    /**
+     * Create an animation that lazily generates an infinite number of frames.
+     * @param seed the first frame
+     * @param nextFrame the function that knows how to compute the next frame
+     * @param <F> the type of Frames
+     * @return a new Animation
+     */
     public static <F extends Frame> Animation infinite(F seed, UnaryOperator<F> nextFrame) {
         return new InfiniteAnimation(seed, nextFrame);
     }
 
+    /**
+     * Turn the animation into an auto-resetting animation, so that it automatically starts over when this animation is at its end.
+     * @return an animation that loops this animation
+     */
     public default Animation continuously() {
         return new ContinuousAnimation(this);
     }
