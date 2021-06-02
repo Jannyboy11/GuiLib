@@ -31,6 +31,14 @@ commands:
     description: Opens pages that override item dragging
     usage: /dragpage
     permission: guiexample.command.dragpage
+  border:
+    description: Opens an inventory constructed using a BorderPattern and a Mask
+    usage: /border
+    permission: guiexample.command.border
+  animation:
+    description: Opens an inventory with a custom animation example
+    usage: /animation
+    permission: guiexample.command.animation
 
 permissions:
   guiexample.command.gui:
@@ -49,5 +57,11 @@ permissions:
     description: YOLO
     default: op
   guiexample.command.dragpages:
-    description: allows players to use the /dragpages
+    description: allows players to use the /dragpages command
+    default: op
+  guiexample.command.border:
+    description: allows players to use the /border command
+    default: op
+  guiexample.command.animation:
+    description: allows players to use the /animation command
     default: op

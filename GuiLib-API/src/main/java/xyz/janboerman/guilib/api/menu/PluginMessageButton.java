@@ -189,6 +189,9 @@ public class PluginMessageButton<MH extends MenuHolder<?>> extends ItemButton<MH
         private static final String ServerIP = "ServerIP";
         private static final String KickPlayer = "KickPlayer";
 
+        private BungeeCord() {
+        }
+
         /**
          * Creates a PluginMessageButton that will send the player to the said server.
          * @param icon the icon of the button

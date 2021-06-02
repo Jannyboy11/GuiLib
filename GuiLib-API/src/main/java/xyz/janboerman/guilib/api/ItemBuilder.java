@@ -506,7 +506,7 @@ public class ItemBuilder {
      * @deprecated Use {@link #persistentData(NamespacedKey, short)} instead.
      */
     @Deprecated
-    public ItemBuilder tag(NamespacedKey key, short value){
+    public ItemBuilder tag(NamespacedKey key, short value) {
         return tag(key, ItemTagType.SHORT, value);
     }
 

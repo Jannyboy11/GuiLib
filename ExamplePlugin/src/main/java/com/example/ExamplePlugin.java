@@ -7,23 +7,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.janboerman.guilib.GuiLibrary;
-import xyz.janboerman.guilib.api.GuiListener;
-import xyz.janboerman.guilib.api.ItemBuilder;
+import xyz.janboerman.guilib.api.*;
 import xyz.janboerman.guilib.api.menu.*;
+import xyz.janboerman.guilib.api.mask.*;
+import xyz.janboerman.guilib.api.mask.patterns.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ExamplePlugin extends JavaPlugin {
 
     private MenuHolder<ExamplePlugin> menu1, menu2;
+    private AnimationDemo animationDemo;
 
     private GuiListener guiListener;
 
@@ -44,6 +47,7 @@ public class ExamplePlugin extends JavaPlugin {
         //basic usage
         menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
         menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2");
+        animationDemo = new AnimationDemo(this);
 
         //menu 1 stuff
         menu1.setButton(0, new RedirectItemButton<>(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
@@ -115,6 +119,19 @@ public class ExamplePlugin extends JavaPlugin {
             case "dragpages":
                 pageMenu = PageMenu.create(this, Stream.generate(() -> new DragPage(guiListener, this)).iterator());
                 player.openInventory(pageMenu.getInventory());
+                return true;
+            case "border":
+                GuiInventoryHolder maskDemo = new MenuHolder<>(this, 54);
+                Inventory maskInventory = maskDemo.getInventory();
+                BorderPattern borderPattern = Pattern.border(9, 6);
+                Mask<BorderPattern.Border, ItemStack> mask = Mask.ofMap(Map.of(
+                        BorderPattern.Border.OUTER, new ItemStack(Material.BLACK_STAINED_GLASS_PANE),
+                        BorderPattern.Border.INNER, new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE)));
+                Mask.applyInventory(mask, borderPattern, maskInventory);
+                player.openInventory(maskInventory);
+                return true;
+            case "animation":
+                player.openInventory(animationDemo.getInventory());
                 return true;
             default:
                 return false;

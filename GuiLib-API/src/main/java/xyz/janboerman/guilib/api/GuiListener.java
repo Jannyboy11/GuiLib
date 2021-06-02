@@ -67,7 +67,7 @@ public class GuiListener implements Listener {
      * @param inventory the inventory
      * @return the holder - or null if no holder was registered with the inventory.
      */
-    public GuiInventoryHolder<?> getHolder(Inventory inventory){
+    public GuiInventoryHolder<?> getHolder(Inventory inventory) {
         InventoryHolder holder = inventory.getHolder();
         if (holder instanceof GuiInventoryHolder) return (GuiInventoryHolder<?>) holder;
 

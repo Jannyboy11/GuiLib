@@ -4,6 +4,5 @@ module xyz.janboerman.guilib {
     requires transitive xyz.janboerman.guilib.api;
 
     exports xyz.janboerman.guilib;
-
-    opens xyz.janboerman.guilib;
+    opens xyz.janboerman.guilib to org.bukkit;
 }

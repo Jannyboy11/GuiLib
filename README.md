@@ -2,6 +2,13 @@
 
 Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.10.1/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
 
+## Features
+- Callback-based GuiInventoryHolder api
+- Hassle-free registration of GUIs
+- Menu abstraction with lots of Buttons available out of the box
+- Inventory operations in bulk with Masks en Patterns
+- Animations
+
 ### Compiling
 
 Prerequisites: Apache Maven 3.5+, JDK11+.
