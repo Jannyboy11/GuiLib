@@ -23,7 +23,7 @@ import java.util.Objects;
 public interface Pattern<Symbol> {
 
     /**
-     * Get the symbol.
+     * Get the symbol. {@code null} may be returned for slots outside this pattern.
      * @param location the inventory slot index
      * @return the symbol
      */

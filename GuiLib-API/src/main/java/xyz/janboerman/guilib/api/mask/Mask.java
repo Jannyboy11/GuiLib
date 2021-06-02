@@ -50,7 +50,7 @@ public interface Mask<Symbol, Item> {
      * @param <Symbol> the symbol type
      * @param <Item> element type
      */
-    public static <Symbol, Item> void apply(Mask<Symbol, Item> mask, Pattern<Symbol> pattern, IntStream indexGenerator, IntBiConsumer updater) {
+    public static <Symbol, Item> void apply(Mask<Symbol, Item> mask, Pattern<Symbol> pattern, IntStream indexGenerator, IntBiConsumer<Item> updater) {
         indexGenerator.forEach(index -> {
             Symbol symbol = pattern.getSymbol(index);
             var item = mask.getItem(symbol);

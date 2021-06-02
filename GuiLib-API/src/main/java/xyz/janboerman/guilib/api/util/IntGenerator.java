@@ -443,7 +443,7 @@ class ArrayIntGenerator implements IntGenerator {
 
     @Override
     public String toString() {
-        return "ArrayIntGenerator(index=" + index + ",ints=" + ints + ")";
+        return "ArrayIntGenerator(index=" + index + ",ints=" + Arrays.toString(ints) + ")";
     }
 
 }

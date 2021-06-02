@@ -20,7 +20,7 @@ public interface Animation {
      * Get the next frame of the animation.
      * @return the next frame
      */
-    public Frame nextFrame();
+    public Frame<?, ?> nextFrame();
 
     /**
      * Tests whether this animation has another frame.
@@ -33,7 +33,7 @@ public interface Animation {
      * @param frames the frames
      * @return a new Animation
      */
-    public static Animation ofFrames(Frame... frames) {
+    public static Animation ofFrames(Frame<?, ?>... frames) {
         return new SimpleAnimation(List.of(frames));
     }
 
@@ -42,7 +42,7 @@ public interface Animation {
      * @param frames the frames
      * @return a new Animation
      */
-    public static Animation ofFrames(List<? extends Frame> frames) {
+    public static Animation ofFrames(List<? extends Frame<?, ?>> frames) {
         return new SimpleAnimation(frames);
     }
 
@@ -53,8 +53,8 @@ public interface Animation {
      * @param <F> the type of Frames
      * @return a new Animation
      */
-    public static <F extends Frame> Animation infinite(F seed, UnaryOperator<F> nextFrame) {
-        return new InfiniteAnimation(seed, nextFrame);
+    public static <F extends Frame<?, ?>> Animation infinite(F seed, UnaryOperator<F> nextFrame) {
+        return new InfiniteAnimation<>(seed, nextFrame);
     }
 
     /**
@@ -91,7 +91,7 @@ class ConcatAnimation implements Animation {
     }
 
     @Override
-    public Frame nextFrame() {
+    public Frame<?, ?> nextFrame() {
         if (one.hasNextFrame()) return one.nextFrame();
         return two.nextFrame();
     }
@@ -136,7 +136,7 @@ class ContinuousAnimation implements Animation {
     }
 
     @Override
-    public Frame nextFrame() {
+    public Frame<?, ?> nextFrame() {
         if (!wrapped.hasNextFrame()) wrapped.reset();
         return wrapped.nextFrame();
     }
@@ -176,7 +176,7 @@ class ContinuousAnimation implements Animation {
     }
 }
 
-class InfiniteAnimation<F extends Frame> implements Animation {
+class InfiniteAnimation<F extends Frame<?, ?>> implements Animation {
 
     private final F startingFrame;
     private final UnaryOperator<F> nextFrame;
@@ -242,14 +242,14 @@ class InfiniteAnimation<F extends Frame> implements Animation {
 class SimpleAnimation implements Animation {
 
     private int currentIndex;
-    private final ArrayList<? extends Frame> frames;
+    private final ArrayList<? extends Frame<?, ?>> frames;
 
-    private SimpleAnimation(int index, ArrayList<? extends Frame> frames) {
+    private SimpleAnimation(int index, ArrayList<? extends Frame<?, ?>> frames) {
         this.currentIndex = index;
         this.frames = frames;
     }
 
-    SimpleAnimation(List<? extends Frame> frames) {
+    SimpleAnimation(List<? extends Frame<?, ?>> frames) {
         Objects.requireNonNull(frames, "frames cannot be null");
         if (frames.isEmpty()) throw new IllegalArgumentException("frames cannot be empty");
 
@@ -262,7 +262,7 @@ class SimpleAnimation implements Animation {
     }
 
     @Override
-    public Frame nextFrame() {
+    public Frame<?, ?> nextFrame() {
         return frames.get(currentIndex++);
     }
 
@@ -276,7 +276,7 @@ class SimpleAnimation implements Animation {
         if (next instanceof SimpleAnimation) {
             SimpleAnimation that = (SimpleAnimation) next;
 
-            ArrayList<Frame> newFrames = new ArrayList<>(this.frames.size() + that.frames.size());
+            ArrayList<Frame<?, ?>> newFrames = new ArrayList<>(this.frames.size() + that.frames.size());
             newFrames.addAll(this.frames);
             newFrames.addAll(that.frames);
             return new SimpleAnimation(currentIndex, newFrames);

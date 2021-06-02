@@ -5,6 +5,10 @@ import xyz.janboerman.guilib.api.mask.patterns.BorderPattern.Border;
 
 import java.util.Objects;
 
+/**
+ * This pattern highlights all the edges of an inventory grid as {@link Border#OUTER}.
+ * The slots that are not at the edge are marked as {@link Border#INNER}.
+ */
 public class BorderPattern implements Pattern<Border> {
 
     public enum Border {
@@ -22,6 +26,11 @@ public class BorderPattern implements Pattern<Border> {
 
     private final int width, height;
 
+    /**
+     * Construct a BorderPattern
+     * @param width the width of the inventory grid
+     * @param height the height of the inventory grid
+     */
     public BorderPattern(int width, int height) {
         if (width < 0) throw new IllegalArgumentException("Negative width: " + width);
         if (height < 0) throw new IllegalArgumentException("Negative height: "+ height);
@@ -30,6 +39,11 @@ public class BorderPattern implements Pattern<Border> {
         this.height = height;
     }
 
+    /**
+     * Get the symbol.
+     * @param index the inventory slot
+     * @return {@link Border#OUTER} if the slot is at the edge of the grid, {@code null} if the index is out of bounds, otherwise {@link Border#INNER}
+     */
     @Override
     public Border getSymbol(int index) {
         if (index < 0) return null;

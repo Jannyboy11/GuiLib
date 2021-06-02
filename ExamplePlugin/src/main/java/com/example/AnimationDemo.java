@@ -8,11 +8,8 @@ import xyz.janboerman.guilib.api.GuiInventoryHolder;
 import xyz.janboerman.guilib.api.animate.Animation;
 import xyz.janboerman.guilib.api.animate.AnimationRunner;
 import xyz.janboerman.guilib.api.animate.Frame;
-import xyz.janboerman.guilib.api.mask.Mask;
 import xyz.janboerman.guilib.api.util.IntGenerator;
 import xyz.janboerman.guilib.api.util.Option;
-
-import java.util.Map;
 
 public class AnimationDemo extends GuiInventoryHolder<ExamplePlugin> {
 
