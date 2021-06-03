@@ -1,6 +1,6 @@
 # GuiLib [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.11.5/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.11.6/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
 
 ## Features
 - Callback-based GuiInventoryHolder api
@@ -272,7 +272,7 @@ The examples below use the plugin variant.
 	<dependency>
 	    <groupId>com.github.Jannyboy11.GuiLib</groupId>
 	    <artifactId>GuiLib-Plugin</artifactId>
-	    <version>v1.11.5</version>
+	    <version>v1.11.6</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -286,13 +286,13 @@ The examples below use the plugin variant.
     }
     	
     dependencies {
-        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.11.5'
+        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.11.6'
     }
 
 ##### Sbt
 
     resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.11.5" % "provided"	
+    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.11.6" % "provided"	
 
 ### Licensing
 

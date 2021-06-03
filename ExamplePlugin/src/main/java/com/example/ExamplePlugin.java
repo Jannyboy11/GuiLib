@@ -80,12 +80,10 @@ public class ExamplePlugin extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("You can only use this command as a player.");
             return true;
         }
-
-        Player player = (Player) sender;
 
         switch (command.getName().toLowerCase()) {
             case "gui":
@@ -119,7 +117,7 @@ public class ExamplePlugin extends JavaPlugin {
                 player.openInventory(pageMenu.getInventory());
                 return true;
             case "border":
-                GuiInventoryHolder maskDemo = new MenuHolder<>(this, 54);
+                GuiInventoryHolder<ExamplePlugin> maskDemo = new MenuHolder<>(this, 54);
                 Inventory maskInventory = maskDemo.getInventory();
                 BorderPattern borderPattern = Pattern.border(9, 6);
                 Mask<BorderPattern.Border, ItemStack> mask = Mask.ofMap(Map.of(

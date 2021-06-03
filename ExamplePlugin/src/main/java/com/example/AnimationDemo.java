@@ -44,7 +44,7 @@ public class AnimationDemo extends GuiInventoryHolder<ExamplePlugin> {
         private CustomFrame(int active) {
             super(index -> index == active,
                     b -> Option.some(b ? PUFFERFISH : null),
-                    IntGenerator.of(normalize(active - 1), active, normalize(active + 1))
+                    IntGenerator.of(normalize(active - 1), active)
             );
 
             this.active = active;

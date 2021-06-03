@@ -40,6 +40,16 @@ public final class AnimationRunner<Item> {
      * @return the status
      */
     public AnimationState getStatus() {
+        if (animation.hasNextFrame()) {
+            if (task != null && !task.isCancelled()) {
+                status = AnimationState.RUNNING;
+            } else {
+                status = AnimationState.PAUSED;
+            }
+        } else {
+            status = AnimationState.FINISHED;
+        }
+
         return status;
     }
 
@@ -53,6 +63,9 @@ public final class AnimationRunner<Item> {
     public boolean play(Schedule schedule) {
         //throw IllegalStateException if the AnimationRunner was already busy.
         checkStartAllowed();
+
+        //update the status
+        status = AnimationState.RUNNING;
 
         //run the schedule
         return runSchedule(schedule);
@@ -81,37 +94,49 @@ public final class AnimationRunner<Item> {
     private boolean runSchedule(Schedule schedule) {
         //try to short-circuit a few common schedule structures
         CommonRunnable sr = tryComputeCommonRunnable(schedule);
+        boolean specialCased = false;
         if (sr != null) {
             //at least we got a ScheduleRunnable successfully
             //now let's try to run it (this might fail)
-            task = trySpecialCaseRun(sr, schedule);
+            specialCased = trySpecialCaseRun(sr, schedule);
         }
 
-        if (task == null) {
-            //fallback
-            task = tryFallbackRun(schedule);
+        if (!specialCased) {
+            //fallback, we couldn't special-case a working CommonRunnable for the schedule.
+            tryFallbackRun(schedule);
         }
 
-        return recomputeStatus() == AnimationState.RUNNING;
+        return getStatus() == AnimationState.RUNNING;
     }
 
-    private BukkitTask trySpecialCaseRun(CommonRunnable sr, Schedule schedule) {
+    private boolean trySpecialCaseRun(CommonRunnable sr, Schedule schedule) {
         if (schedule instanceof Once) {
-            return sr.runTaskLater(plugin, ((Once) schedule).when);
+            Once s = (Once) schedule;
+            if (s.when == 0L) {
+                sr.run();
+                task = null;
+            } else if (s.when == 1L) {
+                task = sr.runTask(plugin);
+            } else {
+                task = sr.runTaskLater(plugin, ((Once) schedule).when);
+            }
+            return true;
         } else if (schedule instanceof FixedRateSchedule) {
-            return sr.runTaskTimer(plugin, 0L, ((FixedRateSchedule) schedule).period);
+            task = sr.runTaskTimer(plugin, 0L, ((FixedRateSchedule) schedule).period);
+            return true;
         } else if (schedule instanceof StepLimitedSchedule) {
-            trySpecialCaseRun(sr, ((StepLimitedSchedule) schedule).source);
+            return trySpecialCaseRun(sr, ((StepLimitedSchedule) schedule).source);
         } else if (schedule instanceof TimeLimitedSchedule) {
             return trySpecialCaseRun(sr, ((TimeLimitedSchedule) schedule).source);
         } else if (schedule instanceof ConcatSchedule) {
             ConcatSchedule concatSchedule = (ConcatSchedule) schedule;
             if (concatSchedule.one instanceof Once && concatSchedule.two instanceof RunFixedRate) {
-                return sr.runTaskTimer(plugin, ((Once) concatSchedule.one).when, ((RunFixedRate) concatSchedule.two).period);
+                task = sr.runTaskTimer(plugin, ((Once) concatSchedule.one).when, ((RunFixedRate) concatSchedule.two).period);
+                return true;
             }
         }
 
-        return null;
+        return false;
     }
 
     private CommonRunnable tryComputeCommonRunnable(Schedule schedule) {
@@ -145,19 +170,23 @@ public final class AnimationRunner<Item> {
         return null;
     }
 
-    private BukkitTask tryFallbackRun(Schedule schedule) {
+    private void tryFallbackRun(Schedule schedule) {
         OptionalLong nextTick = schedule.next();
 
         if (nextTick.isEmpty()) {
             this.status = AnimationState.FINISHED;
             stop();
-            return null;
         } else {
             long delay = nextTick.getAsLong();
-            return getScheduler().runTaskLater(plugin, () -> {
+            if (delay == 0) {
                 showFrame();
-                runSchedule(schedule);
-            }, delay);
+                tryFallbackRun(schedule);
+            } else {
+                task = getScheduler().runTaskLater(plugin, () -> {
+                    showFrame();
+                    tryFallbackRun(schedule);
+                }, delay);
+            }
         }
     }
 
@@ -175,20 +204,6 @@ public final class AnimationRunner<Item> {
         if (task != null) throw new IllegalStateException("Animation already started");
     }
 
-    private AnimationState recomputeStatus() {
-        if (animation.hasNextFrame()) {
-            if (task != null && !task.isCancelled()) {
-                status = AnimationState.RUNNING;
-            } else {
-                status = AnimationState.PAUSED;
-            }
-        } else {
-            status = AnimationState.FINISHED;
-        }
-
-        return status;
-    }
-
     private void cancelTask() {
         if (task != null) {
             task.cancel();
@@ -200,15 +215,4 @@ public final class AnimationRunner<Item> {
         return plugin.getServer().getScheduler();
     }
 
-    /**
-     * Plays the animation frames at a fixed rate.
-     * @param initialDelay the number of ticks to wait before the first frame is shown
-     * @param period the number of ticks between frames
-     * @return whether the animation started successfully
-     * @deprecated use {@link #play(Schedule)} instead
-     */
-    @Deprecated(forRemoval = true)
-    public boolean play(long initialDelay, long period) {
-        return play(Schedule.once(initialDelay).append(Schedule.fixedRate(period)));
-    }
 }

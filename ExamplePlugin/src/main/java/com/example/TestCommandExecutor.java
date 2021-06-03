@@ -30,9 +30,8 @@ public class TestCommandExecutor implements TabExecutor, Listener {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
-			
+		if (sender instanceof Player player) {
+
 			if (args.length == 0) {
 				Inventory testInventory = new TestInventoryHolder(player.getServer()).getInventory();
 				testInventory.addItem(new ItemStack(Material.COBBLESTONE), new ItemStack(Material.DIAMOND), new ItemStack(Material.OAK_LOG));
