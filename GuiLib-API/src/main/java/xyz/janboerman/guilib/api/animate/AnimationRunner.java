@@ -47,6 +47,8 @@ public final class AnimationRunner<Item> {
      * Play the animation frames according to a schedule.
      * @param schedule the schedule
      * @return true if the animation started successfully, otherwise false
+     * @throws IllegalStateException if the animation is already running.
+     * @see #getStatus()
      */
     public boolean play(Schedule schedule) {
         //throw IllegalStateException if the AnimationRunner was already busy.

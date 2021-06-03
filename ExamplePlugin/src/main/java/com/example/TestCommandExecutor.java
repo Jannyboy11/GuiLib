@@ -21,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 public class TestCommandExecutor implements TabExecutor, Listener {
 	
 	private final ExamplePlugin plugin;
-	
+
 	public TestCommandExecutor(ExamplePlugin plugin) {
 		this.plugin = plugin;
 		plugin.getCommand("testinventoryholder").setExecutor(this);

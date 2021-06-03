@@ -26,7 +26,6 @@ import java.util.stream.Stream;
 public class ExamplePlugin extends JavaPlugin {
 
     private MenuHolder<ExamplePlugin> menu1, menu2;
-    private AnimationDemo animationDemo;
 
     private GuiListener guiListener;
 
@@ -47,7 +46,6 @@ public class ExamplePlugin extends JavaPlugin {
         //basic usage
         menu1 = new MenuHolder<>(this, 9, "Example Gui 1");
         menu2 = new MenuHolder<>(this, InventoryType.HOPPER, "Example Gui 2");
-        animationDemo = new AnimationDemo(this);
 
         //menu 1 stuff
         menu1.setButton(0, new RedirectItemButton<>(new ItemStack(Material.PURPLE_GLAZED_TERRACOTTA), menu2::getInventory));
@@ -131,6 +129,7 @@ public class ExamplePlugin extends JavaPlugin {
                 player.openInventory(maskInventory);
                 return true;
             case "animation":
+                AnimationDemo animationDemo = new AnimationDemo(this);
                 player.openInventory(animationDemo.getInventory());
                 return true;
             default:
