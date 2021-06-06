@@ -32,6 +32,10 @@ public interface Schedule {
      * @return a new Schedule
      */
     public static Schedule of(long... delays) {
+        if (delays.length == 1) {
+            return once(delays[0]);
+        }
+
         for (long delay : delays) {
             if (delay < 0) throw new IllegalArgumentException("Negative delay: " + delay);
         }
@@ -47,7 +51,7 @@ public interface Schedule {
     public static Schedule once(long delay) {
         if (delay < 0L) throw new IllegalArgumentException("Negative delay: " + delay);
 
-        return new Once(delay);
+        return new OneTimeSchedule(delay);
     }
 
     /**
@@ -94,10 +98,68 @@ public interface Schedule {
     /**
      * A schedule that first serves up frames according to the current schedule, and then according to the second schedule.
      * @param andThen the second schedule
-     * @return a new Schedule
+     * @return a new Schedule, or the current schedule if it is infinite
      */
     public default Schedule append(Schedule andThen) {
         return new ConcatSchedule(this, andThen);
+    }
+
+    /**
+     * A schedule that loops the current schedule.
+     * @return a new Schedule, or the current schedule if it is infinite
+     */
+    public default Schedule repeat() {
+        return new RepeatingSchedule(this);
+    }
+}
+
+class RepeatingSchedule implements Schedule {
+    private final Schedule source;
+
+    RepeatingSchedule(Schedule source) {
+        this.source = source;
+    }
+
+    @Override
+    public void reset() {
+        source.reset();
+    }
+
+    @Override
+    public OptionalLong next() {
+        OptionalLong next = source.next();
+        if (next.isPresent()) return next;
+        source.reset();
+        return source.next();
+    }
+
+    @Override
+    public Schedule clone() {
+        return new RepeatingSchedule(source.clone());
+    }
+
+    @Override
+    public Schedule append(Schedule andThen) {
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(source);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof RepeatingSchedule)) return false;
+
+        RepeatingSchedule that = (RepeatingSchedule) obj;
+        return Objects.equals(this.source, that.source);
+    }
+
+    @Override
+    public String toString() {
+        return "RepeatingSchedule(source=" + source + ")";
     }
 }
 
@@ -158,6 +220,26 @@ class ArraySchedule implements Schedule {
             return Schedule.super.append(andThen);
         }
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(currentIndex, Arrays.hashCode(delays));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ArraySchedule)) return false;
+
+        ArraySchedule that = (ArraySchedule) obj;
+        return this.currentIndex == that.currentIndex
+                && Arrays.equals(this.delays, that.delays);
+    }
+
+    @Override
+    public String toString() {
+        return "ArraySchedule(delays=" + Arrays.toString(delays) + ",currentIndex=" + currentIndex + ")";
+    }
 }
 
 class ConcatSchedule implements Schedule {
@@ -188,18 +270,38 @@ class ConcatSchedule implements Schedule {
     public Schedule clone() {
         return new ConcatSchedule(one.clone(), two.clone());
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(one, two);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof ConcatSchedule));
+
+        ConcatSchedule that = (ConcatSchedule) obj;
+        return Objects.equals(this.one, that.one)
+                && Objects.equals(this.two, that.two);
+    }
+
+    @Override
+    public String toString() {
+        return "ConcatSchedule(one=" + one + ",two=" + two + ")";
+    }
 }
 
-class Once implements Schedule {
+class OneTimeSchedule implements Schedule {
     private boolean done = false;
     final long when;
 
-    private Once(boolean done, long when) {
+    private OneTimeSchedule(boolean done, long when) {
         this.done = done;
         this.when = when;
     }
 
-    Once(long delay) {
+    OneTimeSchedule(long delay) {
         this.when = delay;
     }
 
@@ -220,7 +322,32 @@ class Once implements Schedule {
 
     @Override
     public Schedule clone() {
-        return new Once(done, when);
+        return new OneTimeSchedule(done, when);
+    }
+
+    @Override
+    public Schedule repeat() {
+        return Schedule.fixedRate(when);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(done, when);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof OneTimeSchedule)) return false;
+
+        OneTimeSchedule that = (OneTimeSchedule) obj;
+        return this.done == that.done
+                && this.when == that.when;
+    }
+
+    @Override
+    public String toString() {
+        return "OneTimeSchedule(done=" + done + ",when=" + when + ")";
     }
 }
 
@@ -262,6 +389,27 @@ class StepLimitedSchedule implements Schedule {
     @Override
     public Schedule limitSteps(long totalSteps) {
         return new StepLimitedSchedule(source, Math.min(totalSteps, stepLimit), stepsPassed);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(stepLimit, source, stepsPassed);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof StepLimitedSchedule)) return false;
+
+        StepLimitedSchedule that = (StepLimitedSchedule) obj;
+        return this.stepLimit == that.stepLimit
+                && this.stepsPassed == that.stepsPassed
+                && Objects.equals(this.source, that.source);
+    }
+
+    @Override
+    public String toString() {
+        return "StepLimitedSchedule(source=" + source + ",stepLimit=" + stepLimit + ",stepsPassed=" + stepsPassed + ")";
     }
 }
 
@@ -309,6 +457,27 @@ class TimeLimitedSchedule implements Schedule {
     public Schedule limitTime(long totalTicks) {
         return new TimeLimitedSchedule(source, Math.min(timeLimit, totalTicks), timePassed);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(timeLimit, timePassed, source);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof TimeLimitedSchedule)) return false;
+
+        TimeLimitedSchedule that = (TimeLimitedSchedule) obj;
+        return this.timeLimit == that.timeLimit
+                && this.timePassed == that.timePassed
+                && Objects.equals(this.source, that.source);
+    }
+
+    @Override
+    public String toString() {
+        return "TimeLimitedSchedule(source=" + source + ",timeLimit=" + timeLimit + ",timePassed=" + timePassed + ")";
+    }
 }
 
 class FixedRateSchedule implements Schedule {
@@ -329,12 +498,45 @@ class FixedRateSchedule implements Schedule {
     }
 
     @Override
+    public Schedule limitSteps(long totalSteps) {
+        if (totalSteps == 1) {
+            return Schedule.once(period);
+        } else {
+            return Schedule.super.limitSteps(totalSteps);
+        }
+    }
+
+    @Override
     public Schedule clone() {
-        return this; //this violates the documentation, but this schedule is 'stateless' so returning the same instance is okay here.
+        return this;
     }
 
     @Override
     public Schedule append(Schedule andThen) {
         return this;
+    }
+
+    @Override
+    public Schedule repeat() {
+        return this;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(period);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (!(obj instanceof FixedRateSchedule)) return false;
+
+        FixedRateSchedule that = (FixedRateSchedule) obj;
+        return this.period == that.period;
+    }
+
+    @Override
+    public String toString() {
+        return "FixedRateSchedule(period=" + period + ")";
     }
 }

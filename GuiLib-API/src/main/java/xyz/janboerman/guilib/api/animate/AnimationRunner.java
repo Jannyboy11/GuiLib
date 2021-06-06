@@ -110,15 +110,15 @@ public final class AnimationRunner<Item> {
     }
 
     private boolean trySpecialCaseRun(CommonRunnable sr, Schedule schedule) {
-        if (schedule instanceof Once) {
-            Once s = (Once) schedule;
+        if (schedule instanceof OneTimeSchedule) {
+            OneTimeSchedule s = (OneTimeSchedule) schedule;
             if (s.when == 0L) {
                 sr.run();
                 task = null;
             } else if (s.when == 1L) {
                 task = sr.runTask(plugin);
             } else {
-                task = sr.runTaskLater(plugin, ((Once) schedule).when);
+                task = sr.runTaskLater(plugin, ((OneTimeSchedule) schedule).when);
             }
             return true;
         } else if (schedule instanceof FixedRateSchedule) {
@@ -130,8 +130,8 @@ public final class AnimationRunner<Item> {
             return trySpecialCaseRun(sr, ((TimeLimitedSchedule) schedule).source);
         } else if (schedule instanceof ConcatSchedule) {
             ConcatSchedule concatSchedule = (ConcatSchedule) schedule;
-            if (concatSchedule.one instanceof Once && concatSchedule.two instanceof RunFixedRate) {
-                task = sr.runTaskTimer(plugin, ((Once) concatSchedule.one).when, ((RunFixedRate) concatSchedule.two).period);
+            if (concatSchedule.one instanceof OneTimeSchedule && concatSchedule.two instanceof RunFixedRate) {
+                task = sr.runTaskTimer(plugin, ((OneTimeSchedule) concatSchedule.one).when, ((RunFixedRate) concatSchedule.two).period);
                 return true;
             }
         }
@@ -140,8 +140,8 @@ public final class AnimationRunner<Item> {
     }
 
     private CommonRunnable tryComputeCommonRunnable(Schedule schedule) {
-        if (schedule instanceof Once) {
-            Once s = (Once) schedule;
+        if (schedule instanceof OneTimeSchedule) {
+            OneTimeSchedule s = (OneTimeSchedule) schedule;
             return new RunOnce(s.when, this::showFrame);
         } else if (schedule instanceof FixedRateSchedule) {
             FixedRateSchedule s = (FixedRateSchedule) schedule;
