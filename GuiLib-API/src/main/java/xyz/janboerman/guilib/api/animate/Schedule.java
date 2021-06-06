@@ -279,7 +279,7 @@ class ConcatSchedule implements Schedule {
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
-        if (!(obj instanceof ConcatSchedule));
+        if (!(obj instanceof ConcatSchedule)) return false;
 
         ConcatSchedule that = (ConcatSchedule) obj;
         return Objects.equals(this.one, that.one)
