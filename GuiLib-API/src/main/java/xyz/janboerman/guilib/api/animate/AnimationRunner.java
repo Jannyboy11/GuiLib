@@ -142,7 +142,7 @@ public final class AnimationRunner<Item> {
     private CommonRunnable tryComputeCommonRunnable(Schedule schedule) {
         if (schedule instanceof OneTimeSchedule) {
             OneTimeSchedule s = (OneTimeSchedule) schedule;
-            return new RunOnce(s.when, this::showFrame);
+            return new RunOnce(s.when, () -> { this.showFrame(); task = null; } );
         } else if (schedule instanceof FixedRateSchedule) {
             FixedRateSchedule s = (FixedRateSchedule) schedule;
             return new RunFixedRate(s.period, this::showFrame);
@@ -201,7 +201,7 @@ public final class AnimationRunner<Item> {
     }
 
     private void checkStartAllowed() {
-        if (task != null) throw new IllegalStateException("Animation already started");
+        if (task != null && !task.isCancelled()) throw new IllegalStateException("Animation already started");
     }
 
     private void cancelTask() {
