@@ -62,7 +62,7 @@ public final class AnimationRunner<Item> {
      */
     public boolean play(Schedule schedule) {
         //throw IllegalStateException if the AnimationRunner was already busy.
-        checkStartAllowed();
+        if (getStatus() == AnimationState.RUNNING) throw new IllegalStateException("Animation already running");
 
         //update the status
         status = AnimationState.RUNNING;
@@ -198,10 +198,6 @@ public final class AnimationRunner<Item> {
             Frame frame = animation.nextFrame();
             frame.apply(container);
         }
-    }
-
-    private void checkStartAllowed() {
-        if (task != null && !task.isCancelled()) throw new IllegalStateException("Animation already started");
     }
 
     private void cancelTask() {

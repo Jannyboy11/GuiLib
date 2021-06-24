@@ -144,6 +144,11 @@ class RepeatingSchedule implements Schedule {
     }
 
     @Override
+    public Schedule repeat() {
+        return this;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hashCode(source);
     }
@@ -388,7 +393,11 @@ class StepLimitedSchedule implements Schedule {
 
     @Override
     public Schedule limitSteps(long totalSteps) {
-        return new StepLimitedSchedule(source, Math.min(totalSteps, stepLimit), stepsPassed);
+        if (totalSteps >= stepLimit) {
+            return this;
+        } else {
+            return new StepLimitedSchedule(source, totalSteps, stepsPassed);
+        }
     }
 
     @Override
@@ -455,7 +464,11 @@ class TimeLimitedSchedule implements Schedule {
 
     @Override
     public Schedule limitTime(long totalTicks) {
-        return new TimeLimitedSchedule(source, Math.min(timeLimit, totalTicks), timePassed);
+        if (totalTicks >= timeLimit) {
+            return this;
+        } else {
+            return new TimeLimitedSchedule(source, totalTicks, timePassed);
+        }
     }
 
     @Override
