@@ -7,6 +7,7 @@ import xyz.janboerman.guilib.api.mask.patterns.CheckerboardPattern;
 import xyz.janboerman.guilib.api.menu.MenuHolder;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,7 +31,7 @@ public interface Pattern<Symbol> {
     public Symbol getSymbol(int location);
 
     /**
-     * Creates a pattern that is backed by a Map.
+     * Creates a pattern that is backed by a Map. The returned Pattern will look up its symbols in the map.
      * @param symbols the map
      * @param <Symbol> the type of symbols provided by the pattern
      * @return the pattern
@@ -40,6 +41,31 @@ public interface Pattern<Symbol> {
 
         return symbols::get;
     }
+
+    /**
+     * Creates a pattern that is backed by an array. The returned Pattern will look up its symbols in the array.
+     * @param symbols the array
+     * @param <Symbol> the type of symbols provided by the pattern
+     * @return the pattern
+     */
+    public static <Symbol> Pattern<Symbol> ofArray(Symbol[] symbols) {
+        Objects.requireNonNull(symbols, "symbols array cannot be null");
+
+        return i -> symbols[i];
+    }
+
+    /**
+     * Creates a pattern that is backed by a list. The returned Pattern will look up its symbols in the list.
+     * @param symbols the array
+     * @param <Symbol> the type of symbols provided by the pattern
+     * @return the pattern
+     */
+    public static <Symbol> Pattern<Symbol> ofList(List<Symbol> symbols) {
+        Objects.requireNonNull(symbols, "symbols array cannot be null");
+
+        return symbols::get;
+    }
+
 
     /**
      * Creates a pattern that maps indices to characters in the provided string.
