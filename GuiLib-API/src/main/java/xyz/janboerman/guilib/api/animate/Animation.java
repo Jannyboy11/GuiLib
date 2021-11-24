@@ -77,7 +77,7 @@ public interface Animation {
     /**
      * Limit the animation to a fixed number of frames.
      * @param numberOfFrames the maximum number of frames
-     * @return a new Animation
+     * @return an animation that is the same as this animation, except that it is limited {@code numberOfFrames} frames
      */
     public default Animation limit(int numberOfFrames) {
         return new LimitAnimation(numberOfFrames, this);
@@ -122,7 +122,11 @@ class LimitAnimation implements Animation {
 
     @Override
     public Animation limit(int numberOfFrames) {
-        return new LimitAnimation(Math.min(numberOfFrames, limit), wrapped, count);
+        if (numberOfFrames < limit) {
+            return new LimitAnimation(Math.min(numberOfFrames, limit), wrapped, count);
+        } else {
+            return this;
+        }
     }
 
     @Override
@@ -359,7 +363,11 @@ class SimpleAnimation implements Animation {
 
     @Override
     public Animation limit(int numberOfFrames) {
-        return new SimpleAnimation(currentIndex, frames.subList(0, Math.min(frames.size(), numberOfFrames)));
+        if (numberOfFrames < frames.size()) {
+            return new SimpleAnimation(currentIndex, frames.subList(0, Math.min(frames.size(), numberOfFrames)));
+        } else {
+            return this;
+        }
     }
 
     @Override
