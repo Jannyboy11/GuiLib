@@ -2,6 +2,7 @@ package xyz.janboerman.guilib.api;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attribute;
@@ -106,12 +107,30 @@ public class ItemBuilder {
     }
 
     /**
+     * Specify the display name of the items being built.
+     * @param displayName the display name
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder name(Component displayName) {
+        return changeMeta(meta -> meta.displayName(displayName));
+    }
+
+    /**
      * Specify the localised display name of the items being built.
      * @param localisedName the display name
      * @return a new ItemBuilder
      */
     public ItemBuilder localisedName(String localisedName) {
         return changeMeta(meta -> meta.setLocalizedName(localisedName));
+    }
+
+    /**
+     * Specify the lore of the items being built.
+     * @param lore the lore
+     * @return a new ItemBuilder
+     */
+    public ItemBuilder loreC(List<Component> lore) {
+        return changeMeta(meta -> meta.lore(lore));
     }
 
     /**
@@ -595,5 +614,7 @@ public class ItemBuilder {
     public ItemStack build() {
         return itemStack.clone();
     }
+
+
 
 }

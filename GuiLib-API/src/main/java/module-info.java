@@ -1,6 +1,7 @@
 module xyz.janboerman.guilib.api {
 
     requires org.bukkit;
+    requires net.kyori.adventure;
     requires com.google.common;
 
     exports xyz.janboerman.guilib.api;
