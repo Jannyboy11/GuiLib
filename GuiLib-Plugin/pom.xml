@@ -28,6 +28,13 @@
             </resource>
         </resources>
 
+        <pluginRepositories>
+            <pluginRepository>
+                <id>maven-snapshots</id>
+                <url>https://repository.apache.org/content/repositories/snapshots/</url>
+            </pluginRepository>
+        </pluginRepositories>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
