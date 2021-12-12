@@ -73,8 +73,8 @@
                     <!-- the javadoc tool is too picky for me -->
                     <failOnError>false</failOnError>
 
-                    <!-- set the source as 16 so that proper links to standard jdk classes will be generated -->
-                    <additionalOptions>-source 16</additionalOptions>
+                    <!-- set the source as 17 so that proper links to standard jdk classes will be generated -->
+                    <additionalOptions>-source 17</additionalOptions>
                 </configuration>
 
                 <!-- I don't even get why this workaround is required.
