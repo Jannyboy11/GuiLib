@@ -73,8 +73,8 @@
                     <!-- the javadoc tool is too picky for me -->
                     <failOnError>false</failOnError>
 
-                    <!-- set the source as 16 so that proper links to standard jdk classes will be generated -->
-                    <additionalOptions>-source 16</additionalOptions>
+                    <!-- set the source as 17 so that proper links to standard jdk classes will be generated -->
+                    <additionalOptions>-source 17</additionalOptions>
                 </configuration>
 
                 <!-- I don't even get why this workaround is required.
@@ -84,7 +84,7 @@
                     <dependency>
                         <groupId>org.ow2.asm</groupId>
                         <artifactId>asm</artifactId>
-                        <version>9.1</version>
+                        <version>9.2</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18-pre5-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
