@@ -1,6 +1,6 @@
 # GuiLib [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
 
-Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/v1.11.7/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
+Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/master-SNAPSHOT/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
 
 ## Features
 - Callback-based GuiInventoryHolder api
@@ -11,12 +11,8 @@ Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/c
 
 ### Compiling
 
-Prerequisites: Apache Maven 3.5+, JDK11+.
-Then run `cd GuiLib-Plugin` and `mvn clean package`.
-
-### Pre-built jars
-
-Available on [GitHub Releases](https://github.com/Jannyboy11/GuiLib/releases).
+Prerequisites: Apache Maven 3.5+, JDK17+.
+Then run `mvn clean package`.
 
 ### Example Usage
 
@@ -254,7 +250,10 @@ This example uses GuiLib as a runtime dependency, so `depend: ["GuiLib"]` is in 
 ### Dependency Information [![](https://jitpack.io/v/Jannyboy11/GuiLib.svg)](https://jitpack.io/#Jannyboy11/GuiLib)
 
 There are two artifacts that you can depend on, either `GuiLib-API` or `GuiLib-Plugin`.
-The examples below use the plugin variant.
+The examples below use the `GuiLib-Plugin` dependency.
+
+Note that if you choose to depend on `GuiLib-API`, then you need to bundle the classes in your own plugin.
+This can be done by your build tool using the maven-shade-plugin, gradle shadow plugin, or sbt-assembly plugin.
 
 ##### module-info.java
 
@@ -264,15 +263,15 @@ The examples below use the plugin variant.
 
     <repositories>
         <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
         </repository>
     </repositories>
 	
 	<dependency>
-	    <groupId>com.github.Jannyboy11.GuiLib</groupId>
+	    <groupId>xyz.janboerman</groupId>
 	    <artifactId>GuiLib-Plugin</artifactId>
-	    <version>v1.11.7</version>
+	    <version>1.11.9</version>
 	    <scope>provided</scope>
 	</dependency>	
 
@@ -281,18 +280,18 @@ The examples below use the plugin variant.
     allprojects {
         repositories {
             ...
-            maven { url 'https://jitpack.io' }
+            maven { url 'https://repo.codemc.io/repository/maven-releases/' }
         }
     }
     	
     dependencies {
-        compileOnly 'com.github.Jannyboy11.GuiLib:GuiLib-Plugin:v1.11.7'
+        compileOnly 'xyz.janboerman:GuiLib-Plugin:1.11.9'
     }
 
 ##### Sbt
 
-    resolvers += "jitpack" at "https://jitpack.io"
-    libraryDependencies += "com.github.Jannyboy11.GuiLib" % "GuiLib-Plugin" % "v1.11.7" % "provided"	
+    resolvers += "codemc-releases" at "https://repo.codemc.io/repository/maven-releases/"
+    libraryDependencies += "xyz.janboerman" % "GuiLib-Plugin" % "1.11.9" % "provided"	
 
 ### Licensing
 
