@@ -184,6 +184,8 @@ public class GuiListener implements Listener {
      * @param inventory the bukkit inventory
      * @return the authoritative inventory
      */
+    //This works around a bug in CraftBukkit where CraftInventory instances cannot be used as WeakHashMap keys because CraftInventory instances are created on-demand.
+    //They are not stored in the nms inventory, hence to obtain an object that persists the inventory, we need the NMS inventory: IInventory(mc-dev) Container(moj-map).
     private static Object getBaseInventory(Inventory inventory) {
         if (CRAFT_INVENTORY != null && GET_INVENTORY != null && CRAFT_INVENTORY.isInstance(inventory)) {
             try {
