@@ -1,5 +1,6 @@
 package xyz.janboerman.guilib.api;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -12,6 +13,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
@@ -35,7 +38,7 @@ public class GuiListener implements Listener {
     private static final GuiListener INSTANCE = new GuiListener();
 
     //Does not contain inventories whose holders are GuiInventoryHolders. See CraftInventoryCreator.
-    private final WeakHashMap<Inventory, WeakReference<GuiInventoryHolder<?>>> guiInventories = new WeakHashMap<>();
+    private final WeakHashMap<Object/*NMS Inventory*/, WeakReference<GuiInventoryHolder<?>>> guiInventories = new WeakHashMap<>();
 
     private GuiListener() {}
 
@@ -59,7 +62,7 @@ public class GuiListener implements Listener {
     public boolean registerGui(GuiInventoryHolder<?> holder, Inventory inventory) {
         if (holder == inventory.getHolder()) return true; //yes, reference equality
 
-        return guiInventories.putIfAbsent(inventory, new WeakReference<>(holder)) == null;
+        return guiInventories.putIfAbsent(getBaseInventory(inventory), new WeakReference<>(holder)) == null;
     }
 
     /**
@@ -71,7 +74,7 @@ public class GuiListener implements Listener {
         InventoryHolder holder = inventory.getHolder();
         if (holder instanceof GuiInventoryHolder) return (GuiInventoryHolder<?>) holder;
 
-        WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(inventory);
+        WeakReference<GuiInventoryHolder<?>> reference = guiInventories.get(getBaseInventory(inventory));
         if (reference == null) return null;
 
         return reference.get(); //can still be null
@@ -153,6 +156,42 @@ public class GuiListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClose(InventoryCloseEvent event) {
         onGuiInventoryEvent(event, gui -> gui.onClose(event));
+    }
+
+    // ===== nms stuff =====
+
+    private static final Class<?> CRAFT_INVENTORY;
+    private static final Method GET_INVENTORY;
+    static {
+        Class<?> craftInventoryClass = null;
+        Method getInventoryMethod = null;
+        if ("CraftServer".equals(Bukkit.getServer().getClass().getSimpleName())) {
+            String[] packageParts = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
+            String revision = packageParts[3];
+            String className = "org.bukkit.craftbukkit." + revision + ".inventory.CraftInventory";
+            try {
+                craftInventoryClass = Class.forName(className);
+                getInventoryMethod = craftInventoryClass.getMethod("getInventory");
+            } catch (ClassNotFoundException | NoSuchMethodException ignored) {
+            }
+        }
+        CRAFT_INVENTORY = craftInventoryClass;
+        GET_INVENTORY = getInventoryMethod;
+    }
+
+    /**
+     * If the inventory is a CraftInventory, get the NMS inventory. If not, just return the bukkit Inventory.
+     * @param inventory the bukkit inventory
+     * @return the authorative inventory
+     */
+    private static Object getBaseInventory(Inventory inventory) {
+        if (CRAFT_INVENTORY != null && GET_INVENTORY != null && CRAFT_INVENTORY.isInstance(inventory)) {
+            try {
+                return GET_INVENTORY.invoke(inventory);
+            } catch (InvocationTargetException | IllegalAccessException ignored) {
+            }
+        }
+        return inventory;
     }
 
 }
