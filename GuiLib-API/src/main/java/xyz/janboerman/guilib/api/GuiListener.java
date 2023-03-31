@@ -182,7 +182,7 @@ public class GuiListener implements Listener {
     /**
      * If the inventory is a CraftInventory, get the NMS inventory. If not, just return the bukkit Inventory.
      * @param inventory the bukkit inventory
-     * @return the authorative inventory
+     * @return the authoritative inventory
      */
     private static Object getBaseInventory(Inventory inventory) {
         if (CRAFT_INVENTORY != null && GET_INVENTORY != null && CRAFT_INVENTORY.isInstance(inventory)) {
