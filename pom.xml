@@ -42,7 +42,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.1.1</version>
+                <version>3.5.0</version>
                 <configuration>
                     <!-- bukkit library javadoc -->
                     <links>
@@ -76,17 +76,6 @@
                     <!-- set the source as 17 so that proper links to standard jdk classes will be generated -->
                     <additionalOptions>-source 17</additionalOptions>
                 </configuration>
-
-                <!-- I don't even get why this workaround is required.
-                    Why is the javadoc plugin reading bytecode anyway?
-                    link to the bugtracker: https://issues.apache.org/jira/projects/MJAVADOC/issues/MJAVADOC-542 -->
-                <dependencies>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>9.3</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -102,7 +91,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

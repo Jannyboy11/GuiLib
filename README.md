@@ -1,4 +1,4 @@
-# GuiLib [![Build Status](https://travis-ci.org/Jannyboy11/GuiLib.svg?branch=master)](https://travis-ci.org/Jannyboy11/GuiLib)
+# GuiLib
 
 Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/com/github/Jannyboy11/GuiLib/GuiLib-API/master-SNAPSHOT/javadoc/xyz.janboerman.guilib.api/module-summary.html)!
 
@@ -13,6 +13,10 @@ Easily create inventory GUIs! Have a look at the [JavaDocs](https://jitpack.io/c
 
 Prerequisites: Apache Maven 3.5+, JDK17+.
 Then run `mvn clean package`.
+
+### Pre-built jar files?
+
+Available on [CodeMC]()
 
 ### Example Usage
 

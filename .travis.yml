@@ -1,14 +1,14 @@
 language: java
 jdk:
 - openjdk17
-script: mvn package javadoc:jar install -DfinalName=GuiLib
+script: mvn package javadoc:aggregate-jar -pl :GuiLib,:GuiLib-API,:GuiLib-Plugin install -DfinalName=GuiLib
 deploy:
   provider: releases
   api_key:
     secure: I00B4UcMUoTco09B9YAoOsJ0N2YCtex5yWB7uMFTh32aLyRlE9Kwksdf6UcW3inro3TlxnXCEG5+4uth7xMQwcKt9hpVtf5uH52SE4LfFyn+9zf+XLWny4t2jwz0REDMkB2u2EUNZUGtN9vQSFs+y6e+JqG0eqfKedydrUQrWncvtl6hSc11dxlILaweODRdIzjeZyh8sjYd97PD8FpkoqZdHZQsFOhK6lU/qZLLGM8mp4F4yeendQKtmIyMzHc32zGctCelrCwtayUQU1kM7/KhyRBfLnpSSPQIhnqVEVgCpplZUhzyUdasBZsUE+wUUeCXZa4cmM0gdYabQwSkI4UhFetju0PJNEMcsqnBAkx5kosDq9W64YHAlD0xsG3uxOo2SiMVLXUMJoifJG4FHzMDPgsfgt49j4ZYzJWc2B00/7MDOPL1DDlXyI1FkIWcqDv4TlC8VffVZbGtcOU0n5AwE9wnmYSeN444DEj3OQT5+VRJrsn7uAoK0ZJhtNx+KD7hAXgDLOE0Adz0M0YcLpHNM1Lq/QB1DSz1KwRc/EBEDexih8LkDW4ZpH7AxPX02pBMhEpiPE7+WCsXEQJX22E3FAaorwhwUHt5bOiMODpez3fI39inEEOT0UjWqHQKuFyZdUEUA0sTsV8wZaf8C5yiXYA4/X3PYyiYxlESNVk=
   file:
     - GuiLib-Plugin/target/GuiLib.jar
-    - GuiLib-API/target/GuiLib-javadoc.jar
+    - target/GuiLib-javadoc.jar
   skip_cleanup: true
   on:
     repo: Jannyboy11/GuiLib
