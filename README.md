@@ -272,12 +272,14 @@ This can be done by your build tool using the maven-shade-plugin, gradle shadow 
         </repository>
     </repositories>
 	
-	<dependency>
-	    <groupId>xyz.janboerman</groupId>
-	    <artifactId>GuiLib-Plugin</artifactId>
-	    <version>1.11.9</version>
-	    <scope>provided</scope>
-	</dependency>	
+    <dependencies>
+        <dependency>
+            <groupId>xyz.janboerman</groupId>
+            <artifactId>GuiLib-Plugin</artifactId>
+            <version>1.12.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 ##### Gradle
 
@@ -289,13 +291,13 @@ This can be done by your build tool using the maven-shade-plugin, gradle shadow 
     }
     	
     dependencies {
-        compileOnly 'xyz.janboerman:GuiLib-Plugin:1.11.9'
+        compileOnly 'xyz.janboerman:GuiLib-Plugin:1.12.0'
     }
 
 ##### Sbt
 
     resolvers += "codemc-releases" at "https://repo.codemc.io/repository/maven-releases/"
-    libraryDependencies += "xyz.janboerman" % "GuiLib-Plugin" % "1.11.9" % "provided"	
+    libraryDependencies += "xyz.janboerman" % "GuiLib-Plugin" % "1.12.0" % "provided"	
 
 ### Licensing
 
