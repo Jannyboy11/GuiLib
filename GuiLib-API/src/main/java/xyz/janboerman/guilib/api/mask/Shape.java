@@ -8,6 +8,8 @@ import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.LlamaInventory;
 
+import static xyz.janboerman.guilib.api.mask.Shapes.*;
+
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -16,6 +18,7 @@ import java.util.Objects;
  */
 public interface Shape {
 
+    //InventoryType shapes
     public static final Shape ANVIL = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
     public static final Shape BARREL = grid(9, 3, SlotType.CONTAINER);
     public static final Shape BEACON = generic(1, SlotType.CRAFTING);
@@ -28,28 +31,36 @@ public interface Shape {
     public static final Shape CHEST4 = chest(4);
     public static final Shape CHEST5 = chest(5);
     public static final Shape CHEST6 = chest(6);
+    public static final Shape CHISELED_BOOKSHELF = generic(6, SlotType.CONTAINER/*TODO SlotType.BOOK?*/);
+    public static final Shape COMPOSTER = generic(1, SlotType.CONTAINER);
     public static final Shape CRAFTING = combine(grid(2, 2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
     public static final Shape CREATIVE = grid(9, 1, SlotType.QUICKBAR);
     public static final Shape DISPENSER = grid(3, 3, SlotType.CONTAINER);
     public static final Shape DROPPER = grid(3, 3, SlotType.CONTAINER);
+    public static final Shape ENCHANTING = generic(2, SlotType.CRAFTING);
     public static final Shape ENDER_CHEST = chest(3);
     public static final Shape FURNACE = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL), generic(1, SlotType.RESULT));
     public static final Shape GRINDSTONE = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
     public static final Shape HOPPER = grid(5, 1, SlotType.CONTAINER);
+    public static final Shape JUKEBOX = generic(1, SlotType.CONTAINER);
     public static final Shape LECTERN = generic(1, SlotType.CONTAINER/*TODO SlotType.BOOK*/);
     public static final Shape LOOM = combine(generic(3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
     public static final Shape MERCHANT = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
     public static final Shape PLAYER = combine(grid(9, 1, SlotType.QUICKBAR), grid(9, 3, SlotType.CONTAINER), generic(4, SlotType.ARMOR), generic(1, SlotType.CONTAINER /*off hand*/));
-    public static final Shape SHULKER_BOX = grid(3, 3, SlotType.CONTAINER);
+    public static final Shape SHULKER_BOX = grid(9, 3, SlotType.CONTAINER);
     public static final Shape SMITHING = combine(generic(2, SlotType.CRAFTING), generic(1, SlotType.RESULT));
+    public static final Shape SMITHING_NEW = combine(generic(3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
     public static final Shape SMOKER = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.FUEL), generic(1, SlotType.RESULT));
     public static final Shape STONECUTTER = combine(generic(1, SlotType.CRAFTING), generic(1, SlotType.RESULT));
     public static final Shape WORKBENCH = combine(grid(3, 3, SlotType.CRAFTING), generic(1, SlotType.RESULT));
+
+    //entity inventory shapes
     public static final Shape HORSE = generic(2, SlotType.ARMOR);
     public static final Shape MULE = generic(1, SlotType.ARMOR);
     public static final Shape CHEST_MULE = combine(MULE, grid(5, 3, SlotType.CONTAINER));
     public static final Shape LLAMA = generic(1, SlotType.ARMOR);
     public static final Shape CHEST_LLAMA = combine(LLAMA, grid(3, 3, SlotType.CONTAINER));
+    public static final Shape VILLAGER = generic(8, SlotType.CONTAINER);
 
     public static Shape determine(Inventory inventory) {
         switch (inventory.getType()) {
@@ -60,29 +71,40 @@ public interface Shape {
             case BREWING: return BREWING;
             case CARTOGRAPHY: return CARTOGRAPHY;
             case CHEST:
-                switch (inventory.getSize()){
+                final int size = inventory.getSize();
+                switch (size) {
                     case 9: return CHEST1;
                     case 18: return CHEST2;
                     case 27: return CHEST3;
                     case 36: return CHEST4;
                     case 45: return CHEST5;
                     case 54: return CHEST6;
-                    default: assert false; return chest(inventory.getSize() / 9); //impossibru!
+                    default:
+                        if (size % 9 == 0)
+                            return chest(size / 9);
+                        else
+                            //can't be sure that it's actually a grid. just return a generic shape.
+                            return generic(size, SlotType.CONTAINER);
                 }
+            case CHISELED_BOOKSHELF: return CHISELED_BOOKSHELF;
+            case COMPOSTER: return COMPOSTER;
             case CRAFTING: return CRAFTING;
             case CREATIVE: return CREATIVE;
             case DISPENSER: return DISPENSER;
             case DROPPER: return DROPPER;
+            case ENCHANTING: return ENCHANTING;
             case ENDER_CHEST: return ENDER_CHEST;
             case FURNACE: return FURNACE;
             case GRINDSTONE: return GRINDSTONE;
             case HOPPER: return HOPPER;
+            case JUKEBOX: return JUKEBOX;
             case LECTERN: return LECTERN;
             case LOOM: return LOOM;
             case MERCHANT: return MERCHANT;
             case PLAYER: return PLAYER;
             case SHULKER_BOX: return SHULKER_BOX;
             case SMITHING: return SMITHING;
+            case SMITHING_NEW: return SMITHING_NEW;
             case SMOKER: return SMOKER;
             case STONECUTTER: return STONECUTTER;
             case WORKBENCH: return WORKBENCH;
@@ -115,6 +137,11 @@ public interface Shape {
 
     public Pattern<SlotType> toPattern();
 
+}
+
+class Shapes {
+    private Shapes() {}
+
     static GridShape chest(int rows) {
         return grid(9, rows, SlotType.CONTAINER);
     }
@@ -133,7 +160,6 @@ public interface Shape {
     static GridShape grid(int width, int height, SlotType slotType) {
         return new GridShape(height, width, slotType);
     }
-
 }
 
 final class GenericShape implements Shape {
