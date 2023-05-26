@@ -276,7 +276,7 @@ This can be done by your build tool using the maven-shade-plugin, gradle shadow 
         <dependency>
             <groupId>xyz.janboerman</groupId>
             <artifactId>GuiLib-Plugin</artifactId>
-            <version>1.12.0</version>
+            <version>1.12.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -291,13 +291,13 @@ This can be done by your build tool using the maven-shade-plugin, gradle shadow 
     }
     	
     dependencies {
-        compileOnly 'xyz.janboerman:GuiLib-Plugin:1.12.0'
+        compileOnly 'xyz.janboerman:GuiLib-Plugin:1.12.1'
     }
 
 ##### Sbt
 
     resolvers += "codemc-releases" at "https://repo.codemc.io/repository/maven-releases/"
-    libraryDependencies += "xyz.janboerman" % "GuiLib-Plugin" % "1.12.0" % "provided"	
+    libraryDependencies += "xyz.janboerman" % "GuiLib-Plugin" % "1.12.1" % "provided"	
 
 ### Licensing
 
