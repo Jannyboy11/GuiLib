@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.GuiListener;
 import xyz.janboerman.guilib.api.ItemBuilder;
+import xyz.janboerman.guilib.util.Scheduler;
 
 import java.util.function.Consumer;
 
@@ -191,7 +192,7 @@ public class YesNoMenu<P extends Plugin> extends MenuHolder<P> {
         return new ItemButton<>(stack) {
             @Override
             public void onClick(YesNoMenu<P> holder, InventoryClickEvent event) {
-                getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+                Scheduler.get().runTaskLater(getPlugin(), event.getWhoClicked(), () -> {
                     event.getView().close();
                     if (action != null) {
                         action.accept(event);

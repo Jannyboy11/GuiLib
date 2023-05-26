@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import xyz.janboerman.guilib.util.FoliaSupport;
 
 import java.util.Objects;
 
@@ -43,7 +44,11 @@ public class TeleportButton<MH extends MenuHolder<?>> extends ItemButton<MH> {
     public void onClick(MH menuHolder, InventoryClickEvent event) {
         HumanEntity player = event.getWhoClicked();
         //I bet that teleporting the player closes the inventory, so I better put this in a task.
-        player.getServer().getScheduler().runTask(menuHolder.getPlugin(), () -> player.teleport(getTo(menuHolder, event)));
+        if (FoliaSupport.isFolia()) {
+            player.getScheduler().run(menuHolder.getPlugin(), scheduledTask -> player.teleportAsync(getTo(menuHolder, event)), null);
+        } else {
+            player.getServer().getScheduler().runTask(menuHolder.getPlugin(), () -> player.teleport(getTo(menuHolder, event)));
+        }
     }
 
     /**

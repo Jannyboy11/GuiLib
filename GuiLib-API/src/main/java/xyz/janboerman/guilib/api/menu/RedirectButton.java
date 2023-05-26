@@ -3,6 +3,7 @@ package xyz.janboerman.guilib.api.menu;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import xyz.janboerman.guilib.util.Scheduler;
 
 public interface RedirectButton<MH extends MenuHolder<?>> extends MenuButton<MH> {
 
@@ -16,7 +17,7 @@ public interface RedirectButton<MH extends MenuHolder<?>> extends MenuButton<MH>
      */
     @Override
     public default void onClick(MH holder, InventoryClickEvent event) {
-        holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), () -> {
+        Scheduler.get().runTaskLater(holder.getPlugin(), event.getWhoClicked(), () -> {
            event.getView().close();
            
            HumanEntity player = event.getWhoClicked();

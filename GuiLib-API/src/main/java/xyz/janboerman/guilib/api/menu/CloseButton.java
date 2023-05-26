@@ -5,6 +5,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import xyz.janboerman.guilib.api.ItemBuilder;
+import xyz.janboerman.guilib.util.Scheduler;
 
 /**
  * A MenuButton that closes the Inventory when clicked.
@@ -50,7 +51,7 @@ public class CloseButton<P extends Plugin> extends ItemButton<MenuHolder<P>> {
      */
     @Override
     public final void onClick(MenuHolder<P> holder, InventoryClickEvent event) {
-        holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), event.getView()::close);
+        Scheduler.get().runTaskLater(holder.getPlugin(), event.getWhoClicked(), event.getView()::close);
     }
 
 }

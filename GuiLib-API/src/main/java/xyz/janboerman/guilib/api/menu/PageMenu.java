@@ -12,6 +12,7 @@ import xyz.janboerman.guilib.api.GuiListener;
 import xyz.janboerman.guilib.api.GuiInventoryHolder;
 import xyz.janboerman.guilib.api.ItemBuilder;
 import xyz.janboerman.guilib.util.CachedSupplier;
+import xyz.janboerman.guilib.util.Scheduler;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -454,7 +455,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
 
                     } else {
                         //redirect required
-                        holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), () -> {
+                        Scheduler.get().runTaskLater(holder.getPlugin(), event.getWhoClicked(), () -> {
                             event.getView().close();
                             event.getWhoClicked().openInventory(nextPageMenu.getInventory());
                         });
@@ -504,7 +505,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
 
                     } else {
                         //redirect required
-                        holder.getPlugin().getServer().getScheduler().runTask(holder.getPlugin(), () -> {
+                        Scheduler.get().runTaskLater(holder.getPlugin(), event.getWhoClicked(), () -> {
                             event.getView().close();
                             event.getWhoClicked().openInventory(previousPageMenu.getInventory());
                         });
@@ -624,7 +625,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
                 final Inventory open = target;
 
                 //open the target inventory. It can be either the original inventory to which we were redirected, or in can be a page inside a new PageMenu.
-                getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+                Scheduler.get().runTaskLater(getPlugin(), clickEvent.getWhoClicked(), () -> {
                     clickEvent.getWhoClicked().closeInventory();
                     clickEvent.getWhoClicked().openInventory(open);
                 });
@@ -673,7 +674,7 @@ public class PageMenu<P extends Plugin> extends MenuHolder<P> implements MenuHol
             dragEvent.setResult(proxyEvent.getResult());
 
             //run a task later such that we take the changes from event listeners on the page into account.
-            getPlugin().getServer().getScheduler().runTask(getPlugin(), () -> {
+            Scheduler.get().runTaskLater(getPlugin(), dragEvent.getWhoClicked(), () -> {
                 for (int i = 0; i < getPageSize(); i++) {
                     Map<Integer, ItemStack> proxyNewItems = proxyEvent.getNewItems();
                     ItemStack oldItem = getPage().getInventory().getItem(i);

@@ -5,13 +5,27 @@
     <parent>
         <artifactId>GuiLib</artifactId>
         <groupId>xyz.janboerman</groupId>
-        <version>1.12.0</version>
+        <version>1.12.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>GuiLib-API</artifactId>
 
+    <repositories>
+        <repository>
+            <id>papermc</id>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
+        <dependency>
+            <groupId>dev.folia</groupId>
+            <artifactId>folia-api</artifactId>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- We are depending on a more recent version than that's bundled with Minecraft currently \
          because the old version doesn't provide a jigsaw module. We need this dependency to access the Multimap class
          that's used by ItemMeta#setAttributeModifiers. -->

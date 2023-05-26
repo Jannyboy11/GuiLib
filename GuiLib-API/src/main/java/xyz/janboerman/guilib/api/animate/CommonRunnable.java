@@ -1,12 +1,24 @@
 package xyz.janboerman.guilib.api.animate;
 
-import org.bukkit.scheduler.BukkitRunnable;
+import xyz.janboerman.guilib.util.Task;
 
-abstract class CommonRunnable extends BukkitRunnable {
+abstract class CommonRunnable implements Runnable {
+
+    protected Task task;
+    private boolean cancelled;
 
     abstract long stepDelay();
 
     abstract boolean isDone();
+
+    protected void cancel() {
+        if (task != null) task.cancel();
+        cancelled = true;
+    }
+
+    protected boolean isCancelled() {
+        return cancelled || (task != null && task.isCancelled());
+    }
 
 }
 
@@ -80,7 +92,7 @@ class RunStepLimited extends CommonRunnable {
 
     @Override
     public void run() {
-        if (source.isCancelled()) {
+        if (source.isDone()) {
             cancel();
         }
         else if (stepsPassed >= stepLimit) {

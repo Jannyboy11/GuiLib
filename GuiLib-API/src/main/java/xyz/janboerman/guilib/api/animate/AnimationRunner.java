@@ -2,10 +2,10 @@ package xyz.janboerman.guilib.api.animate;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
 import xyz.janboerman.guilib.api.menu.MenuButton;
 import xyz.janboerman.guilib.api.util.IntBiConsumer;
+import xyz.janboerman.guilib.util.Scheduler;
+import xyz.janboerman.guilib.util.Task;
 
 import java.util.Objects;
 import java.util.OptionalLong;
@@ -21,7 +21,7 @@ public final class AnimationRunner<Item> {
     private final IntBiConsumer<Item> container;
 
     private AnimationState status = AnimationState.NOT_STARTED;
-    private BukkitTask task = null;
+    private Task task = null;
 
     /**
      * Creates the AnimationRunner.
@@ -114,15 +114,15 @@ public final class AnimationRunner<Item> {
             OneTimeSchedule s = (OneTimeSchedule) schedule;
             if (s.when == 0L) {
                 sr.run();
-                task = null;
+                task = sr.task = null;
             } else if (s.when == 1L) {
-                task = sr.runTask(plugin);
+                task = sr.task = getScheduler().runTaskLater(plugin, sr);
             } else {
-                task = sr.runTaskLater(plugin, ((OneTimeSchedule) schedule).when);
+                task = sr.task = getScheduler().runTaskLater(plugin, sr, ((OneTimeSchedule) schedule).when);
             }
             return true;
         } else if (schedule instanceof FixedRateSchedule) {
-            task = sr.runTaskTimer(plugin, 0L, ((FixedRateSchedule) schedule).period);
+            task = sr.task = getScheduler().runTaskTimer(plugin, sr, 0L, ((FixedRateSchedule) schedule).period);
             return true;
         } else if (schedule instanceof StepLimitedSchedule) {
             return trySpecialCaseRun(sr, ((StepLimitedSchedule) schedule).source);
@@ -131,7 +131,7 @@ public final class AnimationRunner<Item> {
         } else if (schedule instanceof ConcatSchedule) {
             ConcatSchedule concatSchedule = (ConcatSchedule) schedule;
             if (concatSchedule.one instanceof OneTimeSchedule && concatSchedule.two instanceof RunFixedRate) {
-                task = sr.runTaskTimer(plugin, ((OneTimeSchedule) concatSchedule.one).when, ((RunFixedRate) concatSchedule.two).period);
+                task = sr.task = getScheduler().runTaskTimer(plugin, sr, ((OneTimeSchedule) concatSchedule.one).when, ((RunFixedRate) concatSchedule.two).period);
                 return true;
             }
         }
@@ -207,8 +207,8 @@ public final class AnimationRunner<Item> {
         }
     }
 
-    private BukkitScheduler getScheduler() {
-        return plugin.getServer().getScheduler();
+    private Scheduler getScheduler() {
+        return Scheduler.get();
     }
 
 }

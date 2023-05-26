@@ -1,3 +1,4 @@
+# TODO replace by GitHub actions?
 language: java
 jdk:
 - openjdk17
