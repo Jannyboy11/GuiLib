@@ -4,6 +4,7 @@ main: com.example.ExamplePlugin
 version: ${project.version}
 api-version: 1.13
 depend: [GuiLib]
+folia-supported: true
 
 commands:
   gui:
