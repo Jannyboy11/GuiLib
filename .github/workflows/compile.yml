@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'microsoft'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
       - name: Build GuiLib
         run: mvn clean package install --batch-mode --update-snapshots -DfinalName=GuiLib
