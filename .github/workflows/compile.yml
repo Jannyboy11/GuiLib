@@ -1,0 +1,27 @@
+name: Compile
+
+on:
+  - push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '11'
+          cache: 'maven'
+      - name: Build GuiLib
+        run: mvn clean package install --batch-mode --update-snapshots -DfinalName=GuiLib
+      - name: Create tagged release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            GuiLib-Plugin/target/GuiLib.jar
