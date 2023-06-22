@@ -71,6 +71,10 @@ public class GuiListener implements Listener {
      * @return the holder - or null if no holder was registered with the inventory.
      */
     public GuiInventoryHolder<?> getHolder(Inventory inventory) {
+        // If the inventory's owner is a tile entity, don't call getHolder() in order to prevent snapshotting of the inventory.
+        // See: https://www.spigotmc.org/threads/why-items-with-lots-of-metadata-actually-cause-lag-an-inventoryholder-psa.607711/
+        if (inventory.getLocation() != null) return null;
+
         InventoryHolder holder = inventory.getHolder();
         if (holder instanceof GuiInventoryHolder) return (GuiInventoryHolder<?>) holder;
 
