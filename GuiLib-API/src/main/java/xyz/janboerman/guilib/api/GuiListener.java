@@ -169,10 +169,10 @@ public class GuiListener implements Listener {
     static {
         Class<?> craftInventoryClass = null;
         Method getInventoryMethod = null;
-        if ("CraftServer".equals(Bukkit.getServer().getClass().getSimpleName())) {
-            String[] packageParts = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
-            String revision = packageParts[3];
-            String className = "org.bukkit.craftbukkit." + revision + ".inventory.CraftInventory";
+        Class<?> serverClass = Bukkit.getServer().getClass();
+        if ("CraftServer".equals(serverClass.getSimpleName())) {
+            String serverPackage = serverClass.getPackageName();
+            String className = serverPackage + ".inventory.CraftInventory";
             try {
                 craftInventoryClass = Class.forName(className);
                 getInventoryMethod = craftInventoryClass.getMethod("getInventory");
